@@ -39,11 +39,13 @@ dependencies {
 	// MySQL
 	implementation 'mysql:mysql-connector-java:8.0.33'
 
-	// MyBatis
-	implementation 'org.mybatis:mybatis:3.5.8'
+	// MyBatis-Plus
+	implementation 'com.baomidou:mybatis-plus-spring-boot3-starter:3.5.10.1'
 
+
+	implementation('com.alibaba:dashscope-sdk-java:2.18.2') {
+		exclude group: 'org.slf4j', module: 'slf4j-simple'}
 }
-
 
 
 tasks.named('test') {
