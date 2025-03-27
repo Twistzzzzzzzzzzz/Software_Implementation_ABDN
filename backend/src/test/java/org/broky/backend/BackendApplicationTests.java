@@ -26,5 +26,4 @@ class BackendApplicationTests {
 		Assert.isTrue(5 == userList.size(), "");
 		userList.forEach(System.out::println);
 	}
-
 }
