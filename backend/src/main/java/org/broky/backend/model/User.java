@@ -26,6 +26,14 @@ public class User {
 	@Column("register_time")
 	private String reg_time;
 
+	public User(String username, String password, String email, String reg_time) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.reg_time = reg_time;
+		this.generateId();
+	}
+
 	public void generateId() {
 		this.setId(UUID.randomUUID().toString());
 	}
