@@ -1,11 +1,10 @@
 spring:
   application:
     name: backend
-  datasource:
-    url: jdbc:mysql://rm-cn-fsw46k36h000b7o.rwlb.rds.aliyuncs.com:3306/software_implementation
+  r2dbc:
+    url: r2dbc:mysql://rm-cn-fsw46k36h000b7o.rwlb.rds.aliyuncs.com:3306/software_implementation
     username: broky
     password: Scnu2022!
-    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update

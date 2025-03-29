@@ -1,12 +1,10 @@
 package org.broky.backend.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import org.broky.backend.model.User;
+import reactor.core.publisher.Mono;
 
 
-public interface UserService extends IService<User> {
-
-	boolean register(User user);
-
-
+public interface UserService {
+	Mono<User> register(User user);
+	Mono<User> SelectAllUsers();
 }

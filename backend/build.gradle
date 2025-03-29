@@ -25,22 +25,19 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+//	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+//	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	// Swagger
 	implementation("com.github.xiaoymin:knife4j-openapi3-jakarta-spring-boot-starter:4.4.0")
 
 	// MySQL
-	implementation 'mysql:mysql-connector-java:8.0.33'
-
-	// MyBatis-Plus
-	implementation 'com.baomidou:mybatis-plus-spring-boot3-starter:3.5.10.1'
-
+	implementation 'dev.miku:r2dbc-mysql:0.8.2.RELEASE'
 
 	implementation('com.alibaba:dashscope-sdk-java:2.18.2') {
 		exclude group: 'org.slf4j', module: 'slf4j-simple'}

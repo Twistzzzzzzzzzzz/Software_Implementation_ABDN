@@ -1,23 +1,20 @@
 package org.broky.backend.model;
 
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 
-import java.util.Date;
+import java.util.UUID;
 
 @Data
-@TableName("user")
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
 
-	@TableId(value = "id", type = IdType.ASSIGN_UUID)
+	@Id
 	private String id;
 
 	private String username;
@@ -26,6 +23,10 @@ public class User {
 
 	private String email;
 
-	@TableField(value ="register_time")
-	private Date reg_time;
+	@Column("register_time")
+	private String reg_time;
+
+	public void generateId() {
+		this.setId(UUID.randomUUID().toString());
+	}
 }
