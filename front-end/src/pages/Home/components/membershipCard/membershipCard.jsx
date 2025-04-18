@@ -38,3 +38,4 @@ MembershipCard.propTypes = {
 }
 
 export default MembershipCard
+

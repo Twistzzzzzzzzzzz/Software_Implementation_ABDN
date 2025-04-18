@@ -9,7 +9,12 @@ import Home_image from './HomeImage.png'
 import Screen_icon from './Screen_icon.png'
 import Bell_icon from './Bell_icon.png'
 import Cloud_icon from './Cloud.png'
-
+import Video_icon from './Video_icon.png'
+import VideoPlayImage from './VideoPlayImage.png'
+import PopularIcon from './PopularIcon.png'
+import Like_icon from './Like.png'
+import Star_icon from './Star.png'
+import Share_icon from './Share.png'
 
 export const assets = {
     web_icon,
@@ -22,5 +27,11 @@ export const assets = {
     Home_image,
     Screen_icon,
     Bell_icon,
-    Cloud_icon
+    Cloud_icon,
+    Video_icon,
+    VideoPlayImage,
+    PopularIcon,
+    Like_icon,
+    Star_icon,
+    Share_icon,
 }

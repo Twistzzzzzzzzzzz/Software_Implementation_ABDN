@@ -45,8 +45,57 @@ function Home() {
                 </div>
             </div>
             <hr/>
-            <div className='todayContainer'></div>
-            <div className='membership-container'></div>
+            <div className='todayContainer'>
+                <div className="today-section">
+                    <div className="video-section">
+                        <div className="section-header">
+                            <img src={assets.Video_icon} alt="Video icon" />
+                            <h2>Today's healing video</h2>
+                        </div>
+                        <div className="video-player">
+                            <div className="play-button">
+                                <img src={assets.VideoPlayImage} alt="Play button" />
+                            </div>
+                        </div>
+                        <div className="video-actions">
+                            <button className="action-button">
+                                <img src={assets.Like_icon} alt="Like" />
+                            </button>
+                            <button className="action-button">
+                                <img src={assets.Star_icon} alt="Star" />
+                            </button>
+                            <button className="action-button">
+                                <img src={assets.Share_icon} alt="Share" />
+                            </button>
+                        </div>
+                    </div>
+                    <div className="popular-section">
+                        <div className="section-header">
+                            <img src={assets.PopularIcon} alt="Popular icon" />
+                            <h2>Popular</h2>
+                        </div>
+                        <div className="popular-list">
+                            <PopularCard />
+                            <PopularCard />
+                            <PopularCard />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+            <div className='membership-container'>
+                <div className='websiteIcon'>
+                    <img src={assets.web_icon} alt=""  className='web_icon'/>
+                </div>
+                <div className="membership-section">
+                    <div className="membership-cards">
+                        <MembershipCard theme="light" />
+                        <MembershipCard theme="dark" />
+                        <MembershipCard theme="light" />
+                    </div>
+                </div>
+            </div>
+            <hr/>
         </div>
     )
 }
