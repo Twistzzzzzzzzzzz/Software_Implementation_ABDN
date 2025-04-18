@@ -4,6 +4,8 @@
     padding: 40px 120px;
     background-color: #ffffff;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    position: relative;
+    padding-bottom: 80px;  /* 为版权信息留出空间 */
 }
 
 .first-containter {
@@ -65,13 +67,44 @@
     color: #333;
 }
 
-/* Copyright text styles */
-.footer::after {
-    content: "©Copyright xxxx Group ? All rights Reserved";
+.footer-copyright {
     position: absolute;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     color: #999;
     font-size: 12px;
+    white-space: nowrap;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .footer {
+        flex-wrap: wrap;
+        padding: 30px 60px 80px;
+        gap: 30px;
+    }
+
+    .first-containter {
+        width: 100%;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 20px 30px 60px;
+    }
+
+    .normal-container {
+        width: 100%;
+        align-items: center;
+        text-align: center;
+    }
+
+    .footer-copyright {
+        bottom: 15px;
+        font-size: 11px;
+    }
 }

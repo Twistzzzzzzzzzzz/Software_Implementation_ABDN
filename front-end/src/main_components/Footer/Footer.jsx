@@ -53,6 +53,9 @@ function Footer() {
                     <li><a href="">Support</a></li>
                 </ul>
             </div>
+            <div className="footer-copyright">
+                ©Copyright 2024 Psychology Group - All rights Reserved
+            </div>
         </div>
     )
 }
