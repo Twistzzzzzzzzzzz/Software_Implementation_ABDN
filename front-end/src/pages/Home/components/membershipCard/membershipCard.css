@@ -1,0 +1,126 @@
+.membership-container {
+    width: 300px;
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+}
+
+/* Light theme */
+.membership-container.light {
+    background-color: #ffffff;
+    color: #333333;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Dark theme */
+.membership-container.dark {
+    background-color: #2c2c2c;
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.membership-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.membership-header {
+    text-align: center;
+}
+
+.membership-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.price {
+    margin-top: 8px;
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 4px;
+}
+
+.dollar {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.amount {
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.period {
+    font-size: 16px;
+    color: #666666;
+}
+
+.dark .period {
+    color: #a0a0a0;
+}
+
+.description {
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0;
+    color: #666666;
+}
+
+.dark .description {
+    color: #a0a0a0;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.features-list li {
+    font-size: 14px;
+    line-height: 1.5;
+    position: relative;
+    padding-left: 24px;
+}
+
+.features-list li::before {
+    content: "•";
+    position: absolute;
+    left: 8px;
+    color: #0066ff;
+}
+
+.dark .features-list li::before {
+    color: #3399ff;
+}
+
+.membership-button {
+    background-color: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.2s ease;
+}
+
+.membership-button:hover {
+    background-color: #0052cc;
+}
+
+.dark .membership-button {
+    background-color: #3399ff;
+}
+
+.dark .membership-button:hover {
+    background-color: #1a8cff;
+}

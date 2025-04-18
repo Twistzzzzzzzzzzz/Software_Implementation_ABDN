@@ -1,0 +1,70 @@
+.popular-container {
+    width: 100%;
+    max-width: 600px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.popular-container:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    position: relative;
+}
+
+.number {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    flex-shrink: 0;
+}
+
+.text {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #666;
+    flex-grow: 1;
+    margin-right: 40px;
+}
+
+.arrow-icon {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.popular-container:hover .arrow-icon {
+    opacity: 1;
+}
+
+/* 添加响应式设计 */
+@media (max-width: 480px) {
+    .popular-container {
+        padding: 16px;
+    }
+
+    .content {
+        gap: 12px;
+    }
+
+    .number {
+        font-size: 20px;
+    }
+
+    .text {
+        font-size: 14px;
+        margin-right: 32px;
+    }
+}

@@ -20,7 +20,7 @@ function Footer() {
                 </div>
                 <div className='icon-text'>
                     <img src={assets.Linkedin_icon}/>
-                    <a href="https://www.linkedin.com/">xxx@Linkedin.com</a>
+                    <a href="https://www.linkedin.com/">xxx@Linkedin.com'</a>
                 </div>
             </div>
             <div className='normal-container'>

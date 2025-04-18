@@ -1,0 +1,198 @@
+.body {
+    /*width: 100%;*/
+    min-height: 100vh;
+    background-color: #fafafa;
+    padding: 10px 20px 10px 10px;
+}
+
+.welcomContainer {
+    width: 100%;
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.welcome-content {
+    display: flex;
+    /*justify-content: space-between;*/
+    align-items: center;
+    /*gap: 50px;*/
+    padding: 10px;
+}
+
+.welcome-text {
+    flex: 1;
+    /*max-width: 600px;*/
+    width: 50%;
+}
+
+.welcome-text h1 {
+    font-size: 48px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 20px;
+    line-height: 1.2;
+}
+
+.welcome-text p {
+    font-size: 20px;
+    color: #666;
+    margin-bottom: 40px;
+    line-height: 1.5;
+}
+
+.contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.info-item img {
+    width: 35px;
+    height: 35px;
+}
+
+.info-item span {
+    font-size: 18px;
+    color: #333;
+}
+
+.learn-more {
+    background-color: #0066ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.learn-more:hover {
+    background-color: #0052cc;
+}
+
+.welcome-image {
+    flex: 1;
+    /*max-width: 600px;*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    padding: 10px;
+}
+
+.welcome-image img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    border-radius: 24px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .welcome-content {
+        flex-direction: column;
+    }
+
+    .welcome-text, .welcome-image {
+        max-width: 100%;
+    }
+
+    .welcome-text h1 {
+        font-size: 36px;
+    }
+
+    .welcome-text p {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    .body {
+        padding: 16px;
+    }
+
+    .welcomContainer {
+        padding: 20px;
+    }
+
+    .welcome-text h1 {
+        font-size: 32px;
+    }
+
+    .welcome-text p {
+        font-size: 16px;
+    }
+
+    .info-item span {
+        font-size: 16px;
+    }
+}
+
+.serviceContainer {
+    width: 100%;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.service-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.service-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 5px auto;
+}
+
+.service-title img {
+    width: 40px;
+    height: 40px;
+}
+
+.service-title h2 {
+    font-size: 32px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.service-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 10px;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+    .service-cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .service-cards {
+        grid-template-columns: 1fr;
+    }
+
+    .service-title h2 {
+        font-size: 24px;
+    }
+
+    .service-title img {
+        width: 32px;
+        height: 32px;
+    }
+}
