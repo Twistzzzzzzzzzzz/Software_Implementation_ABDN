@@ -15,6 +15,9 @@ import PopularIcon from './PopularIcon.png'
 import Like_icon from './Like.png'
 import Star_icon from './Star.png'
 import Share_icon from './Share.png'
+import Ai_avatar from './AiAvatar.png'
+import User_avatar from './UserAvatar.png'
+import Send_icon from './SendIcon.png'
 
 export const assets = {
     web_icon,
@@ -34,4 +37,7 @@ export const assets = {
     Like_icon,
     Star_icon,
     Share_icon,
+    Ai_avatar,
+    User_avatar,
+    Send_icon
 }

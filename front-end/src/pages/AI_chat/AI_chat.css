@@ -1,0 +1,128 @@
+.pageContainer {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffffff 0%, #e6f0ff 100%);
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.chatContainer {
+    width: 100%;
+    max-width: 1200px;
+    height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.messageContainer {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    scroll-behavior: smooth;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* 隐藏 Webkit 浏览器的滚动条 */
+.messageContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.sendMessageBox {
+    padding: 10px 20px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 800px;
+}
+
+.inputContainer {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 100px;
+    padding: 8px 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.messageInput {
+    flex-grow: 1;
+    border: none;
+    background: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+}
+
+.messageInput::placeholder {
+    color: #999;
+}
+
+.sendButton {
+    width: 50px;
+    background: none;
+    border: none;
+    padding: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease;
+    margin-right: 30px;
+}
+
+.sendButton:hover {
+    transform: scale(1.1);
+}
+
+.sendButton img {
+    width: 16px;
+    height: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .pageContainer {
+        padding: 10px;
+    }
+
+    .chatContainer {
+        height: calc(100vh - 20px);
+        border-radius: 16px;
+    }
+
+    .messageContainer {
+        padding: 15px;
+    }
+
+    .sendMessageBox {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .pageContainer {
+        padding: 0;
+    }
+
+    .chatContainer {
+        height: 100vh;
+        border-radius: 0;
+    }
+
+    .sendMessageBox {
+        padding: 10px;
+    }
+
+    .inputContainer {
+        border-radius: 20px;
+    }
+}
