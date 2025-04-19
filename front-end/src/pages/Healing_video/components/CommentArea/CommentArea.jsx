@@ -155,7 +155,7 @@ const CommentArea = () => {
     }
 
     return (
-        <div className="app">
+        <div className="comment-area">
             <div className="reply-navigation">
                 <ul className="nav-bar">
                     <li className="nav-title">

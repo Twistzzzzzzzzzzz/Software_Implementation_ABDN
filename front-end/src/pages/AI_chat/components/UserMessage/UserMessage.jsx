@@ -21,3 +21,4 @@ UserMessage.propTypes = {
 }
 
 export default UserMessage
+

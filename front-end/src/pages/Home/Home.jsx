@@ -2,6 +2,7 @@ import {assets} from "../../assets/assets.js"
 import ServiceCard from './components/serviceCard/serviceCard.jsx'
 import MembershipCard from "./components/membershipCard/membershipCard.jsx";
 import PopularCard from "./components/popularCard/popularCard.jsx";
+import ReactPlayer from 'react-player'
 import './Home.css'
 
 function Home() {
@@ -53,9 +54,13 @@ function Home() {
                             <h2>Today's healing video</h2>
                         </div>
                         <div className="video-player">
-                            <div className="play-button">
-                                <img src={assets.VideoPlayImage} alt="Play button" />
-                            </div>
+                            <ReactPlayer
+                                url={assets.Super_idol_video}
+                                width="100%"
+                                height="100%"
+                                controls={true}
+                                className="react-player"
+                            />
                         </div>
                         <div className="video-actions">
                             <button className="action-button">
