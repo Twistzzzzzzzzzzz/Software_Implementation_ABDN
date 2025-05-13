@@ -16,7 +16,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Mono<User> register(User user) {
-		return userRepository.save(user);
+		return userRepository.insertUser(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getReg_time())
+				.then(Mono.just(user))
+				.onErrorResume(e -> Mono.error(new RuntimeException("User Registration Failed")));
 	}
 
 	@Override

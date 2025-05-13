@@ -22,6 +22,7 @@ public class UserController {
 	@Operation(summary = "register", description = "register")
 	@PostMapping
 	public Mono<User> register(@RequestBody User user) {
+		System.out.println("register");
 		user.generateId();
 		return userService.register(user);
 	}
