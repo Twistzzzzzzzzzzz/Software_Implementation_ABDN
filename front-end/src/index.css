@@ -23,6 +23,9 @@
   --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   --input-bg: #f9f9f9;
   --input-focus-bg: #ffffff;
+  --z-index-navbar: 1000;
+  --z-index-footer: 100;
+  --z-index-modal: 2000;
 }
 
 /* 深色主题 */
@@ -42,22 +45,28 @@
 /* 主题切换过渡动画 */
 * {
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
+
 a:hover {
-  color: #535bf2;
+  color: var(--accent-hover);
 }
 
 body {
@@ -70,8 +79,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -88,16 +95,22 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.3s ease;
 }
+
 button:hover {
-  border-color: #646cff;
+  border-color: var(--accent-color);
+  background-color: var(--accent-color);
+  color: white;
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 @media (prefers-color-scheme: light) {
@@ -115,19 +128,27 @@ button:focus-visible {
 
 /* 响应式设计基础断点 */
 @media (max-width: 1200px) {
-  /* 大屏幕专用样式 */
+  :root {
+    font-size: 15px;
+  }
 }
 
 @media (max-width: 992px) {
-  /* 中等屏幕专用样式 */
+  :root {
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 768px) {
-  /* 小屏幕专用样式 */
+  :root {
+    font-size: 13px;
+  }
 }
 
 @media (max-width: 576px) {
-  /* 超小屏幕专用样式 */
+  :root {
+    font-size: 12px;
+  }
 }
 
 /* 减少动画 - 针对有前庭疾病或动作敏感的用户 */
