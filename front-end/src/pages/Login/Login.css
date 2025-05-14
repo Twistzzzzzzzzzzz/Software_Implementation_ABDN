@@ -60,7 +60,9 @@
 }
 
 .sign-in-button {
-    width: 100%;
+    width: 60%;
+    display: block;
+    margin: 0 auto 20px auto;
     padding: 15px;
     background-color: #4285f4;
     color: white;
@@ -70,7 +72,6 @@
     font-weight: 500;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-bottom: 20px;
 }
 
 .sign-in-button:hover {

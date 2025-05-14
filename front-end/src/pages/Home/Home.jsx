@@ -16,11 +16,11 @@ function Home() {
                         <div className="contact-info">
                             <div className="info-item">
                                 <img src={assets.Bell_icon} alt="notification" />
-                                <span>xxxxxxxxx</span>
+                                <span>There are all kinds of daily news here</span>
                             </div>
                             <div className="info-item">
                                 <img src={assets.Screen_icon} alt="screen" />
-                                <span>xxxxxxxxx</span>
+                                <span>There are also a wide variety of psychological treatment courses</span>
                             </div>
                         </div>
                         <button className="learn-more">Learn More</button>
