@@ -5,6 +5,9 @@
     padding: 15px 40px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .web_icon {
@@ -25,10 +28,12 @@
     font-weight: 500;
     cursor: pointer;
     color: #333;
+    transition: transform 0.2s ease;
 }
 
 .navbar ul li:hover {
     color: #0066ff;
+    transform: translateY(-2px);
 }
 
 .navbar ul li a {
@@ -62,6 +67,81 @@
 
 .navbar_right button:hover {
     background-color: #0052cc;
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 4px;
+}
+
+.hamburger div {
+    width: 25px;
+    height: 3px;
+    background-color: #333;
+    transition: all 0.3s ease;
+}
+
+@media screen and (max-width: 1024px) {
+    .navbar {
+        padding: 15px 20px;
+    }
+    
+    .navbar ul {
+        gap: 20px;
+    }
+    
+    .navbar ul li {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+    
+    .navbar ul {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .navbar ul.active {
+        display: flex;
+    }
+    
+    .navbar_right {
+        gap: 10px;
+    }
+    
+    .navbar_right button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Add loading skeleton styles */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }
 
 

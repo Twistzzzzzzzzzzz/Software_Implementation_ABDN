@@ -1,0 +1,244 @@
+.main-container {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 340px;
+    min-height: 100vh;
+    margin: auto;
+    overflow-y: auto;
+    background-image: url('../../../../assets/Test_main_bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.test-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 100px;
+    margin-top: 70px;
+    position: relative;
+    z-index: 1;
+}
+
+.main-container::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70%;
+    background-color: #4AB6B1;
+    border-radius: 100% 100% 0 0 / 20% 20% 0 0;
+    transform: translateY(20px);
+    z-index: -1;
+}
+
+.anxiety-test,
+.depression-test,
+.career-test {
+    width: 30%;
+    text-align: left;
+    padding: 0 20px;
+    margin-bottom: 50px;
+}
+
+h1 {
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-bottom: 30px;
+}
+
+li {
+    color: white;
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+button {
+    background-color: white;
+    color: #4AB6B1;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 40px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: auto;
+    display: inline-block;
+}
+
+button:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+}
+
+button a {
+    color: #4AB6B1;
+    text-decoration: none;
+    display: block;
+}
+
+/* Loading States */
+.skeleton-loading {
+    animation: loading 1.5s infinite;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    border-radius: 4px;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+    .main-container {
+        padding-top: 300px;
+    }
+    
+    h1 {
+        font-size: 30px;
+    }
+    
+    li {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .main-container {
+        flex-direction: column;
+        align-items: center;
+        padding-top: 250px;
+    }
+    
+    .main-container::before {
+        height: 90%;
+    }
+    
+    .anxiety-test,
+    .depression-test,
+    .career-test {
+        width: 80%;
+        margin-bottom: 40px;
+    }
+    
+    h1 {
+        text-align: center;
+    }
+    
+    button {
+        display: block;
+        margin: 0 auto;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .main-container {
+        padding-top: 200px;
+    }
+    
+    h1 {
+        font-size: 24px;
+    }
+    
+    .anxiety-test,
+    .depression-test,
+    .career-test {
+        width: 90%;
+    }
+    
+    button {
+        width: 100%;
+    }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.anxiety-test,
+.depression-test,
+.career-test {
+    animation: fadeIn 0.6s ease-out forwards;
+}
+
+.anxiety-test { animation-delay: 0.1s; }
+.depression-test { animation-delay: 0.3s; }
+.career-test { animation-delay: 0.5s; }
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .anxiety-test,
+    .depression-test,
+    .career-test {
+        animation: none;
+        transition: none;
+    }
+
+    button {
+        transition: none;
+    }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: less) {
+    .anxiety-test,
+    .depression-test,
+    .career-test {
+        background: white;
+        border: 2px solid #000;
+    }
+
+    button {
+        background-color: #000;
+        border: 2px solid #000;
+    }
+
+    button:hover {
+        background-color: #333;
+    }
+
+    li::before {
+        color: #000;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .main-container {
+        display: block;
+    }
+
+    .anxiety-test,
+    .depression-test,
+    .career-test {
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+
+    button {
+        display: none;
+    }
+}

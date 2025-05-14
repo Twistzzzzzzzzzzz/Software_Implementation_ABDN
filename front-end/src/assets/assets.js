@@ -1,5 +1,7 @@
 import web_icon from './web_icon.jpg'
 import Personal_icon from './Personal.jpg'
+import Test_main_bg from './Test_main_bg.jpg'
+import Test_answer_bg from './Test_answer_bg.jpg'
 import Ins_icon from './InsIcon.png'
 import Linkedin_icon from './LinkedinIcon.png'
 import Twitter_icon from './TwitterIcon.png'
@@ -19,10 +21,14 @@ import Ai_avatar from './AiAvatar.png'
 import User_avatar from './UserAvatar.png'
 import Send_icon from './SendIcon.png'
 import Super_idol_video from './Video/superIdol.mp4'
+import Super_idol_sex from './Video/SuperIdolSex.mp4'
+
 
 export const assets = {
     web_icon,
     Personal_icon,
+    Test_main_bg,
+    Test_answer_bg,
     Ins_icon,
     Twitter_icon,
     Youtube_icon,
@@ -41,5 +47,6 @@ export const assets = {
     Ai_avatar,
     User_avatar,
     Send_icon,
-    Super_idol_video
+    Super_idol_video,
+    Super_idol_sex
 }

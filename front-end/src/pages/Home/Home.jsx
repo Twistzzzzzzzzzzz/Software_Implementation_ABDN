@@ -55,7 +55,7 @@ function Home() {
                         </div>
                         <div className="video-player">
                             <ReactPlayer
-                                url={assets.Super_idol_video}
+                                url={assets.Super_idol_sex}
                                 width="100%"
                                 height="100%"
                                 controls={true}

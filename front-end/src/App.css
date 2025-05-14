@@ -5,3 +5,61 @@
     display: flex;
     flex-direction: column;
 }
+
+#root {
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    overflow-y: auto;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+}
+
+/*.app {*/
+/*    width: 100%;*/
+/*    min-height: 100vh;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    overflow-y: auto;*/
+/*}*/
+
+/*!* 确保内容区域可以滚动，占满可用空间 *!*/
+/*.app > div:not(.navbar) {*/
+/*    flex: 1;*/
+/*    position: relative;*/
+/*    overflow: auto;*/
+/*}*/
+
+/* 加载状态样式 */
+.page-loading {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #4285f4;
+    animation: spin 1s ease-in-out infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
