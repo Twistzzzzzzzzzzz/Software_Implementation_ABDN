@@ -4,16 +4,39 @@ import './Login.css';
 import { assets } from '../../assets/assets';
 
 export default function Login() {
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [apiError, setApiError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // You can add actual authentication logic here
-        console.log('Login attempt with:', email, password);
-        // For now, simply navigate to home page on submit
-        navigate('/');
+        setApiError('');
+        setLoading(true);
+        try {
+            const response = await fetch('http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+            const data = await response.json();
+            if (response.ok && data.code === 0) {
+                // 登录成功，保存 access_token 并跳转首页
+                localStorage.setItem('access_token', data.data?.access_token || '');
+                // 保存 refresh_token
+                // localStorage.setItem('refresh_token', data.data?.refresh_token || '');
+                navigate('/');
+            } else {
+                setApiError(data.message || 'Login failed.');
+            }
+        } catch (err) {
+            setApiError('Network error, please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -22,20 +45,18 @@ export default function Login() {
                 <div className="logo-container">
                     <img src={assets.web_icon} alt="Psychology Logo" className="logo" />
                 </div>
-                
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="username">Username</label>
                         <input 
-                            type="email" 
-                            id="email" 
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            type="text" 
+                            id="username" 
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             placeholder="Value"
                             required
                         />
                     </div>
-                    
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
                         <input 
@@ -47,9 +68,10 @@ export default function Login() {
                             required
                         />
                     </div>
-                    
-                    <button type="submit" className="sign-in-button">Sign In</button>
-                    
+                    {apiError && <p className="error-message">{apiError}</p>}
+                    <button type="submit" className="sign-in-button" disabled={loading}>
+                        {loading ? 'Signing in...' : 'Sign In'}
+                    </button>
                     <div className="links-container">
                         <div className="forgot-link">
                             <Link to="/forgot-password">Forgot password?</Link>
