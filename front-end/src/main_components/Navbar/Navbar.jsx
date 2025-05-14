@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react'
 import { assets } from '../../assets/assets'
 import './Navbar.css'
 import { Link, useNavigate } from 'react-router-dom'
+import Profile from '../Profile/Profile'
 
 // Lazy load images
 const LazyImage = lazy(() => import('../LazyImage/LazyImage'))
@@ -9,6 +10,7 @@ const LazyImage = lazy(() => import('../LazyImage/LazyImage'))
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)
     const [imagesLoaded, setImagesLoaded] = useState(false)
+    const [showProfile, setShowProfile] = useState(false)
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -32,6 +34,14 @@ export default function Navbar() {
 
     const handleLoginClick = () => {
         navigate('/login');
+    }
+
+    const handleProfileClick = () => {
+        setShowProfile(true);
+    }
+
+    const handleCloseProfile = () => {
+        setShowProfile(false);
     }
 
     return (
@@ -62,13 +72,16 @@ export default function Navbar() {
             <div className="navbar_right">
                 <Suspense fallback={<div className="skeleton" style={{ width: '35px', height: '35px' }}></div>}>
                     {imagesLoaded ? (
-                        <LazyImage src={assets.Personal_icon} alt="Personal Icon" className="personal_icon" />
+                        <span onClick={handleProfileClick} style={{display:'inline-block'}}>
+                            <LazyImage src={assets.Personal_icon} alt="Personal Icon" className="personal_icon" />
+                        </span>
                     ) : (
                         <div className="skeleton" style={{ width: '35px', height: '35px' }}></div>
                     )}
                 </Suspense>
                 <button onClick={handleLoginClick}>Login</button>
             </div>
+            {showProfile && <Profile onClose={handleCloseProfile} />}
         </div>
     )
 }
