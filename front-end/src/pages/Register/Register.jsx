@@ -9,6 +9,8 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const [apiError, setApiError] = useState('');
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const validateForm = () => {
@@ -21,14 +23,31 @@ export default function Register() {
         return true;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        if (validateForm()) {
-            // You can add actual registration logic here
-            console.log('Registration attempt with:', email, username, password);
-            // For now, simply navigate to login page on submit
-            navigate('/login');
+        setApiError('');
+        if (!validateForm()) return;
+        setLoading(true);
+        try {
+            const response = await fetch('http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password, email }),
+            });
+            const data = await response.json();
+            if (response.ok && data.code === '200') {
+                // 注册成功，跳转到登录页
+                alert('Registration successful! Please log in.');
+                navigate('/login');
+            } else {
+                setApiError(data.message || 'Registration failed.');
+            }
+        } catch (err) {
+            setApiError('Network error, please try again.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -89,7 +108,11 @@ export default function Register() {
                         {passwordError && <p className="error-message">{passwordError}</p>}
                     </div>
                     
-                    <button type="submit" className="sign-in-button">Sign Up</button>
+                    {apiError && <p className="error-message">{apiError}</p>}
+                    
+                    <button type="submit" className="sign-in-button" disabled={loading}>
+                        {loading ? 'Registering...' : 'Sign Up'}
+                    </button>
                     
                     <div className="links-container">
                         <div className="login-link">
