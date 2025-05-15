@@ -3,11 +3,20 @@ import UserMessage from "./components/UserMessage/UserMessage.jsx";
 import { assets } from "../../assets/assets.js";
 import './AI_chat.css';
 import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function AI_chat() {
     // const message_example = "在未来的城市里，一个名叫「芙露」的人工智能被赋予了情感。她不再只是冰冷的程序，而是拥有温柔与好奇心的存在。一天，她悄悄溜出实验室，第一次看到了真实的阳光。她站在人群中微笑，而人们也开始回以善意的目光。"
     const messageContainerRef = useRef(null);
+    const topRef = useRef(null);
+    const location = useLocation();
     
+    useEffect(() => {
+        if (location.state && location.state.scrollToTop && topRef.current) {
+            topRef.current.scrollIntoView({ behavior: 'auto' });
+        }
+    }, [location]);
+
     useEffect(() => {
         const handleWheel = (e) => {
             const messageContainer = messageContainerRef.current;
@@ -35,6 +44,7 @@ export default function AI_chat() {
 
     return (
         <div className='pageContainer'>
+            <div ref={topRef}></div>
             <div className='chatContainer'>
                 <div className='messageContainer' ref={messageContainerRef}>
                     <UserMessage message="我不知道该怎么开始...最近连呼吸都觉得累。昨天我看着窗外的阳光，明明那么灿烂，却感觉和我隔着一层厚厚的玻璃。" />

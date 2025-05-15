@@ -1,17 +1,8 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
-import { lazy, Suspense, useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { lazy, Suspense, useState} from 'react'
 import './App.css'
 import Navbar from './main_components/Navbar/Navbar'
 import Footer from './main_components/Footer/Footer'
-
-// ScrollToTop 组件
-function ScrollToTop() {
-    const { pathname } = useLocation();
-    useEffect(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    }, [pathname]);
-    return null;
-}
 
 // 删除所有直接导入的组件（如 Home、AI_chat 等）
 
@@ -43,7 +34,6 @@ function App() {
             <BrowserRouter>
                 <div className='app'>
                     <Navbar/>
-                    <ScrollToTop />
                     {/* 添加 Suspense 包裹路由内容 */}
                     <Suspense fallback={<LoadingFallback />}>
                         <Routes>

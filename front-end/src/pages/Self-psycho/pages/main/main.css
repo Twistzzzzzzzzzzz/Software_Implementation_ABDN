@@ -7,7 +7,7 @@
     padding-top: 340px;
     min-height: 100vh;
     margin: auto;
-    overflow-y: auto;
+    /* overflow-y: auto; */
     background-image: url('../../../../assets/Test_main_bg.jpg');
     background-size: cover;
     background-position: center;

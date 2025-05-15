@@ -2,9 +2,18 @@ import ReactPlayer from 'react-player'
 import { assets } from '../../assets/assets'
 import './Healing_vedio.css'
 import CommentArea from "./components/CommentArea/CommentArea.jsx";
+import { useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export default function Healing_video({ videoTitle, videoDescription }) {
     const videoUrl = assets.Super_idol_video
+    const topRef = useRef(null);
+    const location = useLocation();
+    useEffect(() => {
+        if (location.state && location.state.scrollToTop && topRef.current) {
+            topRef.current.scrollIntoView({ behavior: 'auto' });
+        }
+    }, [location]);
 
     // 示例数据
     const defaultVideoTitle = "给我们的组合起个名！"
@@ -16,6 +25,7 @@ export default function Healing_video({ videoTitle, videoDescription }) {
 
     return (
         <div className="video-page">
+            <div ref={topRef}></div>
             <div className='mainContent'>
                 <div className="video-container">
                     <div className="video-info">

@@ -4,17 +4,35 @@ import MembershipCard from "./components/membershipCard/membershipCard.jsx";
 import PopularCard from "./components/popularCard/popularCard.jsx";
 import ReactPlayer from 'react-player'
 import './Home.css'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useRef, useEffect } from 'react';
 
 function Home() {
     const navigate = useNavigate();
-    // 封装跳转并滚动顶部
+    const location = useLocation();
+    const topRef = useRef(null);
+    const serviceRef = useRef(null);
+
+    // 跳转并传递scrollToTop信号
     const handleNavigate = (path) => {
-        navigate(path);
-        window.scrollTo({ top: 0, behavior: 'instant' });
+        navigate(path, { state: { scrollToTop: true } });
     };
+    // Learn More 滚动到服务区
+    const handleLearnMore = () => {
+        if (serviceRef.current) {
+            serviceRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+    // 页面加载后检测是否需要滚动到顶部
+    useEffect(() => {
+        if (location.state && location.state.scrollToTop && topRef.current) {
+            topRef.current.scrollIntoView({ behavior: 'auto' });
+        }
+    }, [location]);
+
     return (
         <div className='body'>
+            <div ref={topRef}></div>
             <div className='welcomContainer'>
                 <div className="welcome-content">
                     <div className="welcome-text">
@@ -30,7 +48,7 @@ function Home() {
                                 <span>There are also a wide variety of psychological treatment courses</span>
                             </div>
                         </div>
-                        <button className="learn-more">Learn More</button>
+                        <button className="learn-more" onClick={handleLearnMore}>Learn More</button>
                     </div>
                     <div className="welcome-image">
                         <img src={assets.Home_image} alt="Welcome illustration" />
@@ -38,7 +56,7 @@ function Home() {
                 </div>
             </div>
             <hr/>
-            <div className='serviceContainer'>
+            <div className='serviceContainer' ref={serviceRef}>
                 <div className="service-header">
                     <div className="service-title">
                         <img src={assets.Cloud_icon} alt="Cloud icon" />

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import './Community.css';
 import { assets } from '../../assets/assets';
 
@@ -281,6 +282,14 @@ export default function Community() {
         debouncedCreatePost();
     };
     
+    const topRef = useRef(null);
+    const location = useLocation();
+    useEffect(() => {
+        if (location.state && location.state.scrollToTop && topRef.current) {
+            topRef.current.scrollIntoView({ behavior: 'auto' });
+        }
+    }, [location]);
+    
     // 加载状态
     if (isLoading) {
         return (
@@ -295,6 +304,7 @@ export default function Community() {
     
     return (
         <div className="community-container" ref={postsContainerRef}>
+            <div ref={topRef}></div>
             <div className="community-header">
                 <h1>心理社区</h1>
                 <p>与他人分享你的想法、经验和支持</p>
