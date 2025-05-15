@@ -6,8 +6,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Mono;
 
 public interface UserRepository extends ReactiveCrudRepository<User, String> {
+	Mono<User> findByUsername(String username);
 
-
-	@Query("INSERT INTO user (id, username, password, email, register_time) VALUES (:id, :username, :password, :email, :reg_time)")
-	Mono<Void> insertUser(String id, String username, String password, String email, String reg_time);
+	Mono<User> findById(String id);
 }
