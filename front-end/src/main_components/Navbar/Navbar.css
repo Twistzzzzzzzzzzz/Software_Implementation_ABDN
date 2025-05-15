@@ -44,16 +44,28 @@
 .navbar_right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 12px;
     cursor: pointer;
     justify-content: center;
 }
-.navbar_right img {
+
+.navbar_right img, .navbar_right .personal_icon {
     height: 35px;
-    cursor: pointer;
+    width: 35px;
+    object-fit: cover;
+    display: block;
+    vertical-align: middle;
+}
+
+.navbar_right span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
 }
 
 .navbar_right button {
+    margin: auto;
     background-color: #0066ff;
     color: white;
     border: none;
@@ -62,7 +74,10 @@
     font-size: 16px;
     font-weight: 500;
     cursor: pointer;
-    
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    height: 40px;
 }
 
 .navbar_right button:hover {

@@ -24,7 +24,7 @@ export default function Profile({ onClose }) {
                     setAvatar(data.data.avatar || null);
                 }
             } catch (e) {
-                // 可选：错误处理
+                // 错误处理
             } finally {
                 setLoading(false);
             }
@@ -63,10 +63,10 @@ export default function Profile({ onClose }) {
                     update_avater: update_avatar || null,
                 }),
             });
-            // 可选：成功提示
+            // 成功提示
             onClose();
         } catch (e) {
-            // 可选：错误处理
+            // 错误处理
         } finally {
             setSaving(false);
         }

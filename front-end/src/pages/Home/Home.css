@@ -177,6 +177,7 @@
     width: 80%;
     max-width: 1400px;
     margin: 0 auto;
+    align-items: stretch;
 }
 
 /* 响应式设计 */

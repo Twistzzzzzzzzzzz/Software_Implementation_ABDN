@@ -39,10 +39,30 @@ function Home() {
                     </div>
                 </div>
                 <div className="service-cards">
-                    <ServiceCard />
-                    <ServiceCard />
-                    <ServiceCard />
-                    <ServiceCard />
+                    <ServiceCard
+                        img={assets.Service_card}
+                        title="AI Chat"
+                        desc="Chat with our advanced AI for psychological support and advice."
+                        buttonText="Begin Chat"
+                    />
+                    <ServiceCard
+                        img={assets.Test_main_bg}
+                        title="Self Test"
+                        desc="Take a variety of psychological self-assessment tests."
+                        buttonText="Start Test"
+                    />
+                    <ServiceCard
+                        img={assets.VideoPlayImage}
+                        title="Healing Videos"
+                        desc="Watch curated videos to help you relax and heal."
+                        buttonText="Watch Now"
+                    />
+                    <ServiceCard
+                        img={assets.PopularIcon}
+                        title="Healing Message Wall"
+                        desc="Explore trending topics and discussions in our community."
+                        buttonText="Explore"
+                    />
                 </div>
             </div>
             <hr/>

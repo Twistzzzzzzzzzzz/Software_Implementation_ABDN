@@ -1,27 +1,30 @@
 .container {
     width: 100%;
-    max-width: 300px;
-    min-width: 250px;
+    max-width: 400px;
+    min-width: 300px;
     background-color: var(--bg-primary);
-    border-radius: 16px;
+    border-radius: 20px;
     /*box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);*/
     display: flex;
     flex-direction: column;
     align-items: center;
     margin: 0 auto;
-    padding: 15px;
+    padding: 24px;
     box-sizing: border-box;
+    height: 100%;
 }
 
 .cardContainer {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 18px;
     box-shadow: var(--card-shadow);
-    border-radius: 15px;
+    border-radius: 18px;
     width: 100%;
     background-color: var(--bg-secondary);
     overflow: hidden;
+    flex: 1 1 auto;
+    height: 100%;
 }
 
 .imgContainer {
@@ -51,36 +54,38 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    padding: 15px;
+    gap: 12px;
+    padding: 20px;
     box-sizing: border-box;
+    flex: 1 1 auto;
 }
 
 .textContainer b {
-    font-size: clamp(16px, 4vw, 18px);
+    font-size: clamp(20px, 4vw, 24px);
     color: var(--text-primary);
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .normalText {
-    font-size: clamp(12px, 3vw, 14px);
+    font-size: clamp(15px, 3vw, 17px);
     color: var(--text-secondary);
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 button {
     background-color: var(--accent-color);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 12px;
-    font-size: clamp(14px, 3vw, 15px);
-    font-weight: 500;
+    font-size: clamp(15px, 2.5vw, 16px);
+    font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     width: 60%;
-    margin: 20px auto;
-    max-width: 200px;
+    margin: 18px auto 0 auto;
+    max-width: 180px;
+    min-height: 38px;
 }
 
 button:hover {
@@ -88,18 +93,18 @@ button:hover {
     transform: translateY(-2px);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .container {
-        margin: 0 auto;
-        padding: 10px;
-    }
-    
-    .textContainer {
+        max-width: 98vw;
+        min-width: 0;
         padding: 12px;
     }
-    
+    .textContainer {
+        padding: 14px;
+    }
     button {
-        width: 80%;
-        margin: 15px auto;
+        width: 90%;
+        margin: 14px auto 0 auto;
+        max-width: 98vw;
     }
 }

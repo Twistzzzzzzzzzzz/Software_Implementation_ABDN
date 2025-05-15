@@ -1,21 +1,20 @@
-import {assets} from "../../../../assets/assets.js"
 import './serviceCard.css'
 
-function ServiceCard() {
+function ServiceCard({ img, title, desc, buttonText }) {
     return (
         <div className='container'>
             <div className='cardContainer'>
                 <div className='imgContainer'>
-                    <img src={assets.Service_card} alt="Service Card" />
+                    <img src={img} alt={title} />
                 </div>
                 <div className='textContainer'>
-                    <b>Free AI chat</b>
+                    <b>{title}</b>
                     <span className='normalText'>
-                        Body text for whatever you'd like to say. Add main takeaway points, quotes, anecdotes, or even a very very short story.
+                        {desc}
                     </span>
                 </div>
             </div>
-            <button>Begin</button>
+            <button>{buttonText}</button>
         </div>
     )
 }
