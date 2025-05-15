@@ -15,7 +15,7 @@ const sampleComments = [
             avatar: assets.User_avatar,
             uname: '张三',
         },
-        content: '这个视频很有帮助，让我学到了很多！',
+        content: '这个视频很有帮助，让我学到了很多！这个视频很有帮助，让我学到了很多！这个视频很有帮助，让我学到了很多！',
         ctime: '05-20 14:30',
         like: 128
     },

@@ -1,5 +1,5 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { lazy, Suspense, useState} from 'react'
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { lazy, Suspense, useState } from 'react'
 import './App.css'
 import Navbar from './main_components/Navbar/Navbar'
 import Footer from './main_components/Footer/Footer'
@@ -26,35 +26,38 @@ const LoadingFallback = () => (
     </div>
 )
 
-function App() {
-    const [count, setCount] = useState(0)
-
+function AppContent() {
+    const location = useLocation();
+    const isHealingVideo = location.pathname === '/healing-vedio';
     return (
-        <>
-            <BrowserRouter>
-                <div className='app'>
-                    <Navbar/>
-                    {/* 添加 Suspense 包裹路由内容 */}
-                    <Suspense fallback={<LoadingFallback />}>
-                        <Routes>
-                            <Route path='/' element={<Home />}></Route>
-                            <Route path='/ai-chat' element={<AI_chat />}></Route>
-                            <Route path='/healing-vedio' element={<Healing_video />}></Route>
-                            <Route path='/self-psycho' element={<SelfPsycho />}></Route>
-                            <Route path='/self-psycho/anxiety' element={<Answer_page />}></Route>
-                            <Route path='/self-psycho/depression' element={<Answer_page />}></Route>
-                            <Route path='/self-psycho/career' element={<Answer_page />}></Route>
-                            <Route path='/contact' element={<Contact />}></Route>
-                            <Route path='/community' element={<Community />}></Route>
-                            <Route path='/self-psycho/report' element={<Report />}></Route>
-                            <Route path='/login' element={<Login />}></Route>
-                            <Route path='/register' element={<Register />}></Route>
-                        </Routes>
-                    </Suspense>
-                    <Footer/>
-                </div>
-            </BrowserRouter>
-        </>
+        <div className='app'>
+            <Navbar />
+            <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                    <Route path='/' element={<Home />}></Route>
+                    <Route path='/ai-chat' element={<AI_chat />}></Route>
+                    <Route path='/healing-vedio' element={<Healing_video />}></Route>
+                    <Route path='/self-psycho' element={<SelfPsycho />}></Route>
+                    <Route path='/self-psycho/anxiety' element={<Answer_page />}></Route>
+                    <Route path='/self-psycho/depression' element={<Answer_page />}></Route>
+                    <Route path='/self-psycho/career' element={<Answer_page />}></Route>
+                    <Route path='/contact' element={<Contact />}></Route>
+                    <Route path='/community' element={<Community />}></Route>
+                    <Route path='/self-psycho/report' element={<Report />}></Route>
+                    <Route path='/login' element={<Login />}></Route>
+                    <Route path='/register' element={<Register />}></Route>
+                </Routes>
+            </Suspense>
+            {!isHealingVideo && <Footer />}
+        </div>
+    )
+}
+
+function App() {
+    return (
+        <BrowserRouter>
+            <AppContent />
+        </BrowserRouter>
     )
 }
 
