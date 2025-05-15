@@ -13,8 +13,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5Dialect
 
-
-
 server:
   port: 8080
 springdoc:
@@ -28,3 +26,10 @@ springdoc:
     - group: 'default'
       paths-to-match: '/**'
       packages-to-scan: com.xiaominfo.knife4j.demo.web
+
+jwt:
+  secret: "your-256-bit-secret-key-must-be-at-least-32-characters-long"
+  access-token:
+    expiration: 3600000
+  refresh-token:
+    expiration: 2592000000
