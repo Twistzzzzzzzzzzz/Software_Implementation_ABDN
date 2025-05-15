@@ -87,6 +87,15 @@
     line-height: 1.5;
     position: relative;
     padding-left: 24px;
+    color: #333333;
+}
+
+.membership-container.light .features-list li {
+    color: #333333;
+}
+
+.membership-container.dark .features-list li {
+    color: #ffffff;
 }
 
 .features-list li::before {

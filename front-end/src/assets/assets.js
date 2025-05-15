@@ -22,6 +22,10 @@ import User_avatar from './UserAvatar.png'
 import Send_icon from './SendIcon.png'
 import Super_idol_video from './Video/superIdol.mp4'
 import Super_idol_sex from './Video/SuperIdolSex.mp4'
+import ServiceCard1 from "./ServiceCard1.jpg";
+import ServiceCard2 from "./ServiceCard2.jpg";
+import ServiceCard3 from "./ServiceCard3.jpg";
+import ServiceCard4 from "./ServiceCard4.jpg";
 
 
 export const assets = {
@@ -48,5 +52,9 @@ export const assets = {
     User_avatar,
     Send_icon,
     Super_idol_video,
-    Super_idol_sex
+    Super_idol_sex,
+    ServiceCard1,
+    ServiceCard2,
+    ServiceCard3,
+    ServiceCard4
 }

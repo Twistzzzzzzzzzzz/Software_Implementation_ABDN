@@ -4,8 +4,15 @@ import MembershipCard from "./components/membershipCard/membershipCard.jsx";
 import PopularCard from "./components/popularCard/popularCard.jsx";
 import ReactPlayer from 'react-player'
 import './Home.css'
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
+    const navigate = useNavigate();
+    // 封装跳转并滚动顶部
+    const handleNavigate = (path) => {
+        navigate(path);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+    };
     return (
         <div className='body'>
             <div className='welcomContainer'>
@@ -40,28 +47,32 @@ function Home() {
                 </div>
                 <div className="service-cards">
                     <ServiceCard
-                        img={assets.Service_card}
+                        img={assets.ServiceCard1}
                         title="AI Chat"
-                        desc="Chat with our advanced AI for psychological support and advice."
+                        desc="Engage in real-time conversations with our AI to receive instant psychological support, guidance, and a listening ear whenever you need it."
                         buttonText="Begin Chat"
+                        onClick={() => handleNavigate('/ai-chat')}
                     />
                     <ServiceCard
-                        img={assets.Test_main_bg}
+                        img={assets.ServiceCard2}
                         title="Self Test"
-                        desc="Take a variety of psychological self-assessment tests."
+                        desc="Assess your mental well-being with a variety of self-guided psychological tests and gain insights into your emotional health."
                         buttonText="Start Test"
+                        onClick={() => handleNavigate('/self-psycho')}
                     />
                     <ServiceCard
-                        img={assets.VideoPlayImage}
+                        img={assets.ServiceCard3}
                         title="Healing Videos"
-                        desc="Watch curated videos to help you relax and heal."
+                        desc="Relax and rejuvenate with our curated collection of healing and mindfulness videos designed to support your mental wellness."
                         buttonText="Watch Now"
+                        onClick={() => handleNavigate('/healing-vedio')}
                     />
                     <ServiceCard
-                        img={assets.PopularIcon}
+                        img={assets.ServiceCard4}
                         title="Healing Message Wall"
-                        desc="Explore trending topics and discussions in our community."
+                        desc="Share your thoughts, read uplifting messages, and connect with a supportive community on our interactive message wall."
                         buttonText="Explore"
+                        onClick={() => handleNavigate('/contact')}
                     />
                 </div>
             </div>
@@ -126,4 +137,3 @@ function Home() {
 }
 
 export default Home
-

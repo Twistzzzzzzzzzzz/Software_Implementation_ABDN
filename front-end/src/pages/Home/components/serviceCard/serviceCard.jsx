@@ -1,6 +1,6 @@
 import './serviceCard.css'
 
-function ServiceCard({ img, title, desc, buttonText }) {
+function ServiceCard({ img, title, desc, buttonText, onClick }) {
     return (
         <div className='container'>
             <div className='cardContainer'>
@@ -14,7 +14,7 @@ function ServiceCard({ img, title, desc, buttonText }) {
                     </span>
                 </div>
             </div>
-            <button>{buttonText}</button>
+            <button onClick={onClick}>{buttonText}</button>
         </div>
     )
 }
