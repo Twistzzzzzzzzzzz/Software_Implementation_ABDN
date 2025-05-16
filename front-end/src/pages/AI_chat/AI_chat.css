@@ -1,24 +1,26 @@
 .pageContainer {
     width: 100%;
-    min-height: 90vh;
-    height: 90%;
+    min-height: 60vh;
+    height: 60%;
     background: linear-gradient(135deg, #ffffff 0%, #e6f0ff 100%);
     display: flex;
     justify-content: center;
     padding: 20px;
     overflow-y: auto;
+    position: relative;
 }
 
 .chatContainer {
     width: 100%;
     max-width: 1200px;
-    height: calc(100vh - 40px);
+    height: calc(100vh - 115px);
     display: flex;
     flex-direction: column;
     background: transparent;
     border-radius: 20px;
     overflow: hidden;
     padding-bottom: 80px; /* 留出底部输入框空间 */
+    position: relative;
 }
 
 .messageContainer {
@@ -147,5 +149,66 @@
         border-radius: 20px;
         max-width: 99vw;
     }
+}
+
+.sendMessageBox-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    min-width: 800px;
+    max-width: 800px;
+    background: transparent;
+    box-shadow: none;
+    z-index: 10;
+    justify-content: center;
+    padding: 0;
+    max-height: 100px;
+    margin-top: 20px;
+}
+
+.sendMessageBox-center .inputContainer {
+    max-width: 420px;
+    min-width: 320px;
+    width: 100%;
+    border-radius: 32px;
+    padding: 12px 20px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+
+.sendMessageBox-center .messageInput {
+    font-size: 16px;
+    padding: 10px 12px;
+}
+
+.ai-chat-welcome {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100vw;
+    z-index: 5;
+    pointer-events: none;
+}
+.ai-chat-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.ai-chat-desc {
+    font-size: 16px;
+    color: #444;
+    margin-bottom: 8px;
+    text-align: center;
+    max-width: 420px;
+    line-height: 1.7;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.04);
 }
 
