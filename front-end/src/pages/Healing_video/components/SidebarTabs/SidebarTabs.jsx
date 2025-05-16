@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import VideoItem from '../VideoItem/VideoItem.jsx';
 import './SidebarTabs.css';
 
-export default function SidebarTabs({ videoTitle, videoDescription, videoItems, children }) {
+export default function SidebarTabs({ videoTitle, videoDescription, videoItems, children, onVideoSelect, selectedVideoId }) {
     const [tab, setTab] = useState('intro');
     return (
         <div className="sidebar-tabs">
@@ -29,8 +29,9 @@ export default function SidebarTabs({ videoTitle, videoDescription, videoItems, 
                                     key={item.id}
                                     previewImg={item.previewImg}
                                     title={item.title}
-                                    onClick={item.onClick}
+                                    onClick={() => onVideoSelect && onVideoSelect(item)}
                                     small
+                                    isActive={selectedVideoId === item.id}
                                 />
                             ))}
                         </div>

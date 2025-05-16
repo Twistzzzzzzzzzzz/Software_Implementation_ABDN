@@ -17,37 +17,73 @@ export default function Healing_video({ videoTitle, videoDescription }) {
         }
     }, [location]);
 
-    // 示例数据
-    const videoList = [
-        {
-            id: 1,
-            previewImg: assets.ServiceCard1,
-            title: '给我们的组合起个名！',
-        },
-        {
-            id: 2,
-            previewImg: assets.ServiceCard2,
-            title: '心理治愈短片',
-        },
-        {
-            id: 3,
-            previewImg: assets.ServiceCard3,
-            title: '冥想放松音乐',
-        },
-        {
-            id: 4,
-            previewImg: assets.ServiceCard4,
-            title: '正念呼吸练习',
-        },
-    ];
-    const [videoItems] = useState(videoList.slice(0, 4));
+    // 视频列表请求与图片加载
+    const [videoItems, setVideoItems] = useState([]);
+    const [selectedVideo, setSelectedVideo] = useState(null);
+    const [comments, setComments] = useState([]);
+    const [videoDetail, setVideoDetail] = useState({});
 
-    const defaultVideoTitle = "给我们的组合起个名！"
-    const defaultVideoDescription = "田一鸣让来自美国的speed露出了中国行成都站最开心的笑容。\n" +
-        "组合名为：逗美尼的田"
+    useEffect(() => {
+        async function fetchVideos() {
+            try {
+                const res = await fetch('http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/resources/video?size=2');
+                const data = await res.json();
+                if (data && data.data && Array.isArray(data.data.items)) {
+                    const itemsWithImg = await Promise.all(
+                        data.data.items.map(async (item) => {
+                            let previewImg = '';
+                            try {
+                                const imgRes = await fetch(item.pictrue_address);
+                                const imgBlob = await imgRes.blob();
+                                previewImg = URL.createObjectURL(imgBlob);
+                            } catch (e) {
+                                previewImg = assets.ServiceCard1; // fallback
+                            }
+                            return {
+                                id: item.video_id,
+                                title: item.title,
+                                previewImg,
+                            };
+                        })
+                    );
+                    setVideoItems(itemsWithImg);
+                    if (itemsWithImg.length > 0) {
+                        setSelectedVideo(itemsWithImg[0]);
+                    }
+                }
+            } catch (e) {
+                setVideoItems([]);
+            }
+        }
+        fetchVideos();
+    }, []);
 
-    const displayTitle = videoTitle || defaultVideoTitle
-    const displayDescription = videoDescription || defaultVideoDescription
+    // 获取选中视频详情和评论
+    useEffect(() => {
+        async function fetchVideoDetail() {
+            if (!selectedVideo) return;
+            try {
+                const res = await fetch(`http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/resources/video/${selectedVideo.id}`);
+                const data = await res.json();
+                if (data && data.data) {
+                    setVideoDetail(data.data);
+                    setComments(data.data.comment || []);
+                }
+            } catch (e) {
+                setComments([]);
+                setVideoDetail({});
+            }
+        }
+        fetchVideoDetail();
+    }, [selectedVideo]);
+
+    const handleVideoSelect = (video) => {
+        setSelectedVideo(video);
+    };
+
+    const displayTitle = videoDetail.title || videoTitle || '';
+    const displayDescription = (typeof videoDetail.description === 'string' ? videoDetail.description : '') || videoDescription || '';
+    const displayUrl = videoDetail.content_address || videoUrl;
 
     return (
         <div className="video-page">
@@ -57,7 +93,7 @@ export default function Healing_video({ videoTitle, videoDescription }) {
                     <div className="video-container">
                         <div className="player-wrapper">
                             <ReactPlayer
-                                url={videoUrl}
+                                url={displayUrl}
                                 width="100%"
                                 height="100%"
                                 controls={true}
@@ -84,8 +120,10 @@ export default function Healing_video({ videoTitle, videoDescription }) {
                     videoTitle={displayTitle}
                     videoDescription={displayDescription}
                     videoItems={videoItems}
+                    onVideoSelect={handleVideoSelect}
+                    selectedVideoId={selectedVideo?.id}
                 >
-                    <CommentArea />
+                    <CommentArea comments={comments} />
                 </SidebarTabs>
             </div>
         </div>

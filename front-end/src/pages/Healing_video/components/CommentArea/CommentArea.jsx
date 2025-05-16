@@ -5,43 +5,44 @@ import _ from 'lodash'
 import classNames from 'classnames'
 import { v4 as uuidV4 } from 'uuid'
 import dayjs from 'dayjs'
+import PropTypes from 'prop-types'
 
 // 样例数据
-const sampleComments = [
-    {
-        rpid: '1',
-        user: {
-            uid: '10001',
-            avatar: assets.User_avatar,
-            uname: '张三',
-        },
-        content: '这个视频很有帮助，让我学到了很多！这个视频很有帮助，让我学到了很多！这个视频很有帮助，让我学到了很多！',
-        ctime: '05-20 14:30',
-        like: 128
-    },
-    {
-        rpid: '2',
-        user: {
-            uid: '10002',
-            avatar: assets.User_avatar,
-            uname: '李四',
-        },
-        content: '希望能有更多这样的内容',
-        ctime: '05-20 15:45',
-        like: 96
-    },
-    {
-        rpid: '3',
-        user: {
-            uid: '30009257',
-            avatar: assets.User_avatar,
-            uname: '黑马前端',
-        },
-        content: '感谢分享，非常实用的建议！',
-        ctime: '05-20 16:20',
-        like: 45
-    }
-]
+// const sampleComments = [
+//     {
+//         rpid: '1',
+//         user: {
+//             uid: '10001',
+//             avatar: assets.User_avatar,
+//             uname: '张三',
+//         },
+//         content: '这个视频很有帮助，让我学到了很多！这个视频很有帮助，让我学到了很多！这个视频很有帮助，让我学到了很多！',
+//         ctime: '05-20 14:30',
+//         like: 128
+//     },
+//     {
+//         rpid: '2',
+//         user: {
+//             uid: '10002',
+//             avatar: assets.User_avatar,
+//             uname: '李四',
+//         },
+//         content: '希望能有更多这样的内容',
+//         ctime: '05-20 15:45',
+//         like: 96
+//     },
+//     {
+//         rpid: '3',
+//         user: {
+//             uid: '30009257',
+//             avatar: assets.User_avatar,
+//             uname: '黑马前端',
+//         },
+//         content: '感谢分享，非常实用的建议！',
+//         ctime: '05-20 16:20',
+//         like: 45
+//     }
+// ]
 
 // 当前登录用户信息
 const user = {
@@ -56,21 +57,6 @@ const tabs = [
     { type: 'time', text: '最新' },
 ]
 
-// 封装获取评论列表的Hook
-function useGetList() {
-    const [commentList, setCommentList] = useState([])
-
-    useEffect(() => {
-        // 使用样例数据初始化
-        setCommentList(_.orderBy(sampleComments, 'like', 'desc'))
-    }, [])
-
-    return {
-        commentList,
-        setCommentList
-    }
-}
-
 // 封装Item组件
 function Item({ item, onDel }) {
     return (
@@ -80,7 +66,7 @@ function Item({ item, onDel }) {
                     <img
                         className="bili-avatar-img"
                         alt={`${item.user.uname}的头像`}
-                        src={assets.User_avatar}
+                        src={item.user.avatar || assets.User_avatar}
                     />
                 </div>
             </div>
@@ -109,11 +95,32 @@ function Item({ item, onDel }) {
     )
 }
 
-const CommentArea = () => {
-    const { commentList, setCommentList } = useGetList()
+const CommentArea = ({ comments = [] }) => {
+    // 兼容后端评论结构
+    const formatComments = (commentsArr) => {
+        if (!Array.isArray(commentsArr)) return [];
+        return commentsArr.map((item) => ({
+            rpid: item.comment_id || item.rpid || uuidV4(),
+            user: {
+                uid: item.user?.uid || 'unknown',
+                avatar: item.user?.avatar || assets.User_avatar,
+                uname: item.user?.uname || (item.user?.username) || '匿名',
+            },
+            content: item.content,
+            ctime: item.ctime || '',
+            like: item.comment_like ? Number(item.comment_like) : (item.like || 0),
+        }));
+    };
+
+    const [commentList, setCommentList] = useState(formatComments(comments));
     const [type, setType] = useState('hot')
     const [content, setContent] = useState('')
     const inputRef = useRef(null)
+
+    // 当 comments props 变化时，更新评论列表
+    useEffect(() => {
+        setCommentList(formatComments(comments));
+    }, [comments]);
 
     // 删除评论
     const handleDel = (id) => {
@@ -141,7 +148,7 @@ const CommentArea = () => {
             rpid: uuidV4(),
             user: {
                 uid: user.uid,
-                avatar: assets.User_avatar,
+                avatar: user.avatar,
                 uname: user.uname,
             },
             content: content.trim(),
@@ -182,7 +189,7 @@ const CommentArea = () => {
                         <div className="bili-avatar">
                             <img
                                 className="bili-avatar-img"
-                                src={assets.User_avatar}
+                                src={user.avatar}
                                 alt="用户头像"
                             />
                         </div>
@@ -226,6 +233,10 @@ const CommentArea = () => {
             </div>
         </div>
     )
+}
+
+CommentArea.propTypes = {
+    comments: PropTypes.array
 }
 
 export default CommentArea

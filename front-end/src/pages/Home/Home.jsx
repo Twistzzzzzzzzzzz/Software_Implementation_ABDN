@@ -111,22 +111,11 @@ function Home() {
                                 className="react-player"
                             />
                         </div>
-                        <div className="video-actions">
-                            <button className="action-button">
-                                <img src={assets.Like_icon} alt="Like" />
-                            </button>
-                            <button className="action-button">
-                                <img src={assets.Star_icon} alt="Star" />
-                            </button>
-                            <button className="action-button">
-                                <img src={assets.Share_icon} alt="Share" />
-                            </button>
-                        </div>
                     </div>
                     <div className="popular-section">
                         <div className="section-header">
                             <img src={assets.PopularIcon} alt="Popular icon" />
-                            <h2>Popular</h2>
+                            <h2>Popular Article</h2>
                         </div>
                         <div className="popular-list">
                             <PopularCard />
@@ -143,9 +132,45 @@ function Home() {
                 </div>
                 <div className="membership-section">
                     <div className="membership-cards">
-                        <MembershipCard theme="light" />
-                        <MembershipCard theme="dark" />
-                        <MembershipCard theme="light" />
+                        <MembershipCard
+                            theme="light"
+                            price={19}
+                            period="/ mo"
+                            description="Basic Plan: Perfect for first-time users to experience psychological services, including basic assessments and limited AI conversations."
+                            features={[
+                                'One mental health test per month',
+                                '5 AI conversations per day',
+                                'Free access to selected psychological videos',
+                                'Basic community privileges',
+                            ]}
+                            buttonText="Subscribe Basic"
+                        />
+                        <MembershipCard
+                            theme="dark"
+                            price={50}
+                            period="/ mo"
+                            description="Premium Plan: Enjoy comprehensive psychological services and more AI conversations, ideal for ongoing needs."
+                            features={[
+                                'One mental health test per week (any type)',
+                                '20 AI conversations per day',
+                                'Free access to all psychological counseling videos',
+                                'Exclusive community badges and practical courses',
+                            ]}
+                            buttonText="Upgrade to Premium"
+                        />
+                        <MembershipCard
+                            theme="light"
+                            price={99}
+                            period="/ year"
+                            description="Annual VIP Plan: Unlimited services for a whole year, with a dedicated psychological consultant and customized content."
+                            features={[
+                                'Unlimited mental health tests throughout the year',
+                                'Unlimited AI conversations',
+                                'One-on-one exclusive psychological consultant',
+                                'Customized psychological growth courses',
+                            ]}
+                            buttonText="Enjoy Annual VIP"
+                        />
                     </div>
                 </div>
             </div>

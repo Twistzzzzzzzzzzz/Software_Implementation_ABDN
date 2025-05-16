@@ -98,3 +98,9 @@
     height: 100%;
     display: block;
 }
+
+.video-item.active, .video-item-small.active {
+    border: 2px solid #ff5c8a;
+    box-shadow: 0 0 0 2px #ffe3ef;
+    background: #fff6fa;
+}

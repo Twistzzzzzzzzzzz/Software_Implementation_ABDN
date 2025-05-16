@@ -29,6 +29,7 @@ const LoadingFallback = () => (
 function AppContent() {
     const location = useLocation();
     const isHealingVideo = location.pathname === '/healing-vedio';
+    const isAIChat = location.pathname === '/ai-chat';
     return (
         <div className='app'>
             <Navbar />
@@ -48,7 +49,7 @@ function AppContent() {
                     <Route path='/register' element={<Register />}></Route>
                 </Routes>
             </Suspense>
-            {!isHealingVideo && <Footer />}
+            {!(isHealingVideo || isAIChat) && <Footer />}
         </div>
     )
 }

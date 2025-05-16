@@ -1,6 +1,7 @@
 .pageContainer {
     width: 100%;
-    min-height: 100vh;
+    min-height: 90vh;
+    height: 90%;
     background: linear-gradient(135deg, #ffffff 0%, #e6f0ff 100%);
     display: flex;
     justify-content: center;
@@ -17,6 +18,7 @@
     background: transparent;
     border-radius: 20px;
     overflow: hidden;
+    padding-bottom: 80px; /* 留出底部输入框空间 */
 }
 
 .messageContainer {
@@ -37,19 +39,31 @@
 }
 
 .sendMessageBox {
-    padding: 10px 20px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100;
+    padding: 10px 0;
     margin: 0 auto;
-    width: 100%;
-    max-width: 800px;
+    width: 100vw;
+    max-width: 100vw;
+    background: transparent;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
 }
 
 .inputContainer {
     display: flex;
     align-items: center;
-    background-color: #ffffff;
+    background-color: #fff;
     border-radius: 100px;
     padding: 8px 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 15px;
 }
 
 .messageInput {
@@ -76,7 +90,8 @@
     align-items: center;
     justify-content: center;
     transition: transform 0.2s ease;
-    margin-right: 30px;
+    margin-right: 20px;
+    margin-top: 5px;
 }
 
 .sendButton:hover {
@@ -97,6 +112,7 @@
     .chatContainer {
         height: calc(100vh - 20px);
         border-radius: 16px;
+        padding-bottom: 70px;
     }
 
     .messageContainer {
@@ -104,7 +120,11 @@
     }
 
     .sendMessageBox {
-        padding: 10px;
+        padding: 6px 0;
+    }
+
+    .inputContainer {
+        max-width: 98vw;
     }
 }
 
@@ -116,14 +136,16 @@
     .chatContainer {
         height: 100vh;
         border-radius: 0;
+        padding-bottom: 60px;
     }
 
     .sendMessageBox {
-        padding: 10px;
+        padding: 4px 0;
     }
 
     .inputContainer {
         border-radius: 20px;
+        max-width: 99vw;
     }
 }
 
