@@ -123,7 +123,7 @@ export default function Healing_video({ videoTitle, videoDescription }) {
                     onVideoSelect={handleVideoSelect}
                     selectedVideoId={selectedVideo?.id}
                 >
-                    <CommentArea comments={comments} />
+                    <CommentArea comments={comments} videoId={selectedVideo?.id} />
                 </SidebarTabs>
             </div>
         </div>
