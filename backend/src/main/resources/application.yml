@@ -28,8 +28,11 @@ springdoc:
       packages-to-scan: com.xiaominfo.knife4j.demo.web
 
 jwt:
-  secret: "your-256-bit-secret-key-must-be-at-least-32-characters-long"
+  secret: "uYy8nA0PZsrIgA52tcqqeYGB3I7WCJfJgMPioYGk1y8"
+  algorithm: HS256
   access-token:
     expiration: 3600000
+    header: Authorization
+    prefix: Bearer
   refresh-token:
     expiration: 2592000000
