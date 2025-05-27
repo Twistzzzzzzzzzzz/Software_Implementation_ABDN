@@ -63,15 +63,15 @@ public class JwtTokenService {
                     .setSigningKey(getSigningKey())
                     .build()
                     .parseClaimsJws(token)
-                    .getBody();
+                    .getBody(); // 这是获取Claims对象
 
             if (!"access_token".equals(claims.get("type", String.class))) {
                 return Mono.error(new JwtException("Invalid token type"));
             }
 
-            String userId = claims.get("userId", String.class);
+            String userId = claims.get("userId", String.class); // 获取userId
             return userId != null ?
-                    Mono.just(userId) :
+                    Mono.just(userId) : // 如果userId存在，返回它
                     Mono.error(new JwtException("Missing user ID in token"));
         } catch (ExpiredJwtException e) {
             return Mono.error(new JwtException("Token expired"));
