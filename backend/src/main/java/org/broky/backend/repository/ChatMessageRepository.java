@@ -1,7 +1,6 @@
 package org.broky.backend.repository;
 
-import org.broky.backend.model.ChatMessage;
-import org.springframework.data.r2dbc.repository.Modifying;
+import org.broky.backend.model.chat.ChatMessage;
 import org.springframework.data.r2dbc.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;

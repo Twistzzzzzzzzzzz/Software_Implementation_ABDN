@@ -1,8 +1,9 @@
 package org.broky.backend.controller;
 
 
-import org.broky.backend.model.ChatMessage;
-import org.broky.backend.model.ChatRequest;
+import org.broky.backend.model.ApiResponse;
+import org.broky.backend.model.chat.ChatMessage;
+import org.broky.backend.model.chat.ChatRequest;
 import org.broky.backend.repository.ChatMessageRepository;
 import org.broky.backend.service.JwtTokenService;
 import org.springframework.ai.chat.model.ChatModel;
@@ -90,9 +91,12 @@ public class DeepSeekController {
 	}
 
 
-	@DeleteMapping("/history")
-	public Mono<Void> clearHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+	@DeleteMapping
+	public Mono<ApiResponse<Object>> clearHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
 		return jwtTokenService.getUserIdFromToken(authHeader)
-				.flatMap(chatMessageRepository::deleteByUserId);
+				.flatMap(userId -> chatMessageRepository.deleteByUserId(userId)
+						.then(Mono.just(ApiResponse.success()))
+				)
+				.onErrorResume(e -> Mono.just(ApiResponse.error(500, "Fail to Delete Histry " + e.getMessage())));
 	}
 }

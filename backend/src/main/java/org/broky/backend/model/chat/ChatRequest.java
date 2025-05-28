@@ -1,4 +1,4 @@
-package org.broky.backend.model;
+package org.broky.backend.model.chat;
 
 import lombok.Data;
 
