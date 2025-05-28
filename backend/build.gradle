@@ -21,6 +21,7 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
 }
 
 dependencies {
@@ -72,6 +73,12 @@ dependencies {
 
 	implementation('com.alibaba:dashscope-sdk-java:2.18.2') {
 		exclude group: 'org.slf4j', module: 'slf4j-simple'}
+
+
+	implementation 'org.springframework.ai:spring-ai-starter-model-deepseek:1.0.0'
+
+	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+
 
 }
 
