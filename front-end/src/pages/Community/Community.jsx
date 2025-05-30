@@ -1,403 +1,331 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
 import './Community.css';
 import { assets } from '../../assets/assets';
 
-// 防抖函数
-function useDebounce(fn, delay) {
-    const timer = useRef(null);
+// 弹幕组件
+const DanmuMessage = ({ msg, onEnd }) => {
+    const msgRef = useRef(null);
+    const [show, setShow] = useState(true);
     
-    return function(...args) {
-        if (timer.current) {
-            clearTimeout(timer.current);
-        }
-        
-        timer.current = setTimeout(() => {
-            fn(...args);
-        }, delay);
-    };
-}
-
-// 图片懒加载组件
-const LazyLoadImage = ({ src, alt, className }) => {
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [isInView, setIsInView] = useState(false);
-    const imgRef = useRef();
+    // 这个变量其实没用到，但是先留着吧
+    const [isHovered, setIsHovered] = useState(false);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    setIsInView(true);
-                    observer.unobserve(imgRef.current);
-                }
-            },
-            { rootMargin: '100px' }
-        );
+        const element = msgRef.current;
+        if (!element) return;
 
-        if (imgRef.current) {
-            observer.observe(imgRef.current);
-        }
+        // 设置随机的垂直位置
+        const randomY = Math.random() * 70 + 10; // 10% 到 80% 的位置
+        element.style.top = `${randomY}%`;
+
+        // 设置动画持续时间（根据内容长度调整）
+        const time = Math.max(8, msg.content.length * 0.3);
+        element.style.animationDuration = `${time}s`;
+
+        // 监听动画结束
+        const handleEnd = () => {
+            setShow(false);
+            onEnd(msg.id);
+        };
+
+        element.addEventListener('animationend', handleEnd);
 
         return () => {
-            if (imgRef.current) {
-                observer.unobserve(imgRef.current);
-            }
+            element.removeEventListener('animationend', handleEnd);
         };
-    }, []);
+    }, [msg, onEnd]);
+
+    if (!show) return null;
 
     return (
-        <div ref={imgRef} className={`${className}-container`}>
-            {isInView && (
-                <img 
-                    src={src} 
-                    alt={alt} 
-                    className={`${className} ${isLoaded ? 'loaded' : ''}`}
-                    onLoad={() => setIsLoaded(true)}
-                    style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
-                />
-            )}
-            {(!isInView || !isLoaded) && (
-                <div className="image-placeholder"></div>
-            )}
+        <div 
+            ref={msgRef}
+            className={`danmu-message ${msg.type || 'normal'}`}
+            style={{
+                color: msg.color || '#ffffff',
+                fontSize: msg.fontSize || '16px'
+            }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+        >
+            <span className="danmu-username">{msg.username}:</span>
+            <span className="danmu-content">{msg.content}</span>
         </div>
     );
 };
 
 export default function Community() {
-    const [posts, setPosts] = useState([]);
-    const [newPostContent, setNewPostContent] = useState('');
-    const [postImage, setPostImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const fileInputRef = useRef(null);
-    const postsContainerRef = useRef(null);
+    const [messageList, setMessageList] = useState([]);
+    const [inputText, setInputText] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [msgId, setMsgId] = useState(1000); // 这个变量好像也没用到
+    const inputRef = useRef(null);
+    const danmuBoxRef = useRef(null);
     
-    // 虚拟列表优化
-    const [visiblePosts, setVisiblePosts] = useState([]);
-    const [scrollPosition, setScrollPosition] = useState(0);
+    // 一些可能用得到的状态
+    const [isPaused, setIsPaused] = useState(false);
+    const [showStats, setShowStats] = useState(true);
     
-    // Dummy user data - in a real app, this would come from auth context
-    const currentUser = {
-        username: 'user123',
-        profilePic: assets.Personal_icon,
-    };
+    // 当前用户信息 - 使用useState确保用户名不会变化
+    const [user] = useState(() => ({
+        name: '用户' + Math.floor(Math.random() * 1000),
+        avatar: assets.Personal_icon,
+    }));
+
+    // 预设的弹幕消息
+    const defaultMsgs = [
+        { username: '心理小助手', content: '欢迎来到心理健康弹幕墙！', type: 'system' },
+        { username: '阳光少年', content: '今天心情特别好，分享给大家！' },
+        { username: '冥想达人', content: '刚刚完成了20分钟的正念冥想，感觉很平静' },
+        { username: '焦虑克星', content: '深呼吸真的很有用，推荐给有焦虑的朋友' },
+        { username: '心理学爱好者', content: '学习心理学让我更了解自己了' },
+        { username: '治愈系', content: '每天记录三件感恩的事，心态变好了很多' },
+        { username: '压力管理师', content: '工作压力大的时候，我会听听轻音乐' },
+        { username: '情绪调节员', content: '情绪低落时，运动是最好的良药' },
+        { username: '睡眠专家', content: '规律作息真的很重要，大家要早睡早起' },
+        { username: '自我成长', content: '每天进步一点点，就是最大的成功' },
+        { username: '心灵导师', content: '接纳自己的不完美，也是一种成长' },
+        { username: '正能量传播者', content: '微笑是最好的化妆品，大家要多笑笑' },
+        { username: '心理咨询师', content: '倾听自己内心的声音，找到真正的自己' },
+        { username: '康复之路', content: '走出抑郁的过程虽然艰难，但值得坚持' },
+        { username: '希望之光', content: '黑暗中总有一束光在等着我们' }
+    ];
+
+    // 随机颜色数组
+    const colorArr = [
+        '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7',
+        '#DDA0DD', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E9',
+        '#F8C471', '#82E0AA', '#F1948A', '#85C1E9', '#D7BDE2'
+    ];
+
+    // 随机字体大小
+    const sizeArr = ['14px', '16px', '18px', '20px'];
     
-    // 防抖处理文本输入
-    const debouncedSetContent = useDebounce((value) => {
-        setNewPostContent(value);
-    }, 300);
-    
-    const handleContentChange = (e) => {
-        // 立即更新UI显示，但防抖实际状态更新
-        e.persist();
-        debouncedSetContent(e.target.value);
-    };
-    
-    // 防抖图片处理
-    const handleImageUpload = (e) => {
-        const file = e.target.files[0];
-        if (!file) return;
-        
-        // 检查文件大小 (限制为5MB)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('图片大小不能超过5MB');
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
-            return;
-        }
-        
-        // 检查文件类型
-        if (!file.type.match('image.*')) {
-            alert('只能上传图片文件');
-            if (fileInputRef.current) {
-                fileInputRef.current.value = '';
-            }
-            return;
-        }
-        
-        setPostImage(file);
-        
-        // 使用防抖处理图片预览
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setImagePreview(reader.result);
-        };
-        reader.readAsDataURL(file);
-    };
-    
-    // 检测滚动加载更多内容
-    const handleScroll = useCallback(() => {
-        if (!postsContainerRef.current) return;
-        
-        setScrollPosition(postsContainerRef.current.scrollTop);
-        
-        // 检测是否滚动到底部，可以在这里实现加载更多功能
-        const { scrollTop, scrollHeight, clientHeight } = postsContainerRef.current;
-        if (scrollHeight - scrollTop <= clientHeight * 1.5) {
-            // 可以在这里加载更多帖子
-            console.log('接近底部，可以加载更多内容');
-        }
-    }, []);
-    
-    // 使用节流优化滚动事件
-    const throttleScroll = useCallback(() => {
-        let isScrolling = false;
-        
-        return () => {
-            if (!isScrolling) {
-                isScrolling = true;
-                
-                window.requestAnimationFrame(() => {
-                    handleScroll();
-                    isScrolling = false;
-                });
-            }
-        };
-    }, [handleScroll]);
-    
-    // 监听滚动事件
+    // 一些常量
+    const MAX_MESSAGES = 50; // 最大弹幕数量
+    const AUTO_SEND_INTERVAL = 3000; // 自动发送间隔
+
+    // 初始化弹幕
     useEffect(() => {
-        const scrollHandler = throttleScroll();
-        const container = document.querySelector('.community-container');
-        
-        if (container) {
-            container.addEventListener('scroll', scrollHandler);
-        }
-        
-        return () => {
-            if (container) {
-                container.removeEventListener('scroll', scrollHandler);
-            }
-        };
-    }, [throttleScroll]);
-    
-    // Dummy initial posts
-    useEffect(() => {
-        // 模拟API加载延迟
-        setIsLoading(true);
+        console.log('开始初始化弹幕...'); // 调试用的log
+        setLoading(true);
         
         setTimeout(() => {
-            const initialPosts = [
-                {
-                    id: 1,
-                    username: 'anxiety_helper',
-                    profilePic: assets.Personal_icon,
-                    content: '今天学习了一些应对焦虑的新方法，分享给大家：1. 深呼吸练习 2. 正念冥想 3. 认知重构。希望对大家有帮助！',
-                    image: assets.Test_answer_bg,
-                    likes: 24,
-                    comments: 5,
-                    timestamp: '2小时前'
-                },
-                {
-                    id: 2,
-                    username: 'mental_health_advocate',
-                    profilePic: assets.Personal_icon,
-                    content: '记住自我关爱的重要性。有时我们需要暂停，关注自己的感受和需求。',
-                    image: null,
-                    likes: 42,
-                    comments: 7,
-                    timestamp: '4小时前'
-                },
-                {
-                    id: 3,
-                    username: 'mindfulness_coach',
-                    profilePic: assets.Personal_icon,
-                    content: '正念冥想可以帮助我们更好地理解自己的情绪。今天试着花5分钟专注于呼吸，观察自己的想法而不评判它们。',
-                    image: assets.Test_answer_bg,
-                    likes: 36,
-                    comments: 8,
-                    timestamp: '6小时前'
-                },
-                {
-                    id: 4,
-                    username: 'psychology_student',
-                    profilePic: assets.Personal_icon,
-                    content: '今天在课上学习了关于创伤后成长的理论。我们经历的困难有时也能带来意想不到的积极变化，使我们更加坚强和有韧性。',
-                    image: null,
-                    likes: 19,
-                    comments: 4,
-                    timestamp: '昨天'
-                },
-                {
-                    id: 5,
-                    username: 'wellness_journey',
-                    profilePic: assets.Personal_icon,
-                    content: '分享一个小技巧：当感到压力大时，试着写下三件你感恩的事情。这个简单的习惯可以帮助我们培养积极的心态。',
-                    image: null,
-                    likes: 51,
-                    comments: 12,
-                    timestamp: '2天前'
-                }
-            ];
-            
-            setPosts(initialPosts);
-            setVisiblePosts(initialPosts);
-            setIsLoading(false);
+            // 创建初始弹幕，添加随机延迟
+            const initDanmu = defaultMsgs.map((item, index) => {
+                // 生成随机ID
+                const randomId = Math.random() * 10000;
+                return {
+                    id: index + 1,
+                    username: item.username,
+                    content: item.content,
+                    type: item.type || 'normal',
+                    color: item.type === 'system' ? '#FFD700' : colorArr[Math.floor(Math.random() * colorArr.length)],
+                    fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
+                    time: Date.now() + index * 2000 // 每2秒发送一条
+                };
+            });
+
+            setMessageList(initDanmu);
+            setLoading(false);
+            console.log('弹幕初始化完成！'); // 调试用的log
         }, 1000);
     }, []);
-    
-    const triggerImageUpload = () => {
-        fileInputRef.current.click();
-    };
-    
-    const removeImage = () => {
-        setPostImage(null);
-        setImagePreview(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-    };
-    
-    // 防抖处理发帖
-    const debouncedCreatePost = useDebounce(() => {
-        if (newPostContent.trim() === '' && !postImage) return;
-        
-        const newPost = {
-            id: Date.now(),
-            username: currentUser.username,
-            profilePic: currentUser.profilePic,
-            content: newPostContent,
-            image: imagePreview,
-            likes: 0,
-            comments: 0,
-            timestamp: '刚刚'
-        };
-        
-        // 优化状态更新，避免重渲染整个列表
-        setPosts(prevPosts => [newPost, ...prevPosts]);
-        setVisiblePosts(prevPosts => [newPost, ...prevPosts]);
-        
-        // 清空表单
-        setNewPostContent('');
-        setPostImage(null);
-        setImagePreview(null);
-        if (fileInputRef.current) {
-            fileInputRef.current.value = '';
-        }
-    }, 300);
-    
-    const createPost = () => {
-        debouncedCreatePost();
-    };
-    
-    const topRef = useRef(null);
-    const location = useLocation();
+
+    // 自动发送预设弹幕
     useEffect(() => {
-        if (location.state && location.state.scrollToTop && topRef.current) {
-            topRef.current.scrollIntoView({ behavior: 'auto' });
+        if (loading) return;
+        if (isPaused) return; // 如果暂停了就不发送
+
+        const timer = setInterval(() => {
+            const randomIndex = Math.floor(Math.random() * defaultMsgs.length);
+            const randomMsg = defaultMsgs[randomIndex];
+            
+            // 生成新的弹幕对象
+            const newDanmu = {
+                id: Date.now() + Math.random(), // 确保ID唯一
+                username: randomMsg.username,
+                content: randomMsg.content,
+                type: randomMsg.type || 'normal',
+                color: randomMsg.type === 'system' ? '#FFD700' : colorArr[Math.floor(Math.random() * colorArr.length)],
+                fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
+                time: Date.now()
+            };
+
+            setMessageList(prev => {
+                // 限制弹幕数量，避免内存泄漏
+                const newList = [...prev, newDanmu];
+                if (newList.length > MAX_MESSAGES) {
+                    return newList.slice(-MAX_MESSAGES);
+                }
+                return newList;
+            });
+        }, AUTO_SEND_INTERVAL + Math.random() * 2000); // 3-5秒随机间隔
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [loading, isPaused]);
+
+    // 清理已完成动画的弹幕
+    const handleMsgEnd = useCallback((msgId) => {
+        setMessageList(prev => prev.filter(item => item.id !== msgId));
+    }, []);
+
+    // 发送弹幕
+    const sendMsg = () => {
+        if (!inputText.trim()) {
+            alert('请输入弹幕内容！'); // 简单的提示
+            return;
         }
-    }, [location]);
+
+        // 创建新弹幕
+        const newDanmu = {
+            id: Date.now() + Math.random(),
+            username: user.name,
+            content: inputText.trim(),
+            type: 'user',
+            color: colorArr[Math.floor(Math.random() * colorArr.length)],
+            fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
+            time: Date.now()
+        };
+
+        console.log('发送弹幕:', newDanmu); // 调试用
+        setMessageList(prev => [...prev, newDanmu]);
+        setInputText('');
+        
+        // 聚焦回输入框
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    };
+
+    // 处理键盘事件
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMsg();
+        }
+        // 也可以用Ctrl+Enter发送
+        if (e.key === 'Enter' && e.ctrlKey) {
+            e.preventDefault();
+            sendMsg();
+        }
+    };
+
+    // 清空所有弹幕
+    const clearAll = () => {
+        const confirmClear = window.confirm('确定要清空所有弹幕吗？');
+        if (confirmClear) {
+            setMessageList([]);
+            console.log('已清空所有弹幕');
+        }
+    };
     
+    // 暂停/恢复弹幕
+    const togglePause = () => {
+        setIsPaused(!isPaused);
+        console.log(isPaused ? '恢复弹幕' : '暂停弹幕');
+    };
+
     // 加载状态
-    if (isLoading) {
+    if (loading) {
         return (
-            <div className="community-container">
-                <div className="community-loading">
+            <div className="danmu-container">
+                <div className="danmu-loading">
                     <div className="loading-spinner"></div>
-                    <p>加载中...</p>
+                    <p>弹幕墙加载中...</p>
                 </div>
             </div>
         );
     }
-    
+
     return (
-        <div className="community-container" ref={postsContainerRef}>
-            <div ref={topRef}></div>
-            <div className="community-header">
-                <h1>心理社区</h1>
-                <p>与他人分享你的想法、经验和支持</p>
-            </div>
-            
-            <div className="post-creation-card">
-                <div className="post-header">
-                    <img src={currentUser.profilePic} alt="Profile" className="profile-pic" />
-                    <span className="username">{currentUser.username}</span>
+        <div className="danmu-container">
+            {/* 弹幕显示区域 */}
+            <div className="danmu-screen" ref={danmuBoxRef}>
+                <div className="danmu-background">
+                    <div className="background-pattern"></div>
                 </div>
                 
-                <textarea 
-                    className="post-textarea"
-                    placeholder="分享你的心理健康经验或想法..."
-                    defaultValue={newPostContent}
-                    onChange={handleContentChange}
-                ></textarea>
-                
-                {imagePreview && (
-                    <div className="image-preview-container">
-                        <img src={imagePreview} alt="Preview" className="image-preview" />
-                        <button className="remove-image-btn" onClick={removeImage}>✕</button>
+                {/* 标题区域 */}
+                <div className="danmu-header">
+                    <h1>心理健康弹幕墙</h1>
+                    <p>分享你的心情，传递正能量</p>
+                </div>
+
+                {/* 弹幕消息 */}
+                <div className="danmu-messages">
+                    {messageList.map(msg => (
+                        <DanmuMessage
+                            key={msg.id}
+                            msg={msg}
+                            onEnd={handleMsgEnd}
+                        />
+                    ))}
+                </div>
+
+                {/* 统计信息 */}
+                {showStats && (
+                    <div className="danmu-stats">
+                        <div className="stat-item">
+                            <span className="stat-number">{messageList.length}</span>
+                            <span className="stat-label">当前弹幕</span>
+                        </div>
+                        <div className="stat-item">
+                            <span className="stat-number">∞</span>
+                            <span className="stat-label">在线用户</span>
+                        </div>
                     </div>
                 )}
-                
-                <div className="post-actions">
-                    <div className="post-options">
-                        <button className="post-option-btn" onClick={triggerImageUpload}>
-                            <span role="img" aria-label="image">🖼️</span> 添加图片
-                        </button>
-                        <input 
-                            type="file" 
-                            ref={fileInputRef}
-                            onChange={handleImageUpload}
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                        />
+            </div>
+
+            {/* 输入区域 */}
+            <div className="danmu-input-area">
+                <div className="input-container">
+                    <div className="user-info">
+                        <img src={user.avatar} alt="头像" className="user-avatar" />
+                        <span className="username">{user.name}</span>
                     </div>
+                    
+                    <div className="input-box">
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                            onKeyPress={handleKeyDown}
+                            placeholder="输入你的心情弹幕，按回车发送..."
+                            maxLength={50}
+                            className="message-input"
+                        />
+                        <div className="input-actions">
+                            <span className="char-count">{inputText.length}/50</span>
+                            <button 
+                                onClick={sendMsg}
+                                disabled={!inputText.trim()}
+                                className="send-btn"
+                            >
+                                发送
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="control-buttons">
+                    <button onClick={clearAll} className="control-btn clear-btn">
+                        清空弹幕
+                    </button>
+                    {/*<button onClick={togglePause} className="control-btn pause-btn">
+                        {isPaused ? '恢复' : '暂停'}
+                    </button>*/}
                     <button 
-                        className={`post-btn ${(!newPostContent.trim() && !postImage) ? 'disabled' : ''}`}
-                        onClick={createPost}
-                        disabled={!newPostContent.trim() && !postImage}
+                        onClick={() => setShowStats(!showStats)} 
+                        className="control-btn settings-btn"
                     >
-                        发布
+                        {showStats ? '隐藏统计' : '显示统计'}
                     </button>
                 </div>
-            </div>
-            
-            <div className="posts-container">
-                {visiblePosts.map(post => (
-                    <div className="post-card" key={post.id}>
-                        <div className="post-header">
-                            <img src={post.profilePic} alt="Profile" className="profile-pic" />
-                            <div className="post-info">
-                                <span className="username">{post.username}</span>
-                                <span className="timestamp">{post.timestamp}</span>
-                            </div>
-                        </div>
-                        
-                        <p className="post-content">{post.content}</p>
-                        
-                        {post.image && (
-                            <div className="post-image-container">
-                                <LazyLoadImage 
-                                    src={post.image} 
-                                    alt="Post" 
-                                    className="post-image" 
-                                />
-                            </div>
-                        )}
-                        
-                        <div className="post-stats">
-                            <div className="post-stat">
-                                <span role="img" aria-label="heart">❤️</span> {post.likes} 喜欢
-                            </div>
-                            <div className="post-stat">
-                                <span role="img" aria-label="comment">💬</span> {post.comments} 评论
-                            </div>
-                        </div>
-                        
-                        <div className="post-actions-bottom">
-                            <button className="post-action-btn">
-                                <span role="img" aria-label="like">👍</span> 喜欢
-                            </button>
-                            <button className="post-action-btn">
-                                <span role="img" aria-label="comment">💬</span> 评论
-                            </button>
-                            <button className="post-action-btn">
-                                <span role="img" aria-label="share">🔄</span> 分享
-                            </button>
-                        </div>
-                    </div>
-                ))}
             </div>
         </div>
     );

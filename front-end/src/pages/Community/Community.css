@@ -1,434 +1,440 @@
-.community-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    min-height: 100vh;
-    background-color: #f8f9fa;
-    padding-bottom: 50px;
-    position: relative;
-}
-
-/* 添加渐变背景 */
-body {
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4edf9 100%);
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow-y: auto !important;
-}
-
-html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    overflow-y: auto !important;
-}
-
-.app {
-    overflow-y: auto !important;
-    height: auto !important;
-    min-height: 100vh;
-    background: transparent;
-}
-
-.community-header {
-    text-align: center;
+/* 弹幕墙容器 */
+.danmu-container {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: 0 auto 40px;
-    padding: 30px 0;
+    overflow: hidden;
     position: relative;
-    max-width: 600px;
 }
 
-.community-header::after {
-    content: '';
+/* 弹幕显示屏幕 */
+.danmu-screen {
+    flex: 1;
+    min-height: 75vh; /* 确保弹幕屏幕至少占75%的视口高度 */
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* 背景图案 */
+.danmu-background {
     position: absolute;
-    bottom: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.background-pattern {
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.2) 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: backgroundMove 20s linear infinite;
+}
+
+@keyframes backgroundMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+/* 弹幕标题区域 */
+.danmu-header {
+    position: absolute;
+    top: 30px;
     left: 50%;
     transform: translateX(-50%);
-    width: 100px;
-    height: 3px;
-    background: linear-gradient(90deg, #4285f4, #34a853);
-    border-radius: 3px;
+    text-align: center;
+    z-index: 10;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-.community-header h1 {
-    font-size: 2.8rem;
-    margin-bottom: 15px;
-    color: #333;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
+.danmu-header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleGlow 3s ease-in-out infinite alternate;
 }
 
-.community-header p {
-    color: #555;
-    font-size: 1.2rem;
-    line-height: 1.5;
-    font-weight: 400;
+.danmu-header p {
+    font-size: 1.1rem;
+    margin: 10px 0 0 0;
+    opacity: 0.9;
 }
 
-/* Post Creation Card */
-.post-creation-card {
-    background-color: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    padding: 25px;
-    margin-bottom: 35px;
-    border: 1px solid #eaeaea;
-    transition: transform 0.2s, box-shadow 0.2s;
+@keyframes titleGlow {
+    0% { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)); }
+    100% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
 }
 
-.post-creation-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.1);
+/* 弹幕消息区域 */
+.danmu-messages {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
 }
 
-.post-header {
+/* 弹幕消息样式 */
+.danmu-message {
+    position: absolute;
+    right: -100%;
+    white-space: nowrap;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    animation: danmuMove linear forwards;
+    z-index: 5;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
-    margin-bottom: 18px;
+    gap: 8px;
+    max-width: 80%;
+    overflow: hidden;
 }
 
-.profile-pic {
-    width: 46px;
-    height: 46px;
+.danmu-message.system {
+    background: rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.danmu-message.user {
+    background: rgba(102, 126, 234, 0.3);
+    border: 1px solid rgba(102, 126, 234, 0.5);
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+.danmu-username {
+    font-weight: bold;
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+.danmu-content {
+    flex: 1;
+}
+
+@keyframes danmuMove {
+    0% {
+        right: -100%;
+        opacity: 0;
+    }
+    5% {
+        opacity: 1;
+    }
+    95% {
+        opacity: 1;
+    }
+    100% {
+        right: 100%;
+        opacity: 0;
+    }
+}
+
+/* 统计信息 */
+.danmu-stats {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 20px;
+    z-index: 10;
+}
+
+.stat-item {
+    text-align: center;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+/* 输入区域 */
+.danmu-input-area {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 15px 20px; /* 减少垂直padding */
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    flex-shrink: 0; /* 防止输入区域被压缩 */
+    max-height: 25vh; /* 限制输入区域最大高度 */
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px; /* 减少底部间距 */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 150px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
+    border: 2px solid #667eea;
     object-fit: cover;
-    margin-right: 12px;
-    border: 2px solid #4285f4;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .username {
     font-weight: 600;
     color: #333;
-    font-size: 1.05rem;
+    font-size: 0.9rem;
 }
 
-.post-textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: 18px;
-    border: 1px solid #e0e0e0;
-    border-radius: 12px;
-    resize: vertical;
-    font-size: 1.05rem;
-    margin-bottom: 20px;
-    box-sizing: border-box;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    background-color: #f9f9f9;
+.input-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 25px;
+    padding: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
 }
 
-.post-textarea:focus {
+.input-box:focus-within {
+    border-color: #667eea;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+}
+
+.message-input {
+    flex: 1;
+    border: none;
     outline: none;
-    border-color: #4285f4;
-    box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.15);
-    background-color: #fff;
+    padding: 12px 20px;
+    font-size: 1rem;
+    background: transparent;
+    color: #333;
 }
 
-.image-preview-container {
-    position: relative;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+.message-input::placeholder {
+    color: #999;
 }
 
-.image-preview {
-    max-width: 100%;
-    max-height: 350px;
-    border-radius: 12px;
-    object-fit: cover;
-    display: block;
-    margin: 0 auto;
+.input-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 10px;
 }
 
-.remove-image-btn {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 0, 0.7);
+.char-count {
+    font-size: 0.8rem;
+    color: #666;
+    min-width: 40px;
+}
+
+.send-btn {
+    background: linear-gradient(45deg, #667eea, #764ba2);
     color: white;
     border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.2s;
-}
-
-.remove-image-btn:hover {
-    background-color: rgba(0, 0, 0, 0.9);
-}
-
-.post-actions {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 5px;
-}
-
-.post-options {
-    display: flex;
-}
-
-.post-option-btn {
-    background: none;
-    border: none;
-    color: #4285f4;
-    font-size: 0.95rem;
-    cursor: pointer;
-    padding: 10px 15px;
-    margin-right: 10px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.2s;
-}
-
-.post-option-btn:hover {
-    background-color: #f0f7ff;
-}
-
-.post-btn {
-    background: linear-gradient(90deg, #4285f4, #34a853);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 24px;
+    padding: 10px 20px;
+    border-radius: 20px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
-    box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
 }
 
-.post-btn:hover {
+.send-btn:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
-.post-btn.disabled {
-    background: #ccc;
+.send-btn:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-    opacity: 0.7;
 }
 
-/* Posts Feed */
-.posts-container {
+/* 控制按钮 */
+.control-buttons {
     display: flex;
-    flex-direction: column;
-    gap: 25px;
+    justify-content: center;
+    gap: 15px;
 }
 
-.post-card {
-    background-color: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
-    padding: 25px;
-    transition: transform 0.2s;
-    border: 1px solid #eaeaea;
-}
-
-.post-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.09);
-}
-
-.post-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.timestamp {
-    font-size: 0.85rem;
-    color: #888;
-    margin-top: 2px;
-}
-
-.post-content {
-    margin: 18px 0;
-    line-height: 1.6;
-    color: #333;
-    white-space: pre-wrap;
-    font-size: 1.05rem;
-}
-
-.post-image-container {
-    margin: 18px 0;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-}
-
-.post-image {
-    width: 100%;
-    max-height: 550px;
-    object-fit: cover;
-    border-radius: 14px;
-    display: block;
-}
-
-.post-stats {
-    display: flex;
-    margin: 18px 0;
-    padding-bottom: 18px;
-    border-bottom: 1px solid #eeeeee;
-}
-
-.post-stat {
-    margin-right: 24px;
-    font-size: 0.95rem;
-    color: #555;
-    display: flex;
-    align-items: center;
-}
-
-.post-stat span {
-    margin-right: 5px;
-    font-size: 1.1rem;
-}
-
-.post-actions-bottom {
-    display: flex;
-    justify-content: space-around;
-}
-
-.post-action-btn {
-    background: none;
-    border: none;
-    color: #555;
-    padding: 10px 0;
-    font-size: 0.95rem;
+.control-btn {
+    background: rgba(102, 126, 234, 0.1);
+    color: #667eea;
+    border: 1px solid #667eea;
+    padding: 8px 16px;
+    border-radius: 15px;
+    font-size: 0.9rem;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: color 0.2s;
-    flex: 1;
-    border-radius: 8px;
-    margin: 0 5px;
+    transition: all 0.3s ease;
+    font-weight: 500;
 }
 
-.post-action-btn:hover {
-    color: #4285f4;
-    background-color: #f0f7ff;
+.control-btn:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-1px);
 }
 
-.post-action-btn span {
-    margin-right: 6px;
-    font-size: 1.15rem;
+.clear-btn:hover {
+    background: #ff6b6b;
+    border-color: #ff6b6b;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .community-container {
-        padding: 15px;
-    }
-    
-    .community-header h1 {
-        font-size: 2.2rem;
-    }
-    
-    .community-header p {
-        font-size: 1rem;
-    }
-    
-    .post-creation-card {
-        padding: 20px;
-    }
-    
-    .post-card {
-        padding: 20px;
-    }
-}
-
-@media (max-width: 600px) {
-    .community-header h1 {
-        font-size: 1.8rem;
-    }
-    
-    .post-option-btn span[role="img"] {
-        margin-right: 0;
-    }
-    
-    .post-option-btn {
-        font-size: 0;
-        padding: 8px;
-    }
-    
-    .post-option-btn span[role="img"] {
-        font-size: 1.3rem;
-    }
-    
-    .post-actions-bottom {
-        flex-wrap: wrap;
-    }
-    
-    .profile-pic {
-        width: 38px;
-        height: 38px;
-    }
-}
-
-/* 懒加载图片样式 */
-.post-image-container {
-    position: relative;
-    overflow: hidden;
-}
-
-.image-placeholder {
-    background: linear-gradient(90deg, #f0f0f0, #e0e0e0, #f0f0f0);
-    background-size: 200% 100%;
-    animation: shimmer 1.5s infinite;
-    height: 300px;
-    width: 100%;
-    border-radius: 12px;
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -200% 0;
-    }
-    100% {
-        background-position: 200% 0;
-    }
-}
-
-/* 社区加载状态 */
-.community-loading {
+/* 加载状态 */
+.danmu-loading {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 50vh;
-    width: 100%;
+    height: 100vh;
+    color: white;
+    font-size: 1.2rem;
 }
 
 .loading-spinner {
     width: 50px;
     height: 50px;
-    border: 4px solid rgba(66, 133, 244, 0.2);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #FFD700;
     border-radius: 50%;
-    border-left-color: #4285f4;
     animation: spin 1s linear infinite;
     margin-bottom: 20px;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .danmu-screen {
+        min-height: 70vh; /* 移动端稍微减少一点 */
     }
-    100% {
-        transform: rotate(360deg);
+    
+    .danmu-input-area {
+        max-height: 30vh; /* 移动端给输入区域更多空间 */
+        padding: 12px 15px;
+    }
+    
+    .danmu-header h1 {
+        font-size: 2rem;
+    }
+    
+    .danmu-header p {
+        font-size: 1rem;
+    }
+    
+    .input-container {
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 8px;
+    }
+    
+    .user-info {
+        min-width: auto;
+        justify-content: center;
+    }
+    
+    .danmu-stats {
+        position: static;
+        justify-content: center;
+        margin: 20px 0;
+    }
+    
+    .danmu-message {
+        font-size: 14px;
+        padding: 6px 12px;
+        max-width: 90%;
+    }
+    
+    .control-buttons {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    .danmu-screen {
+        min-height: 65vh;
+    }
+    
+    .danmu-input-area {
+        padding: 10px 15px;
+        max-height: 35vh;
+    }
+    
+    .danmu-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .message-input {
+        font-size: 0.9rem;
+        padding: 10px 15px;
+    }
+    
+    .send-btn {
+        padding: 8px 15px;
+        font-size: 0.8rem;
+    }
+    
+    .danmu-message {
+        font-size: 12px;
+        padding: 4px 8px;
+    }
+}
+
+/* 动画优化 */
+@media (prefers-reduced-motion: reduce) {
+    .danmu-message {
+        animation-duration: 3s !important;
+    }
+    
+    .background-pattern {
+        animation: none;
+    }
+    
+    .titleGlow {
+        animation: none;
     }
 } 
