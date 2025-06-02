@@ -27,8 +27,10 @@ public class VideoController {
     
     @Operation(summary = "获取视频列表")
     @GetMapping("/video")
-    public Mono<ApiResponse<VideoListResponse>> getVideoList() {
-        return videoService.getVideoList()
+    public Mono<ApiResponse<VideoListResponse>> getVideoList(
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "1") int page) {
+        return videoService.getVideoList(size, page)
                 .map(ApiResponse::success)
                 .onErrorResume(e -> Mono.just(ApiResponse.error(65, e.getMessage())));
     }

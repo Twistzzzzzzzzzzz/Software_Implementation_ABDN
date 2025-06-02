@@ -30,15 +30,20 @@ public class VideoServiceImpl implements VideoService {
     private OssService ossService;
     
     @Override
-    public Mono<VideoListResponse> getVideoList() {
+    public Mono<VideoListResponse> getVideoList(int size, int page) {
         return videoRepository.findAll()
                 .map(video -> new VideoListResponse.VideoListItem(
                         video.getVideoId(),
                         video.getTitle(),
                         video.getPictureAddress()
                 ))
+                .skip((long) (page - 1) * size)
+                .take(size)
                 .collectList()
-                .map(items -> new VideoListResponse(items.size(), items));
+                .flatMap(items -> 
+                    videoRepository.count()
+                            .map(total -> new VideoListResponse(total.intValue(), items))
+                );
     }
     
     @Override
