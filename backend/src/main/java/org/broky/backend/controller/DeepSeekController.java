@@ -91,7 +91,7 @@ public class DeepSeekController {
 	}
 
 
-	@DeleteMapping
+	@DeleteMapping("/delete")
 	public Mono<ApiResponse<Object>> clearHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
 		return jwtTokenService.getUserIdFromToken(authHeader)
 				.flatMap(userId -> chatMessageRepository.deleteByUserId(userId)
