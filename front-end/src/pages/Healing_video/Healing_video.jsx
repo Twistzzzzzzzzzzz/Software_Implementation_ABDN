@@ -35,7 +35,7 @@ export default function Healing_video({ videoTitle, videoDescription }) {
                     itemsWithImg = data.items.map((item) => ({
                         id: item.video_id,
                         title: item.title,
-                        previewImg: item.pictrue_address,
+                        previewImg: item.pictrue_address || item.content_address,
                     }));
                 }
                 // 检查是否有location.state.videoId
@@ -44,12 +44,15 @@ export default function Healing_video({ videoTitle, videoDescription }) {
                     // 请求该视频详情
                     const detailRes = await request.get(`/api/v1/resources/video/${vid}`);
                     const detailData = detailRes.data;
-                    // 加入视频列表最后
-                    itemsWithImg.push({
-                        id: detailData.video_id,
-                        title: detailData.title,
-                        previewImg: detailData.pictrue_address || detailData.content_address,
-                    });
+                    // 检查是否已存在该视频，避免重复
+                    const exists = itemsWithImg.some(v => v.id === detailData.video_id);
+                    if (!exists) {
+                        itemsWithImg.push({
+                            id: detailData.video_id,
+                            title: detailData.title,
+                            previewImg: detailData.pictrue_address || detailData.content_address,
+                        });
+                    }
                     setVideoItems(itemsWithImg);
                     setSelectedVideo({
                         id: detailData.video_id,
