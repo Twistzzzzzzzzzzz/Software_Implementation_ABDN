@@ -5,13 +5,46 @@ import PopularCard from "./components/popularCard/popularCard.jsx";
 import ReactPlayer from 'react-player'
 import './Home.css'
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
+import request from '../../utils/request';
 
 function Home() {
     const navigate = useNavigate();
     const location = useLocation();
     const topRef = useRef(null);
     const serviceRef = useRef(null);
+    const [video, setVideo] = useState(null);
+    const [articles, setArticles] = useState([]);
+
+    useEffect(() => {
+        async function fetchVideo() {
+            try {
+                const res = await request.get('/api/v1/resources/video/67');
+                const data = res.data;
+                if (data) {
+                    setVideo(data);
+                }
+            } catch (e) {
+                setVideo(null);
+            }
+        }
+        fetchVideo();
+    }, []);
+
+    useEffect(() => {
+        async function fetchArticles() {
+            try {
+                const res = await request.get('/api/v1/resources/articles', { params: { size: 4, page: 1 } });
+                const data = res.data;
+                if (data && data.items) {
+                    setArticles(data.items);
+                }
+            } catch (e) {
+                setArticles([]);
+            }
+        }
+        fetchArticles();
+    }, []);
 
     // 跳转并传递scrollToTop信号
     const handleNavigate = (path) => {
@@ -21,6 +54,12 @@ function Home() {
     const handleLearnMore = () => {
         if (serviceRef.current) {
             serviceRef.current.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
+    // Learn More 跳转到Healing_video并传递videoId
+    const handleLearnMoreVideo = () => {
+        if (video) {
+            navigate('/healing-vedio', { state: { videoId: video.video_id } });
         }
     };
     // 页面加载后检测是否需要滚动到顶部
@@ -103,14 +142,21 @@ function Home() {
                             <h2>Today's healing video</h2>
                         </div>
                         <div className="video-player">
-                            <ReactPlayer
-                                url={assets.Super_idol_sex}
-                                width="100%"
-                                height="100%"
-                                controls={true}
-                                className="react-player"
-                            />
+                            {video && video.content_address ? (
+                                <ReactPlayer
+                                    url={video.content_address}
+                                    width="100%"
+                                    height="100%"
+                                    controls={true}
+                                    className="react-player"
+                                />
+                            ) : (
+                                <div style={{textAlign: 'center', padding: '40px 0'}}>暂无视频资源</div>
+                            )}
                         </div>
+                        {video && (
+                            <button className="learn-more" onClick={handleLearnMoreVideo} style={{marginTop: '16px'}}>Learn More</button>
+                        )}
                     </div>
                     <div className="popular-section">
                         <div className="section-header">
@@ -118,9 +164,16 @@ function Home() {
                             <h2>Popular Article</h2>
                         </div>
                         <div className="popular-list">
-                            <PopularCard />
-                            <PopularCard />
-                            <PopularCard />
+                            {articles.map((item, idx) => (
+                                <PopularCard
+                                    key={item.article_id}
+                                    number={idx + 1}
+                                    title={item.title}
+                                    summary={item.summary}
+                                    published_at={item.published_at}
+                                    articleData={item}
+                                />
+                            ))}
                         </div>
                     </div>
                 </div>

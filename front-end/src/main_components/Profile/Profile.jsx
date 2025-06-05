@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './Profile.css';
 import defaultAvatar from '../../assets/UserAvatar.png';
+import request from '../../utils/request';
 
 export default function Profile({ onClose }) {
     const [username, setUsername] = useState('');
@@ -16,8 +17,8 @@ export default function Profile({ onClose }) {
         async function fetchUserInfo() {
             setLoading(true);
             try {
-                const res = await fetch('http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/user/info');
-                const data = await res.json();
+                const res = await request.get('/api/v1/user/info');
+                const data = await res.data;
                 if (res.ok && data.code === 0 && data.data) {
                     setUsername(data.data.username || '');
                     setPassword(data.data.password || '');
@@ -51,17 +52,14 @@ export default function Profile({ onClose }) {
         }
         try {
             const token = localStorage.getItem('access_token') || '';
-            await fetch('http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/user/info', {
-                method: 'PUT',
+            await request.put('/api/v1/user/info', {
+                update_username: username,
+                update_password: password,
+                update_avater: update_avatar || null,
+            }, {
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify({
-                    update_username: username,
-                    update_password: password,
-                    update_avater: update_avatar || null,
-                }),
             });
             // 成功提示
             onClose();

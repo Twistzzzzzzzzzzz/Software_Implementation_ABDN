@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Register.css';
 import { assets } from '../../assets/assets';
 import env from '../../config/env';
+import request from '../../utils/request';
 
 
 export default function Register() {
@@ -31,23 +32,19 @@ export default function Register() {
         if (!validateForm()) return;
         setLoading(true);
         try {
-            const response = await fetch( `${env.backendPath}/api/v1/auth/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password, email }),
+            const data = await request.post('/api/v1/auth/register', {
+                username,
+                password,
+                email
             });
-            const data = await response.json();
-            if (response.ok && data.code === '200') {
-                // 注册成功，跳转到登录页
-                alert('Registration successful! Please log in.');
+            if (data.code === 0) {
+                alert('注册成功！请登录。');
                 navigate('/login');
             } else {
-                setApiError(data.message || 'Registration failed.');
+                setApiError(data.message || '注册失败。');
             }
         } catch (err) {
-            setApiError('Network error, please try again.');
+            setApiError('网络错误，请重试。');
         } finally {
             setLoading(false);
         }

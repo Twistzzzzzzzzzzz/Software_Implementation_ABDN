@@ -1,6 +1,8 @@
 .popular-container {
-    width: 85%;
-    max-width: 600px;
+    width: 100%;
+    max-width: none;
+    min-height: unset;
+    flex: none;
     background: #FFFFFF;
     border-radius: 16px;
     padding: 24px;

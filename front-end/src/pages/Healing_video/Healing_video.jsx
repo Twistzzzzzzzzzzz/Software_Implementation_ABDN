@@ -6,10 +6,9 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import VideoItem from './components/VideoItem/VideoItem.jsx';
 import SidebarTabs from './components/SidebarTabs/SidebarTabs.jsx';
-import env from "../../config/env.js";
+import request from '../../utils/request';
 
 export default function Healing_video({ videoTitle, videoDescription }) {
-    const videoUrl = assets.Super_idol_video
     const topRef = useRef(null);
     const location = useLocation();
     useEffect(() => {
@@ -23,30 +22,41 @@ export default function Healing_video({ videoTitle, videoDescription }) {
     const [selectedVideo, setSelectedVideo] = useState(null);
     const [comments, setComments] = useState([]);
     const [videoDetail, setVideoDetail] = useState({});
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function fetchVideos() {
+            setLoading(true);
             try {
-                const res = await fetch(`${env.backendPath}/api/v1/resources/video?size=2`);
-                const data = await res.json();
-                if (data && data.data && Array.isArray(data.data.items)) {
-                    const itemsWithImg = await Promise.all(
-                        data.data.items.map(async (item) => {
-                            let previewImg = '';
-                            try {
-                                const imgRes = await fetch(item.pictrue_address);
-                                const imgBlob = await imgRes.blob();
-                                previewImg = URL.createObjectURL(imgBlob);
-                            } catch (e) {
-                                previewImg = assets.ServiceCard1; // fallback
-                            }
-                            return {
-                                id: item.video_id,
-                                title: item.title,
-                                previewImg,
-                            };
-                        })
-                    );
+                const res = await request.get('/api/v1/resources/video', { params: { size: 10, page: 1 } });
+                const data = res.data;
+                let itemsWithImg = [];
+                if (data && data.items && Array.isArray(data.items)) {
+                    itemsWithImg = data.items.map((item) => ({
+                        id: item.video_id,
+                        title: item.title,
+                        previewImg: item.pictrue_address,
+                    }));
+                }
+                // 检查是否有location.state.videoId
+                if (location.state && location.state.videoId) {
+                    const vid = location.state.videoId;
+                    // 请求该视频详情
+                    const detailRes = await request.get(`/api/v1/resources/video/${vid}`);
+                    const detailData = detailRes.data;
+                    // 加入视频列表最后
+                    itemsWithImg.push({
+                        id: detailData.video_id,
+                        title: detailData.title,
+                        previewImg: detailData.pictrue_address || detailData.content_address,
+                    });
+                    setVideoItems(itemsWithImg);
+                    setSelectedVideo({
+                        id: detailData.video_id,
+                        title: detailData.title,
+                        previewImg: detailData.pictrue_address || detailData.content_address,
+                    });
+                } else {
                     setVideoItems(itemsWithImg);
                     if (itemsWithImg.length > 0) {
                         setSelectedVideo(itemsWithImg[0]);
@@ -54,21 +64,23 @@ export default function Healing_video({ videoTitle, videoDescription }) {
                 }
             } catch (e) {
                 setVideoItems([]);
+            } finally {
+                setLoading(false);
             }
         }
         fetchVideos();
-    }, []);
+    }, [location.state]);
 
     // 获取选中视频详情和评论
     useEffect(() => {
         async function fetchVideoDetail() {
             if (!selectedVideo) return;
             try {
-                const res = await fetch(`${env.backendPath}/api/v1/resources/video/${selectedVideo.id}`);
-                const data = await res.json();
-                if (data && data.data) {
-                    setVideoDetail(data.data);
-                    setComments(data.data.comment || []);
+                const res = await request.get(`/api/v1/resources/video/${selectedVideo.id}`);
+                const data = res.data;
+                if (data) {
+                    setVideoDetail(data);
+                    setComments(data.comment || []);
                 }
             } catch (e) {
                 setComments([]);
@@ -84,7 +96,7 @@ export default function Healing_video({ videoTitle, videoDescription }) {
 
     const displayTitle = videoDetail.title || videoTitle || '';
     const displayDescription = (typeof videoDetail.description === 'string' ? videoDetail.description : '') || videoDescription || '';
-    const displayUrl = videoDetail.content_address || videoUrl;
+    const displayUrl = videoDetail.content_address || '';
 
     return (
         <div className="video-page">
@@ -93,13 +105,17 @@ export default function Healing_video({ videoTitle, videoDescription }) {
                 <div className="video-content-area">
                     <div className="video-container">
                         <div className="player-wrapper">
-                            <ReactPlayer
-                                url={displayUrl}
-                                width="100%"
-                                height="100%"
-                                controls={true}
-                                className="react-player"
-                            />
+                            {loading || !videoDetail.content_address ? (
+                                <div style={{textAlign: 'center', padding: '40px 0', fontSize: '18px'}}>正在加载视频...</div>
+                            ) : (
+                                <ReactPlayer
+                                    url={videoDetail.content_address}
+                                    width="100%"
+                                    height="100%"
+                                    controls={true}
+                                    className="react-player"
+                                />
+                            )}
                         </div>
                         {/*<div className="video-actions">*/}
                         {/*    <button className="action-button">*/}

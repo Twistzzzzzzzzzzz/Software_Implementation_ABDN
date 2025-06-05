@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import { assets } from '../../assets/assets';
 import env from '../../config/env';
+import request from '../../utils/request';
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -16,25 +17,20 @@ export default function Login() {
         setApiError('');
         setLoading(true);
         try {
-            const response = await fetch(`${env.backendPath}/api/v1/auth/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password }),
+            const data = await request.post('/api/v1/auth/login', {
+                username,
+                password,
             });
-            const data = await response.json();
-            if (response.ok && data.code === 0) {
-                // 登录成功，保存 access_token 并跳转首页
+            if (data.code === 0) {
+                // 登录成功，保存 token
                 localStorage.setItem('access_token', data.data?.access_token || '');
-                // 保存 refresh_token
-                // localStorage.setItem('refresh_token', data.data?.refresh_token || '');
+                localStorage.setItem('refresh_token', data.data?.refresh_token || '');
                 navigate('/');
             } else {
-                setApiError(data.message || 'Login failed.');
+                setApiError(data.message || '登录失败。');
             }
         } catch (err) {
-            setApiError('Network error, please try again.');
+            setApiError('网络错误，请重试。');
         } finally {
             setLoading(false);
         }

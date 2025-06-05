@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import { v4 as uuidV4 } from 'uuid'
 import dayjs from 'dayjs'
 import PropTypes from 'prop-types'
+import request from '../../../../utils/request'
 
 // 样例数据
 // const sampleComments = [
@@ -58,7 +59,7 @@ const tabs = [
 ]
 
 // 封装Item组件
-function Item({ item, onDel }) {
+function Item({ item, onDel, onLike }) {
     return (
         <div className="reply-item">
             <div className="root-reply-avatar">
@@ -79,7 +80,7 @@ function Item({ item, onDel }) {
                     <span className="reply-content">{item.content}</span>
                     <div className="reply-info">
                         <span className="reply-time">{item.ctime}</span>
-                        <span className="reply-like">Likes: {item.like}</span>
+                        <span className="reply-like" onClick={() => onLike(item)} style={{cursor:'pointer'}}>Likes: {item.like}</span>
                         {user.uid === item.user.uid && (
                             <span
                                 className="delete-btn"
@@ -150,36 +151,35 @@ const CommentArea = ({ comments = [], videoId }) => {
         }
         setPosting(true);
         try {
-            const res = await fetch(`http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/resources/video/comment/${videoId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ content: content.trim() })
+            // 发表评论 POST
+            await request.post(`/api/v1/resources/video/comment/${videoId}`, {
+                content: content.trim()
             });
-            if (res.ok) {
-                // 可选：刷新评论区，或直接添加到本地
-                const newComment = {
-                    rpid: uuidV4(),
-                    user: {
-                        uid: user.uid,
-                        avatar: user.avatar,
-                        uname: user.uname,
-                    },
-                    content: content.trim(),
-                    ctime: dayjs().format('MM-DD HH:mm'),
-                    like: 0,
-                }
-                setCommentList([newComment, ...commentList])
-                setContent('')
-                inputRef.current?.focus()
-            } else {
-                alert('评论提交失败')
-            }
+            // 重新加载评论（建议后端返回新评论，否则只能本地添加）
+            const detailRes = await request.get(`/api/v1/resources/video/${videoId}`);
+            const detailData = detailRes.data;
+            setCommentList(formatComments(detailData.comment || []));
+            setContent('');
+            inputRef.current?.focus();
         } catch (e) {
-            alert('评论提交异常')
+            alert('评论提交失败')
         } finally {
             setPosting(false);
+        }
+    }
+
+    // 点赞评论
+    const handleLike = async (comment) => {
+        try {
+            await request.put(`/api/v1/resources/video/comment-like/${comment.rpid}`, {
+                origin_like: comment.like,
+                update_like: comment.like + 1
+            });
+            setCommentList(commentList.map(item =>
+                item.rpid === comment.rpid ? { ...item, like: item.like + 1 } : item
+            ));
+        } catch (e) {
+            alert('点赞失败');
         }
     }
 
@@ -189,7 +189,7 @@ const CommentArea = ({ comments = [], videoId }) => {
                 <ul className="nav-bar">
                     <li className="nav-title">
                         <span className="nav-title-text">Comments</span>
-                        <span className="total-reply">{commentList.length}</span>
+                        {/* <span className="total-reply">{commentList.length}</span> */}
                     </li>
                     <li className="nav-sort">
                         {tabs.map(item => (
@@ -250,6 +250,7 @@ const CommentArea = ({ comments = [], videoId }) => {
                             key={item.rpid}
                             item={item}
                             onDel={handleDel}
+                            onLike={handleLike}
                         />
                     ))}
                 </div>

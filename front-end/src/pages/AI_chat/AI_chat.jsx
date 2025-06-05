@@ -4,6 +4,8 @@ import { assets } from "../../assets/assets.js";
 import './AI_chat.css';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import request from '../../utils/request';
+import ReactPlayer from 'react-player';
 
 export default function AI_chat() {
     
@@ -17,6 +19,7 @@ export default function AI_chat() {
     const [isStreaming, setIsStreaming] = useState(false);
     const [currentAIMessage, setCurrentAIMessage] = useState("");
     const abortControllerRef = useRef(null);
+    const [video, setVideo] = useState(null);
 
     useEffect(() => {
         if (location.state && location.state.scrollToTop && topRef.current) {
@@ -56,6 +59,53 @@ export default function AI_chat() {
         }
     }, [messages, currentAIMessage]);
 
+    // 页面加载时获取历史消息
+    useEffect(() => {
+        async function fetchHistory() {
+            try {
+                const token = localStorage.getItem('access_token') || '';
+                // 假设历史消息接口为 /api/chat/history
+                const res = await fetch(`${request.defaults.baseURL}/api/chat/history`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                const result = await res.json();
+                if (result.code === 0 && result.data && Array.isArray(result.data.messages)) {
+                    // 转换为现有格式
+                    const historyMsgs = result.data.messages
+                        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+                        .map(msg => ({
+                            role: msg.role === 'assistant' ? 'ai' : 'user',
+                            message: msg.content
+                        }));
+                    setMessages(historyMsgs);
+                } else {
+                    setMessages([]);
+                }
+            } catch (e) {
+                setMessages([]);
+            }
+        }
+        fetchHistory();
+    }, []);
+
+    useEffect(() => {
+        async function fetchVideo() {
+            try {
+                const res = await request.get('/api/v1/resources/video', { params: { size: 1, page: 1 } });
+                const data = res.data;
+                if (data && data.items && data.items.length > 0) {
+                    setVideo(data.items[0]);
+                }
+            } catch (e) {
+                setVideo(null);
+            }
+        }
+        fetchVideo();
+    }, []);
+
     // 发送消息
     const handleSend = async () => {
         if (!input.trim() || isStreaming) return;
@@ -67,11 +117,16 @@ export default function AI_chat() {
         const abortController = new AbortController();
         abortControllerRef.current = abortController;
         try {
-            // 适配接口文档，发送 user_content 字段
-            const res = await fetch('http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/ai-chat', {
+            // 获取token
+            const token = localStorage.getItem('access_token') || '';
+            // 按新API发送流式请求
+            const res = await fetch(`${request.defaults.baseURL}/api/chat/stream`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ user_content: userMsg }),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ message: userMsg }),
                 signal: abortController.signal
             });
             if (!res.body) throw new Error('No stream');
@@ -81,19 +136,22 @@ export default function AI_chat() {
                 const { done, value } = await reader.read();
                 if (done) break;
                 const chunk = new TextDecoder().decode(value);
-                let text = "";
-                try {
-                    const json = JSON.parse(chunk);
-                    if (json.ai_content) {
-                        text = json.ai_content;
-                    } else {
-                        text = chunk;
+                // 处理SSE格式
+                const lines = chunk.split('\n');
+                for (let line of lines) {
+                    line = line.trim();
+                    if (line.startsWith('data:')) {
+                        const content = line.replace(/^data:\s*/, '');
+                        if (content && content !== '[DONE]') {
+                            // 如果上一段不是空，且当前content不是标点开头，则补空格
+                            if (aiMsg && !/\s$/.test(aiMsg) && !/^[.,!?;:]/.test(content)) {
+                                aiMsg += ' ';
+                            }
+                            aiMsg += content;
+                            setCurrentAIMessage(aiMsg);
+                        }
                     }
-                } catch {
-                    text = chunk;
                 }
-                aiMsg += text;
-                setCurrentAIMessage(aiMsg);
             }
             setMessages(prev => [...prev, { role: 'ai', message: aiMsg }]);
             setCurrentAIMessage("");
