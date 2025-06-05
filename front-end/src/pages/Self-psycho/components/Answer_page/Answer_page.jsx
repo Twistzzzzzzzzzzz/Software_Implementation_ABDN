@@ -54,29 +54,29 @@ export default function Answer_page() {
     const { anxietyQuestions, depressionQuestions, careerQuestions } = useMemo(() => ({
         // 焦虑测试问题
         anxietyQuestions: [
-            "你是否对于做任何事都觉得疲倦？",
-            "你是否经常感到紧张或焦虑？",
-            "你是否经常担心未来的事情？",
-            "你是否经常感到呼吸急促或心跳加速？",
-            "你是否难以入睡或保持睡眠？"
+            "Do you feel tired about doing anything?",
+            "Do you often feel nervous or anxious?",
+            "Do you often worry about future events?",
+            "Do you often feel short of breath or have a rapid heartbeat?",
+            "Do you have difficulty falling asleep or staying asleep?"
         ],
 
         // 抑郁测试问题
         depressionQuestions: [
-            "你是否经常感到悲伤或情绪低落？",
-            "你是否对平时喜欢的活动失去兴趣？",
-            "你是否感到自己没有价值？",
-            "你是否有自伤或自杀的想法？",
-            "你是否感到精力不足或疲惫？"
+            "Do you often feel sad or depressed?",
+            "Have you lost interest in activities you used to enjoy?",
+            "Do you feel worthless?",
+            "Do you have thoughts of self-harm or suicide?",
+            "Do you feel lacking energy or exhausted?"
         ],
 
         // 职业测试问题
         careerQuestions: [
-            "你是否喜欢与人打交道的工作？",
-            "你是否喜欢有创意的工作？",
-            "你是否喜欢按规则工作？",
-            "你是否喜欢独立工作？",
-            "你是否喜欢有挑战性的工作？"
+            "Do you like jobs that involve dealing with people?",
+            "Do you like creative work?",
+            "Do you like working according to rules?",
+            "Do you like working independently?",
+            "Do you like challenging work?"
         ]
     }), []);
 
@@ -159,7 +159,7 @@ export default function Answer_page() {
 
     // 动态设置问题标签文本
     const questionLabelText = useMemo(() => {
-        return `问题 ${currentQuestionIndex + 1}`;
+        return `Question ${currentQuestionIndex + 1}`;
     }, [currentQuestionIndex]);
 
     // 自适应确定选项布局
@@ -169,7 +169,7 @@ export default function Answer_page() {
 
     // 如果没有问题，显示加载中
     if (questions.length === 0) {
-        return <div className="loading">加载中...</div>;
+        return <div className="loading">Loading...</div>;
     }
 
     return (
@@ -179,7 +179,7 @@ export default function Answer_page() {
             <div className="scrollable-content">
                 <div className="header">
                     <div className="title-block">
-                        <h2 className="test-title">自我评估</h2>
+                        <h2 className="test-title">Self Assessment</h2>
                         <p className="question-counter">{currentQuestionIndex + 1} / {totalQuestions}</p>
                     </div>
                     <div className="progress-bar">
@@ -191,10 +191,6 @@ export default function Answer_page() {
                 </div>
                 
                 <div className="content-wrapper">
-                    <p className="instruction">
-                        在过去的两周内，你有多少时间被以下问题所困扰？请选择你的答案。
-                    </p>
-                    
                     <div className="question-box">
                         <div className="question-label">{questionLabelText}</div>
                         <h3 className="question-text">{questions[currentQuestionIndex]}</h3>
@@ -205,25 +201,25 @@ export default function Answer_page() {
                             className={`answer-option ${selectedOption === 0 ? 'selected' : ''}`} 
                             onClick={() => handleAnswer(0)}
                         >
-                            完全没有
+                            Not at all
                         </button>
                         <button 
                             className={`answer-option ${selectedOption === 1 ? 'selected' : ''}`} 
                             onClick={() => handleAnswer(1)}
                         >
-                            几天
+                            Several days
                         </button>
                         <button 
                             className={`answer-option ${selectedOption === 2 ? 'selected' : ''}`} 
                             onClick={() => handleAnswer(2)}
                         >
-                            一半以上的天数
+                            More than half the days
                         </button>
                         <button 
                             className={`answer-option ${selectedOption === 3 ? 'selected' : ''}`} 
                             onClick={() => handleAnswer(3)}
                         >
-                            近乎每天
+                            Nearly every day
                         </button>
                     </div>
 
@@ -231,9 +227,9 @@ export default function Answer_page() {
                         className="next-button" 
                         onClick={handleNext}
                         disabled={selectedOption === null}
-                        aria-label="下一题"
+                        aria-label="Next question"
                     >
-                        <span className="next-icon">→</span>
+                        Next Question
                     </button>
                 </div>
             </div>

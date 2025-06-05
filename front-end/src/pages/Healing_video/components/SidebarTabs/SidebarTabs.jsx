@@ -10,11 +10,11 @@ export default function SidebarTabs({ videoTitle, videoDescription, videoItems, 
                 <button
                     className={tab === 'intro' ? 'active' : ''}
                     onClick={() => setTab('intro')}
-                >简介</button>
+                >Introduction</button>
                 <button
                     className={tab === 'comment' ? 'active' : ''}
                     onClick={() => setTab('comment')}
-                >评论</button>
+                >Comments</button>
             </div>
             <div className="sidebar-tabs-content">
                 {tab === 'intro' ? (

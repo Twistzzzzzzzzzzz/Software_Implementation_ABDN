@@ -7,7 +7,7 @@ const DanmuMessage = ({ msg, onEnd }) => {
     const msgRef = useRef(null);
     const [show, setShow] = useState(true);
     
-    // 这个变量其实没用到，但是先留着吧
+
     const [isHovered, setIsHovered] = useState(false);
 
     useEffect(() => {
@@ -58,37 +58,36 @@ export default function Community() {
     const [messageList, setMessageList] = useState([]);
     const [inputText, setInputText] = useState('');
     const [loading, setLoading] = useState(true);
-    const [msgId, setMsgId] = useState(1000); // 这个变量好像也没用到
+   
     const inputRef = useRef(null);
     const danmuBoxRef = useRef(null);
-    
-    // 一些可能用得到的状态
+
     const [isPaused, setIsPaused] = useState(false);
     const [showStats, setShowStats] = useState(true);
     
     // 当前用户信息 - 使用useState确保用户名不会变化
     const [user] = useState(() => ({
-        name: '用户' + Math.floor(Math.random() * 1000),
+        name: 'User' + Math.floor(Math.random() * 1000),
         avatar: assets.Personal_icon,
     }));
 
     // 预设的弹幕消息
     const defaultMsgs = [
-        { username: '心理小助手', content: '欢迎来到心理健康弹幕墙！', type: 'system' },
-        { username: '阳光少年', content: '今天心情特别好，分享给大家！' },
-        { username: '冥想达人', content: '刚刚完成了20分钟的正念冥想，感觉很平静' },
-        { username: '焦虑克星', content: '深呼吸真的很有用，推荐给有焦虑的朋友' },
-        { username: '心理学爱好者', content: '学习心理学让我更了解自己了' },
-        { username: '治愈系', content: '每天记录三件感恩的事，心态变好了很多' },
-        { username: '压力管理师', content: '工作压力大的时候，我会听听轻音乐' },
-        { username: '情绪调节员', content: '情绪低落时，运动是最好的良药' },
-        { username: '睡眠专家', content: '规律作息真的很重要，大家要早睡早起' },
-        { username: '自我成长', content: '每天进步一点点，就是最大的成功' },
-        { username: '心灵导师', content: '接纳自己的不完美，也是一种成长' },
-        { username: '正能量传播者', content: '微笑是最好的化妆品，大家要多笑笑' },
-        { username: '心理咨询师', content: '倾听自己内心的声音，找到真正的自己' },
-        { username: '康复之路', content: '走出抑郁的过程虽然艰难，但值得坚持' },
-        { username: '希望之光', content: '黑暗中总有一束光在等着我们' }
+        { username: 'Mental Health Assistant', content: 'Welcome to Mental Health Barrage Wall!', type: 'system' },
+        { username: 'Sunshine Youth', content: 'Feeling great today, sharing the joy with everyone!' },
+        { username: 'Meditation Master', content: 'Just finished 20 minutes of mindful meditation, feeling very peaceful' },
+        { username: 'Anxiety Fighter', content: 'Deep breathing really works, recommend it to friends with anxiety' },
+        { username: 'Psychology Lover', content: 'Learning psychology has helped me understand myself better' },
+        { username: 'Healing Spirit', content: 'Recording three things I\'m grateful for daily has improved my mindset' },
+        { username: 'Stress Manager', content: 'When work stress is high, I listen to light music' },
+        { username: 'Emotion Regulator', content: 'When feeling down, exercise is the best medicine' },
+        { username: 'Sleep Expert', content: 'Regular sleep schedule is really important, everyone should sleep and wake early' },
+        { username: 'Self Growth', content: 'Improving a little each day is the greatest success' },
+        { username: 'Soul Guide', content: 'Accepting your imperfections is also a form of growth' },
+        { username: 'Positive Energy Spreader', content: 'A smile is the best makeup, everyone should smile more' },
+        { username: 'Psychologist', content: 'Listen to your inner voice and find your true self' },
+        { username: 'Recovery Journey', content: 'The process of overcoming depression is difficult but worth persisting' },
+        { username: 'Light of Hope', content: 'There\'s always a beam of light waiting for us in the darkness' }
     ];
 
     // 随机颜色数组
@@ -107,7 +106,7 @@ export default function Community() {
 
     // 初始化弹幕
     useEffect(() => {
-        console.log('开始初始化弹幕...'); // 调试用的log
+        console.log('Starting barrage initialization...'); // 调试用的log
         setLoading(true);
         
         setTimeout(() => {
@@ -128,7 +127,7 @@ export default function Community() {
 
             setMessageList(initDanmu);
             setLoading(false);
-            console.log('弹幕初始化完成！'); // 调试用的log
+            console.log('Barrage initialization completed!'); // 调试用的log
         }, 1000);
     }, []);
 
@@ -175,7 +174,7 @@ export default function Community() {
     // 发送弹幕
     const sendMsg = () => {
         if (!inputText.trim()) {
-            alert('请输入弹幕内容！'); // 简单的提示
+            alert('Please enter the barrage content!'); // 简单的提示
             return;
         }
 
@@ -190,7 +189,7 @@ export default function Community() {
             time: Date.now()
         };
 
-        console.log('发送弹幕:', newDanmu); // 调试用
+        console.log('Send barrage:', newDanmu); // 调试用
         setMessageList(prev => [...prev, newDanmu]);
         setInputText('');
         
@@ -215,17 +214,17 @@ export default function Community() {
 
     // 清空所有弹幕
     const clearAll = () => {
-        const confirmClear = window.confirm('确定要清空所有弹幕吗？');
+        const confirmClear = window.confirm('Are you sure you want to clear all barrages?');
         if (confirmClear) {
             setMessageList([]);
-            console.log('已清空所有弹幕');
+            console.log('All barrages cleared');
         }
     };
     
     // 暂停/恢复弹幕
     const togglePause = () => {
         setIsPaused(!isPaused);
-        console.log(isPaused ? '恢复弹幕' : '暂停弹幕');
+        console.log(isPaused ? 'Resume barrages' : 'Pause barrages');
     };
 
     // 加载状态
@@ -234,7 +233,7 @@ export default function Community() {
             <div className="danmu-container">
                 <div className="danmu-loading">
                     <div className="loading-spinner"></div>
-                    <p>弹幕墙加载中...</p>
+                    <p>Loading barrage wall...</p>
                 </div>
             </div>
         );
@@ -250,8 +249,8 @@ export default function Community() {
                 
                 {/* 标题区域 */}
                 <div className="danmu-header">
-                    <h1>心理健康弹幕墙</h1>
-                    <p>分享你的心情，传递正能量</p>
+                    <h1>Mental Health Barrage Wall</h1>
+                    <p>Share your mood, spread positive energy</p>
                 </div>
 
                 {/* 弹幕消息 */}
@@ -270,11 +269,11 @@ export default function Community() {
                     <div className="danmu-stats">
                         <div className="stat-item">
                             <span className="stat-number">{messageList.length}</span>
-                            <span className="stat-label">当前弹幕</span>
+                            <span className="stat-label">Current Barrages</span>
                         </div>
                         <div className="stat-item">
                             <span className="stat-number">∞</span>
-                            <span className="stat-label">在线用户</span>
+                            <span className="stat-label">Online Users</span>
                         </div>
                     </div>
                 )}
@@ -284,7 +283,7 @@ export default function Community() {
             <div className="danmu-input-area">
                 <div className="input-container">
                     <div className="user-info">
-                        <img src={user.avatar} alt="头像" className="user-avatar" />
+                        <img src={user.avatar} alt="Avatar" className="user-avatar" />
                         <span className="username">{user.name}</span>
                     </div>
                     
@@ -295,7 +294,7 @@ export default function Community() {
                             value={inputText}
                             onChange={(e) => setInputText(e.target.value)}
                             onKeyPress={handleKeyDown}
-                            placeholder="输入你的心情弹幕，按回车发送..."
+                            placeholder="Enter your mood barrage, press Enter to send..."
                             maxLength={50}
                             className="message-input"
                         />
@@ -306,7 +305,7 @@ export default function Community() {
                                 disabled={!inputText.trim()}
                                 className="send-btn"
                             >
-                                发送
+                                Send
                             </button>
                         </div>
                     </div>
@@ -314,7 +313,7 @@ export default function Community() {
 
                 <div className="control-buttons">
                     <button onClick={clearAll} className="control-btn clear-btn">
-                        清空弹幕
+                        Clear All
                     </button>
                     {/*<button onClick={togglePause} className="control-btn pause-btn">
                         {isPaused ? '恢复' : '暂停'}
@@ -323,7 +322,7 @@ export default function Community() {
                         onClick={() => setShowStats(!showStats)} 
                         className="control-btn settings-btn"
                     >
-                        {showStats ? '隐藏统计' : '显示统计'}
+                        {showStats ? 'Hide Stats' : 'Show Stats'}
                     </button>
                 </div>
             </div>

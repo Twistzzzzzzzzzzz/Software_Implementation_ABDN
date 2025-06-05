@@ -65,7 +65,7 @@ export default function Navbar() {
                 <li><Link to="ai-chat">AI chat</Link></li>
                 <li><Link to="healing-vedio">Healing Videos</Link></li>
                 <li><Link to="self-psycho">Self-psychological test</Link></li>
-                <li><Link to="contact">Contact us</Link></li>
+                <li><Link to="articles">Articles</Link></li>
                 <li><Link to="community">Community</Link></li>
             </ul>
 

@@ -19,42 +19,40 @@ export default function Report() {
     const scorePercentage = (score / maxScore) * 100;
     
     // 根据测试类型和得分给出评估结果
-    const getAssessment = () => {
+    const getAssessmentResult = (testType, score) => {
         if (testType === 'anxiety') {
-            if (score <= 5) return '您的焦虑水平很低，处于健康范围内。';
-            if (score <= 10) return '您有轻度焦虑，可以尝试一些自我调节方法。';
-            return '您的焦虑水平较高，建议寻求专业人士的帮助。';
+            if (score <= 5) return 'Your anxiety level is very low and within a healthy range.';
+            if (score <= 10) return 'You have mild anxiety, you can try some self-regulation methods.';
+            return 'Your anxiety level is high, it is recommended to seek help from professionals.';
         } else if (testType === 'depression') {
-            if (score <= 5) return '您没有表现出抑郁症状，情绪状态良好。';
-            if (score <= 10) return '您有轻度抑郁情绪，建议多关注自己的情绪变化。';
-            return '您的抑郁程度较高，建议咨询心理医生或专业心理咨询师。';
+            if (score <= 5) return 'You show no signs of depression and are in good emotional state.';
+            if (score <= 10) return 'You have mild depressive emotions, it is recommended to pay more attention to your emotional changes.';
+            return 'Your depression level is high, it is recommended to consult a psychologist or professional counselor.';
         } else if (testType === 'career') {
-            if (score <= 5) return '您可能更适合结构化、规则明确的工作环境。';
-            if (score <= 10) return '您可能在平衡创意与规则的工作环境中表现最佳。';
-            return '您可能更适合创意性、灵活性高的工作环境。';
+            if (score <= 5) return 'You may be more suitable for structured work environments with clear rules.';
+            if (score <= 10) return 'You may perform best in work environments that balance creativity and rules.';
+            return 'You may be more suitable for creative and highly flexible work environments.';
         }
-        return '无法提供评估，测试类型未识别。';
+        return 'Unable to provide assessment, test type not recognized.';
     };
     
     // 获取测试名称
     const getTestName = () => {
-        switch (testType) {
-            case 'anxiety':
-                return '焦虑自评测试';
-            case 'depression':
-                return '抑郁自评测试';
-            case 'career':
-                return '职业倾向测试';
-            default:
-                return '心理测试';
+        if (testType === 'anxiety') {
+            return 'Anxiety Self-Assessment Test';
+        } else if (testType === 'depression') {
+            return 'Depression Self-Assessment Test';
+        } else if (testType === 'career') {
+            return 'Career Orientation Test';
         }
+        return 'Psychological Test';
     };
 
     return (
         <div className="report-page">
             <img src={assets.Test_answer_bg} alt="Background" className="bg-image" />
             <div className="report-container">
-                <h1 className="report-title">{getTestName()} - 结果报告</h1>
+                <h1 className="report-title">{getTestName()} - Result Report</h1>
                 
                 <div className="score-display">
                     <div className="score-circle">
@@ -67,24 +65,24 @@ export default function Report() {
                 </div>
                 
                 <div className="assessment-section">
-                    <h2>评估结果</h2>
-                    <p className="assessment-text">{getAssessment()}</p>
+                    <h2>Assessment Results</h2>
+                    <p className="assessment-text">{getAssessmentResult(testType, score)}</p>
                 </div>
                 
                 <div className="recommendations-section">
-                    <h2>建议</h2>
+                    <h2>Recommendations</h2>
                     <ul className="recommendations-list">
-                        <li>保持规律的睡眠和饮食习惯</li>
-                        <li>每天进行适当的体育锻炼</li>
-                        <li>与家人和朋友保持联系</li>
-                        <li>学习放松技巧，如深呼吸和冥想</li>
-                        <li>如有需要，寻求专业人士的帮助</li>
+                        <li>Maintain regular sleep and eating habits</li>
+                        <li>Engage in appropriate physical exercise daily</li>
+                        <li>Stay connected with family and friends</li>
+                        <li>Learn relaxation techniques such as deep breathing and meditation</li>
+                        <li>Seek help from professionals if needed</li>
                     </ul>
                 </div>
                 
                 <div className="navigation-buttons">
-                    <Link to="/self-psycho" className="back-to-tests">返回测试列表</Link>
-                    <Link to="/" className="go-home">返回主页</Link>
+                    <Link to="/self-psycho" className="back-to-tests">Back to Test List</Link>
+                    <Link to="/" className="go-home">Back to Home</Link>
                 </div>
             </div>
         </div>

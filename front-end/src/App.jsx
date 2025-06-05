@@ -12,7 +12,8 @@ const AI_chat = lazy(() => import('./pages/AI_chat/AI_chat'))
 const Healing_video = lazy(() => import('./pages/Healing_video/Healing_video'))
 const SelfPsycho = lazy(() => import('./pages/Self-psycho/Self-psycho'))
 const Community = lazy(() => import('./pages/Community/Community'))
-const Contact = lazy(() => import('./pages/Contact/Contact'))
+const Articles = lazy(() => import('./pages/Articles_Page/ArticlesMain'))
+
 const Answer_page = lazy(() => import('./pages/Self-psycho/components/Answer_page/Answer_page'))
 const Report = lazy(() => import('./pages/Self-psycho/pages/report/report'))
 const Login = lazy(() => import('./pages/Login/Login'))
@@ -22,7 +23,7 @@ const Register = lazy(() => import('./pages/Register/Register'))
 const LoadingFallback = () => (
     <div className="page-loading">
         <div className="loading-spinner"></div>
-        <p>加载中...</p>
+        <p>Loading...</p>
     </div>
 )
 
@@ -42,7 +43,8 @@ function AppContent() {
                     <Route path='/self-psycho/anxiety' element={<Answer_page />}></Route>
                     <Route path='/self-psycho/depression' element={<Answer_page />}></Route>
                     <Route path='/self-psycho/career' element={<Answer_page />}></Route>
-                    <Route path='/contact' element={<Contact />}></Route>
+                    <Route path='/articles' element={<Articles />}></Route>
+
                     <Route path='/community' element={<Community />}></Route>
                     <Route path='/self-psycho/report' element={<Report />}></Route>
                     <Route path='/login' element={<Login />}></Route>

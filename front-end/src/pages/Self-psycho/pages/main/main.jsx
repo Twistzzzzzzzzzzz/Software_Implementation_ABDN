@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom'
 export default function Main() {
     return(
         <div className="main-container">
-            <div className='test-container'>
             <div className="anxiety-test">
                 <h1>Anxiety Test</h1>
                 <ul>
@@ -38,7 +37,6 @@ export default function Main() {
                     <li>Feeling like you're not being challenged</li>
                 </ul>
                 <button><Link to='/self-psycho/career'>Start</Link></button>
-            </div>
             </div>
         </div>
     )

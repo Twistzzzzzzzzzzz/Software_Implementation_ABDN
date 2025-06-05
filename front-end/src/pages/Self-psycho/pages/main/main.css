@@ -2,9 +2,12 @@
     width: 100%;
     position: relative;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    padding-top: 340px;
+    justify-content: center;
+    gap: 100px;
+    padding-top: 450px;
+    margin-top: 70px;
     min-height: 100vh;
     margin: auto;
     /* overflow-y: auto; */
@@ -12,31 +15,7 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed;
-    z-index: 1;
-}
-
-.test-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 100px;
-    margin-top: 70px;
-    position: relative;
     z-index: 2;
-}
-
-.main-container::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 70%;
-    background-color: #4AB6B1;
-    border-radius: 100% 100% 0 0 / 20% 20% 0 0;
-    transform: translateY(20px);
-    z-index: 1;
 }
 
 .anxiety-test,
@@ -48,10 +27,6 @@
     margin-bottom: 50px;
     position: relative;
     z-index: 3;
-    background-color: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -133,47 +108,96 @@ button a {
     .main-container {
         flex-direction: column;
         align-items: center;
-        padding-top: 250px;
-    }
-    
-    .main-container::before {
-        height: 90%;
-    }
-    
-    .anxiety-test,
-    .depression-test,
-    .career-test {
-        width: 80%;
-        margin-bottom: 40px;
-    }
-    
-    h1 {
-        text-align: center;
-    }
-    
-    button {
-        display: block;
-        margin: 0 auto;
-    }
-}
-
-@media screen and (max-width: 600px) {
-    .main-container {
-        padding-top: 200px;
-    }
-    
-    h1 {
-        font-size: 24px;
+        padding-top: 180px;
+        gap: 30px;
+        padding-left: 20px;
+        padding-right: 20px;
     }
     
     .anxiety-test,
     .depression-test,
     .career-test {
         width: 90%;
+        margin-bottom: 30px;
+        padding: 0 15px;
+    }
+    
+    h1 {
+        text-align: center;
+        font-size: 28px;
+    }
+    
+    button {
+        display: block;
+        margin: 0 auto;
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .main-container {
+        padding-top: 150px;
+        padding-left: 15px;
+        padding-right: 15px;
+        gap: 25px;
+    }
+    
+    h1 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    
+    .anxiety-test,
+    .depression-test,
+    .career-test {
+        width: 95%;
+        padding: 0 10px;
+        margin-bottom: 25px;
+    }
+    
+    li {
+        font-size: 14px;
+        line-height: 1.4;
+        margin-bottom: 8px;
     }
     
     button {
         width: 100%;
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .main-container {
+        padding-top: 120px;
+        padding-left: 10px;
+        padding-right: 10px;
+        gap: 20px;
+    }
+    
+    h1 {
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    
+    .anxiety-test,
+    .depression-test,
+    .career-test {
+        width: 100%;
+        padding: 0 5px;
+        margin-bottom: 20px;
+    }
+    
+    li {
+        font-size: 13px;
+        line-height: 1.3;
+        margin-bottom: 6px;
+    }
+    
+    button {
+        padding: 10px 15px;
+        font-size: 14px;
     }
 }
 
@@ -212,7 +236,6 @@ button a {
     .anxiety-test,
     .depression-test,
     .career-test {
-        background: white;
         border: 2px solid #000;
     }
 
@@ -241,7 +264,6 @@ button a {
     .career-test {
         page-break-inside: avoid;
         margin-bottom: 20px;
-        box-shadow: none;
         border: 1px solid #000;
     }
 

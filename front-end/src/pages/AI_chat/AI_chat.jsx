@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
 export default function AI_chat() {
-    // const message_example = "在未来的城市里，一个名叫「芙露」的人工智能被赋予了情感。她不再只是冰冷的程序，而是拥有温柔与好奇心的存在。一天，她悄悄溜出实验室，第一次看到了真实的阳光。她站在人群中微笑，而人们也开始回以善意的目光。"
+    
     const messageContainerRef = useRef(null);
     const topRef = useRef(null);
     const location = useLocation();
@@ -99,9 +99,9 @@ export default function AI_chat() {
             setCurrentAIMessage("");
         } catch (e) {
             if (abortController.signal.aborted) {
-                setCurrentAIMessage("[AI回答已暂停]");
+                setCurrentAIMessage("[AI response paused]");
             } else {
-                setCurrentAIMessage("[AI回答出错]");
+                setCurrentAIMessage("[AI response error]");
             }
         } finally {
             setIsStreaming(false);
@@ -136,15 +136,15 @@ export default function AI_chat() {
                 </div>
                 {!hasMessages && (
                     <div className="ai-chat-welcome">
-                        <div className="ai-chat-title">我是AI心理咨询师，很高兴见到你！</div>
-                        <div className="ai-chat-desc">你可以向我倾诉、提问、寻求建议，我会用专业和温暖的态度陪伴你。</div>
+                        <div className="ai-chat-title">I'm an AI psychological counselor, nice to meet you!</div>
+                        <div className="ai-chat-desc">You can confide in me, ask questions, seek advice, and I will accompany you with professionalism and warmth.</div>
                     </div>
                 )}
                 <div className={hasMessages ? 'sendMessageBox' : 'sendMessageBox sendMessageBox-center'}>
                     <div className='inputContainer'>
                         <input
                             type="text"
-                            placeholder="给AI心理聊天师发送消息"
+                            placeholder="Send message to AI psychological counselor"
                             className='messageInput'
                             value={input}
                             onChange={e => setInput(e.target.value)}

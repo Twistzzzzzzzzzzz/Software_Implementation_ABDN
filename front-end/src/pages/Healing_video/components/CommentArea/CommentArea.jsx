@@ -53,8 +53,8 @@ const user = {
 
 // 导航 Tab 数组
 const tabs = [
-    { type: 'hot', text: '最热' },
-    { type: 'time', text: '最新' },
+    { type: 'hot', text: 'Most Popular' },
+    { type: 'time', text: 'Latest' },
 ]
 
 // 封装Item组件
@@ -65,7 +65,7 @@ function Item({ item, onDel }) {
                 <div className="bili-avatar">
                     <img
                         className="bili-avatar-img"
-                        alt={`${item.user.uname}的头像`}
+                        alt={`${item.user.uname}'s avatar`}
                         src={item.user.avatar || assets.User_avatar}
                     />
                 </div>
@@ -79,13 +79,13 @@ function Item({ item, onDel }) {
                     <span className="reply-content">{item.content}</span>
                     <div className="reply-info">
                         <span className="reply-time">{item.ctime}</span>
-                        <span className="reply-like">点赞数: {item.like}</span>
+                        <span className="reply-like">Likes: {item.like}</span>
                         {user.uid === item.user.uid && (
                             <span
                                 className="delete-btn"
                                 onClick={() => onDel(item.rpid)}
                             >
-                                删除
+                                Delete
                             </span>
                         )}
                     </div>
@@ -104,7 +104,7 @@ const CommentArea = ({ comments = [], videoId }) => {
             user: {
                 uid: item.user?.uid || 'unknown',
                 avatar: item.user?.avatar || assets.User_avatar,
-                uname: item.user?.uname || (item.user?.username) || '匿名',
+                uname: item.user?.uname || (item.user?.username) || 'Anonymous',
             },
             content: item.content,
             ctime: item.ctime || '',
@@ -141,11 +141,11 @@ const CommentArea = ({ comments = [], videoId }) => {
     // 发表评论
     const handlePublish = async () => {
         if (!content.trim()) {
-            alert('请输入评论内容')
+            alert('Please enter comment content')
             return
         }
         if (!videoId) {
-            alert('未获取到视频ID，无法评论')
+            alert('Unable to get video ID, cannot comment')
             return
         }
         setPosting(true);
@@ -188,7 +188,7 @@ const CommentArea = ({ comments = [], videoId }) => {
             <div className="reply-navigation">
                 <ul className="nav-bar">
                     <li className="nav-title">
-                        <span className="nav-title-text">评论</span>
+                        <span className="nav-title-text">Comments</span>
                         <span className="total-reply">{commentList.length}</span>
                     </li>
                     <li className="nav-sort">
@@ -212,14 +212,14 @@ const CommentArea = ({ comments = [], videoId }) => {
                             <img
                                 className="bili-avatar-img"
                                 src={user.avatar}
-                                alt="用户头像"
+                                alt="User Avatar"
                             />
                         </div>
                     </div>
                     <div className="reply-box-wrap">
                         <textarea
                             className="reply-box-textarea"
-                            placeholder="发一条友善的评论"
+                            placeholder="Post a friendly comment"
                             ref={inputRef}
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
@@ -238,7 +238,7 @@ const CommentArea = ({ comments = [], videoId }) => {
                                 })}
                                 onClick={posting ? undefined : handlePublish}
                             >
-                                {posting ? '发布中...' : '发布'}
+                                {posting ? 'Publishing...' : 'Publish'}
                             </div>
                         </div>
                     </div>
