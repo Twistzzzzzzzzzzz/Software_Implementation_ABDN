@@ -11,18 +11,31 @@ export default function Profile({ onClose }) {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const fileInputRef = useRef();
+    const [email, setEmail] = useState('');
 
     useEffect(() => {
         // 获取用户信息
         async function fetchUserInfo() {
             setLoading(true);
             try {
-                const res = await request.get('/api/v1/user/info');
-                const data = await res.data;
-                if (res.ok && data.code === 0 && data.data) {
-                    setUsername(data.data.username || '');
-                    setPassword(data.data.password || '');
-                    setAvatar(data.data.avatar || null);
+                const token = localStorage.getItem('access_token') || '';
+                const res = await request.get('/api/v1/user/info', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (res && res.code === 0 && res.data) {
+                    setUsername(res.data.username || '');
+                    setPassword(res.data.password || '');
+                    const avatarValue = res.data.avatar && res.data.avatar.trim() !== '' ? res.data.avatar : null;
+                    setAvatar(avatarValue);
+                    setEmail(res.data.email || '');
+                    // 存储头像到localStorage，Navbar可实时读取
+                    if (avatarValue) {
+                        localStorage.setItem('user_avatar', avatarValue);
+                    } else {
+                        localStorage.removeItem('user_avatar');
+                    }
                 }
             } catch (e) {
                 // 错误处理
@@ -52,15 +65,29 @@ export default function Profile({ onClose }) {
         }
         try {
             const token = localStorage.getItem('access_token') || '';
-            await request.put('/api/v1/user/info', {
-                update_username: username,
-                update_password: password,
-                update_avater: update_avatar || null,
+            const res = await request.put('http://frp-aim.com:13246/api/v1/user/update', {
+                username: username,
+                password: password,
+                avatar: update_avatar || '',
+                email: email,
             }, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
             });
+            // 渲染返回的用户信息
+            if (res && res.code === 0 && res.data) {
+                setUsername(res.data.username || '');
+                const avatarValue = res.data.avatar && res.data.avatar.trim() !== '' ? res.data.avatar : null;
+                setAvatar(avatarValue);
+                setEmail(res.data.email || '');
+                // 存储头像到localStorage，Navbar可实时读取
+                if (avatarValue) {
+                    localStorage.setItem('user_avatar', avatarValue);
+                } else {
+                    localStorage.removeItem('user_avatar');
+                }
+            }
             // 成功提示
             onClose();
         } catch (e) {
@@ -90,7 +117,7 @@ export default function Profile({ onClose }) {
                 {/*<div className="profile-title">Edit Profile</div>*/}
                 <div className="profile-avatar-section">
                     <img
-                        src={avatar || defaultAvatar}
+                        src={avatar ? avatar : defaultAvatar}
                         alt="avatar"
                         className="profile-avatar"
                         onClick={handleAvatarClick}
@@ -110,6 +137,8 @@ export default function Profile({ onClose }) {
                     <input id="profile-username" value={username} onChange={e => setUsername(e.target.value)} placeholder="Username" disabled={loading || saving} />
                     <label htmlFor="profile-password">Password</label>
                     <input id="profile-password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" disabled={loading || saving} />
+                    <label htmlFor="profile-email">Email</label>
+                    <input id="profile-email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" disabled={loading || saving} />
                     <button type="submit" className="profile-save-btn" disabled={loading || saving}>{saving ? 'Saving...' : loading ? 'Loading...' : 'Save'}</button>
                 </form>
             </div>

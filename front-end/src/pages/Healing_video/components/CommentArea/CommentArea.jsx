@@ -4,52 +4,28 @@ import { assets } from '../../../../assets/assets.js'
 import _ from 'lodash'
 import classNames from 'classnames'
 import { v4 as uuidV4 } from 'uuid'
-import dayjs from 'dayjs'
 import PropTypes from 'prop-types'
 import request from '../../../../utils/request'
 
-// 样例数据
-// const sampleComments = [
-//     {
-//         rpid: '1',
-//         user: {
-//             uid: '10001',
-//             avatar: assets.User_avatar,
-//             uname: '张三',
-//         },
-//         content: '这个视频很有帮助，让我学到了很多！这个视频很有帮助，让我学到了很多！这个视频很有帮助，让我学到了很多！',
-//         ctime: '05-20 14:30',
-//         like: 128
-//     },
-//     {
-//         rpid: '2',
-//         user: {
-//             uid: '10002',
-//             avatar: assets.User_avatar,
-//             uname: '李四',
-//         },
-//         content: '希望能有更多这样的内容',
-//         ctime: '05-20 15:45',
-//         like: 96
-//     },
-//     {
-//         rpid: '3',
-//         user: {
-//             uid: '30009257',
-//             avatar: assets.User_avatar,
-//             uname: '黑马前端',
-//         },
-//         content: '感谢分享，非常实用的建议！',
-//         ctime: '05-20 16:20',
-//         like: 45
-//     }
-// ]
-
-// 当前登录用户信息
-const user = {
-    uid: '30009257',
-    avatar: assets.User_avatar,
-    uname: '黑马前端',
+// 当前登录用户信息（头像动态读取）
+function useUserAvatar() {
+    const [avatar, setAvatar] = useState(localStorage.getItem('user_avatar') || assets.User_avatar);
+    useEffect(() => {
+        const onStorage = () => {
+            setAvatar(localStorage.getItem('user_avatar') || assets.User_avatar);
+        };
+        window.addEventListener('storage', onStorage);
+        return () => window.removeEventListener('storage', onStorage);
+    }, []);
+    // 允许Profile页面setItem时主动触发
+    useEffect(() => {
+        const interval = setInterval(() => {
+            const current = localStorage.getItem('user_avatar') || assets.User_avatar;
+            setAvatar(prev => prev !== current ? current : prev);
+        }, 500);
+        return () => clearInterval(interval);
+    }, []);
+    return avatar;
 }
 
 // 导航 Tab 数组
@@ -59,7 +35,7 @@ const tabs = [
 ]
 
 // 封装Item组件
-function Item({ item, onDel, onLike }) {
+function Item({ item, onDel, onLike, currentUid }) {
     return (
         <div className="reply-item">
             <div className="root-reply-avatar">
@@ -81,7 +57,7 @@ function Item({ item, onDel, onLike }) {
                     <div className="reply-info">
                         <span className="reply-time">{item.ctime}</span>
                         <span className="reply-like" onClick={() => onLike(item)} style={{cursor:'pointer'}}>Likes: {item.like}</span>
-                        {user.uid === item.user.uid && (
+                        {currentUid === item.user.uid && (
                             <span
                                 className="delete-btn"
                                 onClick={() => onDel(item.rpid)}
@@ -97,6 +73,9 @@ function Item({ item, onDel, onLike }) {
 }
 
 const CommentArea = ({ comments = [], videoId }) => {
+    // 获取当前用户uid（如有登录信息可用）
+    const currentUid = localStorage.getItem('user_uid') || 'current';
+    const userAvatar = useUserAvatar();
     // 兼容后端评论结构
     const formatComments = (commentsArr) => {
         if (!Array.isArray(commentsArr)) return [];
@@ -151,16 +130,26 @@ const CommentArea = ({ comments = [], videoId }) => {
         }
         setPosting(true);
         try {
-            // 发表评论 POST
-            await request.post(`/api/v1/resources/video/comment/${videoId}`, {
+            // 发表评论 POST，带token
+            const token = localStorage.getItem('access_token') || '';
+            const res = await request.post(`/api/v1/resources/video/comment/${videoId}`, {
                 content: content.trim()
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
             });
-            // 重新加载评论（建议后端返回新评论，否则只能本地添加）
-            const detailRes = await request.get(`/api/v1/resources/video/${videoId}`);
-            const detailData = detailRes.data;
-            setCommentList(formatComments(detailData.comment || []));
-            setContent('');
-            inputRef.current?.focus();
+            // 判断返回状态码
+            if (res && res.code === 0) {
+                // 重新加载评论
+                const detailRes = await request.get(`/api/v1/resources/video/${videoId}`);
+                const detailData = detailRes.data;
+                setCommentList(formatComments(detailData.comment || []));
+                setContent('');
+                inputRef.current?.focus();
+            } else {
+                alert('评论提交失败: ' + (res?.message || '未知错误'));
+            }
         } catch (e) {
             alert('评论提交失败')
         } finally {
@@ -211,7 +200,7 @@ const CommentArea = ({ comments = [], videoId }) => {
                         <div className="bili-avatar">
                             <img
                                 className="bili-avatar-img"
-                                src={user.avatar}
+                                src={userAvatar}
                                 alt="User Avatar"
                             />
                         </div>
@@ -219,7 +208,7 @@ const CommentArea = ({ comments = [], videoId }) => {
                     <div className="reply-box-wrap">
                         <textarea
                             className="reply-box-textarea"
-                            placeholder="Post a friendly comment"
+                            placeholder="Post a comment"
                             ref={inputRef}
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
@@ -251,6 +240,7 @@ const CommentArea = ({ comments = [], videoId }) => {
                             item={item}
                             onDel={handleDel}
                             onLike={handleLike}
+                            currentUid={currentUid}
                         />
                     ))}
                 </div>

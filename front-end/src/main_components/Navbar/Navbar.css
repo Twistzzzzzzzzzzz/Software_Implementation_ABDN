@@ -65,7 +65,7 @@
 }
 
 .navbar_right button {
-    margin: auto;
+    margin: 0;
     background-color: #0066ff;
     color: white;
     border: none;
@@ -76,8 +76,11 @@
     cursor: pointer;
     display: flex;
     align-items: center;
+    justify-content: center;
     vertical-align: middle;
     height: 40px;
+    min-width: 100px;
+    text-align: center;
 }
 
 .navbar_right button:hover {
