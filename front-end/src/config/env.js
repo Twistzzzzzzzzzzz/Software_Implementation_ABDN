@@ -12,6 +12,9 @@ const env = {
     
     // 图片CDN
     imageBaseUrl: import.meta.env.VITE_IMAGE_BASE_URL || 'http://localhost:3000/images',
+
+    // 后端路径
+    backendPath: import.meta.env.VITE_BACKEND_PATH || 'http://localhost:8080',
     
     // 网站设置
     defaultPageSize: 10,

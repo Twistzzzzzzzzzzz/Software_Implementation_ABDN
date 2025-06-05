@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Login.css';
 import { assets } from '../../assets/assets';
+import env from '../../config/env';
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -15,7 +16,7 @@ export default function Login() {
         setApiError('');
         setLoading(true);
         try {
-            const response = await fetch('http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/auth/login', {
+            const response = await fetch(`${env.backendPath}/api/v1/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

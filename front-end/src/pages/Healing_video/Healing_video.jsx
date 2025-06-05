@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import VideoItem from './components/VideoItem/VideoItem.jsx';
 import SidebarTabs from './components/SidebarTabs/SidebarTabs.jsx';
+import env from "../../config/env.js";
 
 export default function Healing_video({ videoTitle, videoDescription }) {
     const videoUrl = assets.Super_idol_video
@@ -26,7 +27,7 @@ export default function Healing_video({ videoTitle, videoDescription }) {
     useEffect(() => {
         async function fetchVideos() {
             try {
-                const res = await fetch('http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/resources/video?size=2');
+                const res = await fetch(`${env.backendPath}/api/v1/resources/video?size=2`);
                 const data = await res.json();
                 if (data && data.data && Array.isArray(data.data.items)) {
                     const itemsWithImg = await Promise.all(
@@ -63,7 +64,7 @@ export default function Healing_video({ videoTitle, videoDescription }) {
         async function fetchVideoDetail() {
             if (!selectedVideo) return;
             try {
-                const res = await fetch(`http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/resources/video/${selectedVideo.id}`);
+                const res = await fetch(`${env.backendPath}/api/v1/resources/video/${selectedVideo.id}`);
                 const data = await res.json();
                 if (data && data.data) {
                     setVideoDetail(data.data);

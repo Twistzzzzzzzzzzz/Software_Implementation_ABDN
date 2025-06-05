@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Register.css';
 import { assets } from '../../assets/assets';
+import env from '../../config/env';
+
 
 export default function Register() {
     const [email, setEmail] = useState('');
@@ -29,7 +31,7 @@ export default function Register() {
         if (!validateForm()) return;
         setLoading(true);
         try {
-            const response = await fetch('http://127.0.0.1:4523/m1/6378312-6074650-default/api/v1/auth/register', {
+            const response = await fetch( `${env.backendPath}/api/v1/auth/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
