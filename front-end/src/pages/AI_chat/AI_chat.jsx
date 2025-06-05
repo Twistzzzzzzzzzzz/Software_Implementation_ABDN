@@ -5,6 +5,7 @@ import './AI_chat.css';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import request from '../../utils/request';
+import ReactPlayer from 'react-player';
 
 export default function AI_chat() {
     
@@ -18,6 +19,7 @@ export default function AI_chat() {
     const [isStreaming, setIsStreaming] = useState(false);
     const [currentAIMessage, setCurrentAIMessage] = useState("");
     const abortControllerRef = useRef(null);
+    const [video, setVideo] = useState(null);
 
     useEffect(() => {
         if (location.state && location.state.scrollToTop && topRef.current) {
@@ -87,6 +89,21 @@ export default function AI_chat() {
             }
         }
         fetchHistory();
+    }, []);
+
+    useEffect(() => {
+        async function fetchVideo() {
+            try {
+                const res = await request.get('/api/v1/resources/video', { params: { size: 1, page: 1 } });
+                const data = res.data;
+                if (data && data.items && data.items.length > 0) {
+                    setVideo(data.items[0]);
+                }
+            } catch (e) {
+                setVideo(null);
+            }
+        }
+        fetchVideo();
     }, []);
 
     // 发送消息

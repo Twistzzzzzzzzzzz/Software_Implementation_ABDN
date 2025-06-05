@@ -33,9 +33,9 @@ const LazyLoadImage = ({ src, alt, className }) => {
     return (
         <div ref={imgRef} className={`${className}-container`}>
             {isInView && (
-                <img 
-                    src={src} 
-                    alt={alt} 
+                <img
+                    src={src}
+                    alt={alt}
                     className={`${className} ${isLoaded ? 'loaded' : ''}`}
                     onLoad={() => setIsLoaded(true)}
                     style={{ opacity: isLoaded ? 1 : 0, transition: 'opacity 0.3s' }}
@@ -53,9 +53,9 @@ const ArticleCard = ({ article, onClick }) => {
     return (
         <div className="article-card" onClick={() => onClick(article)}>
             <div className="article-image">
-                <LazyLoadImage 
-                    src={article.image} 
-                    alt={article.title} 
+                <LazyLoadImage
+                    src={article.image}
+                    alt={article.title}
                     className="article-img"
                 />
                 <div className="article-category">{article.category}</div>
@@ -162,7 +162,7 @@ function Articles() {
         }
 
         if (searchTerm) {
-            filtered = filtered.filter(article => 
+            filtered = filtered.filter(article =>
                 article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 article.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 article.author.toLowerCase().includes(searchTerm.toLowerCase())

@@ -314,7 +314,15 @@
 .popular-list {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    justify-content: space-between;
+    gap: 0;
+    height: 100%;
+}
+
+@media (max-width: 900px) {
+    .popular-list {
+        flex-direction: column;
+    }
 }
 
 /* 响应式设计 */

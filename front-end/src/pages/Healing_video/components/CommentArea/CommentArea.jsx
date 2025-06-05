@@ -189,7 +189,7 @@ const CommentArea = ({ comments = [], videoId }) => {
                 <ul className="nav-bar">
                     <li className="nav-title">
                         <span className="nav-title-text">Comments</span>
-                        <span className="total-reply">{commentList.length}</span>
+                        {/* <span className="total-reply">{commentList.length}</span> */}
                     </li>
                     <li className="nav-sort">
                         {tabs.map(item => (

@@ -1,12 +1,25 @@
 import './popularCard.css'
+import { useNavigate } from 'react-router-dom';
 
-function PopularCard() {
+function PopularCard({ number, title, summary, published_at, articleData }) {
+    const navigate = useNavigate();
+    const handleClick = () => {
+        navigate('/articles', { state: { article: articleData } });
+    };
+    // 限制summary最大长度
+    const maxLen = 80;
+    const displaySummary = summary && summary.length > maxLen
+        ? summary.slice(0, maxLen) + '...'
+        : summary;
+
     return (
-        <div className="popular-container">
+        <div className="popular-container" onClick={handleClick} style={{cursor:'pointer'}}>
             <div className="content">
-                <div className="number">1.</div>
+                <div className="number">{number}.</div>
                 <div className="text">
-                    Body text for whatever you'd like to say. Add main takeaway points, quotes, anecdotes, or even a very very short story.
+                    <div style={{fontWeight:600, marginBottom:4}}>{title}</div>
+                    <div>{displaySummary}</div>
+                    {published_at && <div style={{fontSize:12, color:'#aaa', marginTop:6}}>发布时间: {published_at}</div>}
                 </div>
                 <div className="arrow-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
