@@ -5,9 +5,13 @@ import org.broky.backend.model.User;
 import org.broky.backend.service.UserService;
 import org.broky.backend.util.PasswordEncoderUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import java.util.Base64;
+
+import java.nio.charset.StandardCharsets;
 
 
 @Service
@@ -54,71 +58,69 @@ public class UserServiceImpl implements UserService {
 				.switchIfEmpty(Mono.error(new RuntimeException("User not found")));
 	}
 
+	@Value("${app.avatar.max-size:2097152}")
+	private int maxAvatarSize;
+
 	@Override
 	public Mono<User> UpdateUser(String id, User updatedUser) {
 		return userRepository.findById(id)
 				.flatMap(existingUser -> {
 					if (updatedUser.getUsername() != null &&
 							!updatedUser.getUsername().equals(existingUser.getUsername())) {
+
 						return userRepository.findByUsername(updatedUser.getUsername())
 								.flatMap(foundUser -> {
 									if (!foundUser.getId().equals(id)) {
-										return Mono.just(existingUser);
+										return Mono.error(new RuntimeException("Username already exists"));
 									}
-									return Mono.just(existingUser);
+									return updateFields(existingUser, updatedUser);
 								})
-								.switchIfEmpty(Mono.defer(() -> {
-									boolean isModified = false;
-
-									existingUser.setUsername(updatedUser.getUsername());
-									isModified = true;
-
-									if (updatedUser.getPassword() != null && !passwordEncoder.matches(updatedUser.getPassword(), existingUser.getPassword())) {
-										existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-										isModified = true;
-									}
-
-									if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(existingUser.getEmail())) {
-										existingUser.setEmail(updatedUser.getEmail());
-										isModified = true;
-									}
-
-									if (updatedUser.getAvatar() != null && !updatedUser.getAvatar().equals(existingUser.getAvatar())) {
-										existingUser.setAvatar(updatedUser.getAvatar());
-										isModified = true;
-									}
-
-									if (isModified) {
-										return userRepository.save(existingUser);
-									} else {
-										return Mono.just(existingUser);
-									}
-								}));
+								.switchIfEmpty(updateFields(existingUser, updatedUser));
 					} else {
-						boolean isModified = false;
-
-						if (updatedUser.getPassword() != null && !passwordEncoder.matches(updatedUser.getPassword(), existingUser.getPassword())) {
-							existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-							isModified = true;
-						}
-
-						if (updatedUser.getEmail() != null && !updatedUser.getEmail().equals(existingUser.getEmail())) {
-							existingUser.setEmail(updatedUser.getEmail());
-							isModified = true;
-						}
-
-						if (updatedUser.getAvatar() != null && !updatedUser.getAvatar().equals(existingUser.getAvatar())) {
-							existingUser.setAvatar(updatedUser.getAvatar());
-							isModified = true;
-						}
-
-						if (isModified) {
-							return userRepository.save(existingUser);
-						} else {
-							return Mono.just(existingUser);
-						}
+						return updateFields(existingUser, updatedUser);
 					}
 				});
+	}
+
+	private Mono<User> updateFields(User existingUser, User updatedUser) {
+		boolean isModified = false;
+
+		if (updatedUser.getPassword() != null &&
+				!passwordEncoder.matches(updatedUser.getPassword(), existingUser.getPassword())) {
+			existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+			isModified = true;
+		}
+
+		if (updatedUser.getEmail() != null &&
+				!updatedUser.getEmail().equals(existingUser.getEmail())) {
+			existingUser.setEmail(updatedUser.getEmail());
+			isModified = true;
+		}
+
+		if (updatedUser.getAvatar() != null) {
+			String base64Data = updatedUser.getAvatar();
+			if (base64Data.contains(",")) {
+				base64Data = base64Data.split(",")[1];
+			}
+
+			byte[] imageBytes;
+			try {
+				imageBytes = Base64.getDecoder().decode(base64Data);
+			} catch (IllegalArgumentException e) {
+				return Mono.error(new RuntimeException("Invalid Base64 format"));
+			}
+
+			if (imageBytes.length > maxAvatarSize) {
+				return Mono.error(new RuntimeException(
+						"Avatar exceeds maximum size of " + (maxAvatarSize / 1024 / 1024) + "MB"
+				));
+			}
+
+			existingUser.setAvatar(updatedUser.getAvatar());
+			isModified = true;
+		}
+
+		return isModified ? userRepository.save(existingUser) : Mono.just(existingUser);
 	}
 
 	@Override

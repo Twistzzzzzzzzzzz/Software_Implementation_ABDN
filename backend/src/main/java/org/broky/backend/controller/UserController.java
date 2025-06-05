@@ -5,6 +5,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Data;
 import org.broky.backend.model.*;
 import org.broky.backend.service.JwtTokenService;
 import org.broky.backend.service.UserService;
@@ -57,6 +58,10 @@ public class UserController {
 	public Mono<ApiResponse<User>> getCurrentUserInfo(@RequestHeader("Authorization") String authHeader) {
 		return jwtTokenService.getUserIdFromToken(authHeader)
 				.flatMap(userId -> userService.SelectUserById(userId))
+				.map(user -> {
+					user.setPassword(null);
+					return user;
+				})
 				.map(ApiResponse::success)
 				.onErrorResume(e -> Mono.just(ApiResponse.error(1, e.getMessage(), null)));
 	}
@@ -68,16 +73,11 @@ public class UserController {
 			@RequestBody User updatedUser
 	) {
 		return jwtTokenService.getUserIdFromToken(authHeader)
-				.flatMap(userId -> {
-					User updateData = new User();
-					updateData.setUsername(updatedUser.getUsername());
-					updateData.setPassword(updatedUser.getPassword());
-					updateData.setEmail(updatedUser.getEmail());
-					updateData.setAvatar(updatedUser.getAvatar());
-
-					return userService.UpdateUser(userId, updateData);
+				.flatMap(userId -> userService.UpdateUser(userId, updatedUser))
+				.map(updated -> {
+					updated.setPassword(null);
+					return ApiResponse.success(updated);
 				})
-				.map(ApiResponse::success)
 				.onErrorResume(e -> Mono.just(ApiResponse.error(1, e.getMessage(), null)));
 	}
 
