@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import VideoItem from './components/VideoItem/VideoItem.jsx';
 import SidebarTabs from './components/SidebarTabs/SidebarTabs.jsx';
-import env from "../../config/env.js";
+import request from '../../utils/request';
 
 export default function Healing_video({ videoTitle, videoDescription }) {
     const videoUrl = assets.Super_idol_video
@@ -27,26 +27,15 @@ export default function Healing_video({ videoTitle, videoDescription }) {
     useEffect(() => {
         async function fetchVideos() {
             try {
-                const res = await fetch(`${env.backendPath}/api/v1/resources/video?size=2`);
-                const data = await res.json();
-                if (data && data.data && Array.isArray(data.data.items)) {
-                    const itemsWithImg = await Promise.all(
-                        data.data.items.map(async (item) => {
-                            let previewImg = '';
-                            try {
-                                const imgRes = await fetch(item.pictrue_address);
-                                const imgBlob = await imgRes.blob();
-                                previewImg = URL.createObjectURL(imgBlob);
-                            } catch (e) {
-                                previewImg = assets.ServiceCard1; // fallback
-                            }
-                            return {
-                                id: item.video_id,
-                                title: item.title,
-                                previewImg,
-                            };
-                        })
-                    );
+                // 适配新接口，带page参数，解析data.items
+                const res = await request.get('/api/v1/resources/video', { params: { size: 10, page: 1 } });
+                const data = res.data;
+                if (data && data.items && Array.isArray(data.items)) {
+                    const itemsWithImg = data.items.map((item) => ({
+                        id: item.video_id,
+                        title: item.title,
+                        previewImg: item.pictrue_address,
+                    }));
                     setVideoItems(itemsWithImg);
                     if (itemsWithImg.length > 0) {
                         setSelectedVideo(itemsWithImg[0]);
@@ -64,11 +53,11 @@ export default function Healing_video({ videoTitle, videoDescription }) {
         async function fetchVideoDetail() {
             if (!selectedVideo) return;
             try {
-                const res = await fetch(`${env.backendPath}/api/v1/resources/video/${selectedVideo.id}`);
-                const data = await res.json();
-                if (data && data.data) {
-                    setVideoDetail(data.data);
-                    setComments(data.data.comment || []);
+                const res = await request.get(`/api/v1/resources/video/${selectedVideo.id}`);
+                const data = res.data;
+                if (data) {
+                    setVideoDetail(data);
+                    setComments(data.comment || []);
                 }
             } catch (e) {
                 setComments([]);

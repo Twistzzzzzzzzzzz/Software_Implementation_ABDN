@@ -8,13 +8,13 @@ const env = {
     isProduction: import.meta.env.PROD,
     
     // API相关
-    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
+    apiBaseUrl: import.meta.env.VITE_API_BASE_URL || 'https://localhost:3000/api',
     
     // 图片CDN
-    imageBaseUrl: import.meta.env.VITE_IMAGE_BASE_URL || 'http://localhost:3000/images',
+    imageBaseUrl: import.meta.env.VITE_IMAGE_BASE_URL || 'https://localhost:3000/images',
 
     // 后端路径
-    backendPath: import.meta.env.VITE_BACKEND_PATH || 'http://localhost:8080',
+    backendPath: import.meta.env.VITE_BACKEND_PATH || 'http://frp-aim.com:13246',
     
     // 网站设置
     defaultPageSize: 10,
