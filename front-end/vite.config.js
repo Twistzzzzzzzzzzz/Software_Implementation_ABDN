@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   //设置以下域名可访问frp-few.com:23299
   server: {
-    allowedHosts: ['localhost', 'frp-few.com']
+    allowedHosts: ['localhost', 'frp-few.com', 'frp-aim.com']
   },
 
 })

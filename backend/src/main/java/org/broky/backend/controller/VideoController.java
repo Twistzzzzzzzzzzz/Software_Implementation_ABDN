@@ -12,6 +12,7 @@ import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Tag(name = "VideoController", description = "视频管理")
@@ -51,7 +52,7 @@ public class VideoController {
             @RequestHeader("Authorization") String authHeader) {
         return jwtTokenService.getUserIdFromToken(authHeader)
                 .flatMap(userId -> videoService.createVideoComment(video_id, request.get("content"), userId))
-                .map(comment -> ApiResponse.<Map<String, Object>>success(Map.of()))
+                .map(comment -> ApiResponse.<Map<String, Object>>success(Collections.<String, Object>emptyMap()))
                 .onErrorResume(e -> Mono.just(ApiResponse.<Map<String, Object>>error(1, e.getMessage())));
     }
     

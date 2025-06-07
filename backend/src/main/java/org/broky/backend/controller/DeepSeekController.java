@@ -3,6 +3,7 @@ package org.broky.backend.controller;
 
 import org.broky.backend.model.ApiResponse;
 import org.broky.backend.model.chat.ChatMessage;
+import org.broky.backend.model.chat.ChatMessageList;
 import org.broky.backend.model.chat.ChatRequest;
 import org.broky.backend.repository.ChatMessageRepository;
 import org.broky.backend.service.JwtTokenService;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
@@ -99,4 +101,20 @@ public class DeepSeekController {
 				)
 				.onErrorResume(e -> Mono.just(ApiResponse.error(500, "Fail to Delete Histry " + e.getMessage())));
 	}
+
+	@GetMapping("/history")
+	public Mono<ApiResponse<ChatMessageList>> getHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
+		return jwtTokenService.getUserIdFromToken(authHeader)
+				.flatMap(userId -> chatMessageRepository.findHistoryByUserId(userId, 10)
+						.collectList()
+						.map(messages -> {
+							ChatMessageList chatMessageList = new ChatMessageList(messages.size(), messages);
+							return ApiResponse.success(chatMessageList);
+						})
+				)
+				.onErrorResume(e -> Mono.just(ApiResponse.error(500, "Fail to Get History " + e.getMessage())));
+
+	}
+
+
 }
