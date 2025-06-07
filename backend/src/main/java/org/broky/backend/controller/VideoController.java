@@ -3,6 +3,7 @@ package org.broky.backend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.broky.backend.model.ApiResponse;
+import org.broky.backend.model.Resources.VideoComment;
 import org.broky.backend.model.Resources.VideoDetailResponse;
 import org.broky.backend.model.Resources.VideoListResponse;
 import org.broky.backend.service.JwtTokenService;
@@ -30,7 +31,8 @@ public class VideoController {
     @GetMapping("/video")
     public Mono<ApiResponse<VideoListResponse>> getVideoList(
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "1") int page) {
+            @RequestParam(defaultValue = "1") int page)
+    {
         return videoService.getVideoList(size, page)
                 .map(ApiResponse::success)
                 .onErrorResume(e -> Mono.just(ApiResponse.error(65, e.getMessage())));
@@ -43,17 +45,17 @@ public class VideoController {
                 .map(ApiResponse::success)
                 .onErrorResume(e -> Mono.just(ApiResponse.error(63, e.getMessage())));
     }
-    
+
     @Operation(summary = "提交对视频的评论")
     @PostMapping("/video/comment/{video_id}")
-    public Mono<ApiResponse<Map<String, Object>>> createVideoComment(
+    public Mono<ApiResponse<VideoComment>> createVideoComment(
             @PathVariable String video_id,
             @RequestBody Map<String, String> request,
             @RequestHeader("Authorization") String authHeader) {
         return jwtTokenService.getUserIdFromToken(authHeader)
                 .flatMap(userId -> videoService.createVideoComment(video_id, request.get("content"), userId))
-                .map(comment -> ApiResponse.<Map<String, Object>>success(Collections.<String, Object>emptyMap()))
-                .onErrorResume(e -> Mono.just(ApiResponse.<Map<String, Object>>error(1, e.getMessage())));
+                .map(ApiResponse::success)
+                .onErrorResume(e -> Mono.just(ApiResponse.error(1, e.getMessage())));
     }
     
     @Operation(summary = "提交对评论的点赞")

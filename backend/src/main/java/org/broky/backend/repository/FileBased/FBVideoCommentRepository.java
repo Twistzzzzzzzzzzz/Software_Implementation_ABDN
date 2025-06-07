@@ -56,11 +56,19 @@ public class FBVideoCommentRepository {
 	}
 
 	public Mono<VideoComment> save(VideoComment comment) {
-		return readComments()
-				.flatMap(list -> {
-					list.removeIf(c -> comment.getComment_id().equals(c.getComment_id()));
-					list.add(comment);
-					return writeComments(list).thenReturn(comment);
-				});
-	}
+        // 如果 comment_id 是 null，就生成一个新的 ID
+        if (comment.getComment_id() == null) {
+           comment.setComment_id(System.currentTimeMillis());
+        }
+        return readComments()
+              .flatMap(list -> {
+                 list.removeIf(c -> {
+                    Long newId = comment.getComment_id();
+                    Long oldId = c.getComment_id();
+                    return newId != null && newId.equals(oldId);
+                 });
+                 list.add(comment);
+                 return writeComments(list).thenReturn(comment);
+              });
+        }
 }

@@ -32,15 +32,8 @@ export default function Register() {
         if (!validateForm()) return;
         setLoading(true);
         try {
-            const response = await fetch( `http://frp-aim.com:13246/api/v1/auth/register`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ username, password, email }),
-            });
-            const data = await response.json();
-            if (response.ok && data.code === '200') {
+            const data = await request.post('/api/v1/auth/register', { username, password, email });
+            if (data.code === 0) {
                 // 注册成功，跳转到登录页
                 alert('Registration successful! Please log in.');
                 navigate('/login');
@@ -48,7 +41,7 @@ export default function Register() {
                 setApiError(data.message || 'Registration failed.');
             }
         } catch (err) {
-            setApiError('Network error, please try again.');
+            setApiError(err.message || 'Network error, please try again.');
         } finally {
             setLoading(false);
         }
