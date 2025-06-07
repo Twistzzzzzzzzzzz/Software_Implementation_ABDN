@@ -1,4 +1,4 @@
-package org.broky.backend.model;
+package org.broky.backend.model.Resources;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,19 +16,19 @@ import java.time.LocalDateTime;
 public class VideoComment {
     @Id
     @Column("comment_id")
-    private Long commentId;
+    private Long comment_id;
     
     @Column("video_id")
-    private String videoId;
+    private String video_id;
     
     @Column("user_id")
-    private String userId;
+    private String user_id;
     
     @Column("content")
     private String content;
     
     @Column("comment_like")
-    private Integer commentLike;
+    private Integer comment_like;
     
     @Column("ctime")
     private LocalDateTime ctime;

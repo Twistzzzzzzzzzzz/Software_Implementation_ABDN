@@ -1,8 +1,8 @@
 package org.broky.backend.service.impl;
 
-import org.broky.backend.model.ArticleDetailResponse;
-import org.broky.backend.model.ArticleListResponse;
-import org.broky.backend.repository.ArticleRepository;
+import org.broky.backend.model.Resources.ArticleDetailResponse;
+import org.broky.backend.model.Resources.ArticleListResponse;
+import org.broky.backend.repository.FileBased.FBArticleRepository;
 import org.broky.backend.repository.UserRepository;
 import org.broky.backend.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,32 +15,32 @@ import java.time.format.DateTimeFormatter;
 public class ArticleServiceImpl implements ArticleService {
     
     @Autowired
-    private ArticleRepository articleRepository;
+    private FBArticleRepository fbArticleRepository;
     
     @Autowired
     private UserRepository userRepository;
     
     @Override
     public Mono<ArticleListResponse> getArticleList(int size, int page) {
-        return articleRepository.findAll()
+        return fbArticleRepository.findAll()
                 .map(article -> new ArticleListResponse.ArticleListItem(
                         article.getArticleId(),
                         article.getTitle(),
                         article.getSummary(),
-                        article.getPublishedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                        article.getPublishedAt() == null ? "" : article.getPublishedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 ))
                 .skip((long) (page - 1) * size)
                 .take(size)
                 .collectList()
                 .flatMap(items -> 
-                    articleRepository.count()
+                    fbArticleRepository.count()
                             .map(total -> new ArticleListResponse(total.intValue(), items))
                 );
     }
 
     @Override
     public Mono<ArticleDetailResponse> getArticleDetail(String articleId) {
-        return articleRepository.findById(articleId)
+        return fbArticleRepository.findById(articleId)
                 .switchIfEmpty(Mono.error(new RuntimeException("Article not found")))
                 .flatMap(article -> 
                     userRepository.findById(article.getAuthorId())

@@ -5,7 +5,7 @@ import org.broky.backend.model.ApiResponse;
 import org.broky.backend.model.chat.ChatMessage;
 import org.broky.backend.model.chat.ChatMessageList;
 import org.broky.backend.model.chat.ChatRequest;
-import org.broky.backend.repository.ChatMessageRepository;
+import org.broky.backend.repository.FileBased.FBChatMessageRepository;
 import org.broky.backend.service.JwtTokenService;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.prompt.Prompt;
@@ -18,7 +18,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
@@ -30,15 +29,15 @@ public class DeepSeekController {
 
 	private final ChatModel deepSeekChatModel;
 	private final JwtTokenService jwtTokenService;
-	private final ChatMessageRepository chatMessageRepository;
+	private final FBChatMessageRepository fbChatMessageRepository;
 
 
 
 
-	public DeepSeekController  (ChatModel chatModel, JwtTokenService jwtTokenService, ChatMessageRepository chatMessageRepository) {
+	public DeepSeekController  (ChatModel chatModel, JwtTokenService jwtTokenService, FBChatMessageRepository fbChatMessageRepository) {
 		this.deepSeekChatModel = chatModel;
 		this.jwtTokenService = jwtTokenService;
-		this.chatMessageRepository = chatMessageRepository;
+		this.fbChatMessageRepository = fbChatMessageRepository;
 	}
 
 	@PostMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -50,7 +49,7 @@ public class DeepSeekController {
 		return userIdMono.flatMapMany(userId ->
 				chatRequests.flatMap(chatRequest -> {
 					// 1. 取最近10条历史消息并拼接上下文
-					Mono<String> historyContextMono = chatMessageRepository.findHistoryByUserId(userId, 10)
+					Mono<String> historyContextMono = fbChatMessageRepository.findHistoryByUserId(userId, 10)
 							.take(10)
 							.sort(Comparator.comparing(ChatMessage::getTimestamp))
 							.collectList()
@@ -68,7 +67,7 @@ public class DeepSeekController {
 						String promptText = DEFAULT_PROMPT + historyContext + "User: " + chatRequest.getMessage() + "\nAssistant:";
 						Prompt prompt = new Prompt(promptText);
 
-						Mono<Void> saveUserInput = chatMessageRepository.insertMessage(userId, "user", chatRequest.getMessage());
+						Mono<Void> saveUserInput = fbChatMessageRepository.insertMessage(userId, "user", chatRequest.getMessage());
 
 						AtomicReference<StringBuilder> fullReply = new AtomicReference<>(new StringBuilder());
 
@@ -82,7 +81,7 @@ public class DeepSeekController {
 						return saveUserInput.thenMany(
 								responseStream.concatWith(
 										Mono.defer(() ->
-												chatMessageRepository.insertMessage(userId, "assistant", fullReply.get().toString())
+												fbChatMessageRepository.insertMessage(userId, "assistant", fullReply.get().toString())
 														.then(Mono.empty())
 										)
 								)
@@ -96,7 +95,7 @@ public class DeepSeekController {
 	@DeleteMapping("/delete")
 	public Mono<ApiResponse<Object>> clearHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
 		return jwtTokenService.getUserIdFromToken(authHeader)
-				.flatMap(userId -> chatMessageRepository.deleteByUserId(userId)
+				.flatMap(userId -> fbChatMessageRepository.deleteByUserId(userId)
 						.then(Mono.just(ApiResponse.success()))
 				)
 				.onErrorResume(e -> Mono.just(ApiResponse.error(500, "Fail to Delete Histry " + e.getMessage())));
@@ -105,7 +104,7 @@ public class DeepSeekController {
 	@GetMapping("/history")
 	public Mono<ApiResponse<ChatMessageList>> getHistory(@RequestHeader(HttpHeaders.AUTHORIZATION) String authHeader) {
 		return jwtTokenService.getUserIdFromToken(authHeader)
-				.flatMap(userId -> chatMessageRepository.findHistoryByUserId(userId, 10)
+				.flatMap(userId -> fbChatMessageRepository.findHistoryByUserId(userId, 10)
 						.collectList()
 						.map(messages -> {
 							ChatMessageList chatMessageList = new ChatMessageList(messages.size(), messages);

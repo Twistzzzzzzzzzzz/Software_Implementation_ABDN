@@ -1,4 +1,4 @@
-package org.broky.backend.model;
+package org.broky.backend.model.Resources;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

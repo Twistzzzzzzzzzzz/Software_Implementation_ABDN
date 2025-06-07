@@ -1,5 +1,6 @@
-package org.broky.backend.model;
+package org.broky.backend.model.Resources;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,16 +15,16 @@ import org.springframework.data.relational.core.mapping.Table;
 public class Video {
     @Id
     @Column("video_id")
-    private String videoId;
+    private String video_id;
     
     @Column("title")
     private String title;
     
     @Column("picture_address")
-    private String pictureAddress;
+    private String picture_address;
     
     @Column("content_address")
-    private String contentAddress;
+    private String content_address;
     
     @Column("description")
     private String description;

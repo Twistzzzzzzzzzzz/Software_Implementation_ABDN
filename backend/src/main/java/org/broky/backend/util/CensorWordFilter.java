@@ -16,7 +16,7 @@ public class CensorWordFilter {
 
     @PostConstruct
     public void init() throws Exception {
-        ClassPathResource resource = new ClassPathResource("CensorWords.txt");
+        ClassPathResource resource = new ClassPathResource("static/CensorWords.txt");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {

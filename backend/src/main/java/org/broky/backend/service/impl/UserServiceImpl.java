@@ -1,5 +1,6 @@
 package org.broky.backend.service.impl;
 
+import org.broky.backend.repository.FileBased.FBUserRepository;
 import org.broky.backend.repository.UserRepository;
 import org.broky.backend.model.User;
 import org.broky.backend.service.UserService;
@@ -18,7 +19,7 @@ import java.nio.charset.StandardCharsets;
 public class UserServiceImpl implements UserService {
 
 	@Autowired
-	private UserRepository userRepository;
+	private FBUserRepository fbUserRepository;
 
 	@Autowired
 	private R2dbcEntityTemplate template;
@@ -28,26 +29,22 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Mono<User> register(User user) {
-		return userRepository.findByUsername(user.getUsername())
+		System.out.println("Registering user: " + user.getUsername());
+		return fbUserRepository.findByUsername(user.getUsername())
 				.flatMap(existingUser -> {
 					return Mono.error(new RuntimeException("Username already exists"));
 				})
 				.switchIfEmpty(Mono.defer(() -> {
 					user.generateId();
 					user.setPassword(passwordEncoder.encode(user.getPassword()));
-					return template.insert(User.class)
-							.using(user)
-							.onErrorResume(e -> {
-								e.printStackTrace();
-								return Mono.error(new RuntimeException("Registration Failed: " + e.getMessage()));
-							});
+					return fbUserRepository.save(user);
 				}))
 				.cast(User.class);
 	}
 
 	@Override
 	public Mono<User> login(String username, String password) {
-		return userRepository.findByUsername(username)
+		return fbUserRepository.findByUsername(username)
 				.flatMap(user -> {
 					if (passwordEncoder.matches(password, user.getPassword())) {
 						return Mono.just(user);
@@ -63,12 +60,12 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public Mono<User> UpdateUser(String id, User updatedUser) {
-		return userRepository.findById(id)
+		return fbUserRepository.findById(id)
 				.flatMap(existingUser -> {
 					if (updatedUser.getUsername() != null &&
 							!updatedUser.getUsername().equals(existingUser.getUsername())) {
 
-						return userRepository.findByUsername(updatedUser.getUsername())
+						return fbUserRepository.findByUsername(updatedUser.getUsername())
 								.flatMap(foundUser -> {
 									if (!foundUser.getId().equals(id)) {
 										return Mono.error(new RuntimeException("Username already exists"));
@@ -120,17 +117,17 @@ public class UserServiceImpl implements UserService {
 			isModified = true;
 		}
 
-		return isModified ? userRepository.save(existingUser) : Mono.just(existingUser);
+		return isModified ? fbUserRepository.save(existingUser) : Mono.just(existingUser);
 	}
 
 	@Override
 	public Mono<User> SelectUserById(String id) {
-		return userRepository.findById(id)
+		return fbUserRepository.findById(id)
 				.switchIfEmpty(Mono.error(new RuntimeException("User Not Found")));
 	}
 
 	@Override
 	public Mono<Void> DeleteUser(String id) {
-		return userRepository.deleteById(id);
+		return fbUserRepository.deleteById(id);
 	}
 }
