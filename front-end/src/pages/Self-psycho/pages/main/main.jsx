@@ -14,7 +14,7 @@ export default function Main() {
                     <li>Finding it difficult to relax</li>
                     <li>Getting upset or irritable easily</li>
                 </ul>
-                <button><Link to='/self-psycho/anxiety'>Start</Link></button>
+                <Link to='/self-psycho/anxiety' className="start-button">Start</Link>
             </div>
 
             <div className="depression-test">
@@ -25,7 +25,7 @@ export default function Main() {
                     <li>Very poor appetite or overeating</li>
                     <li>Feeling insecure or disappointed in yourself</li>
                 </ul>
-                <button><Link to='/self-psycho/depression'>Start</Link></button>
+                <Link to='/self-psycho/depression' className="start-button">Start</Link>
             </div>
 
             <div className="career-test">
@@ -36,7 +36,7 @@ export default function Main() {
                     <li>Feeling like you're not making progress</li>
                     <li>Feeling like you're not being challenged</li>
                 </ul>
-                <button><Link to='/self-psycho/career'>Start</Link></button>
+                <Link to='/self-psycho/career' className="start-button">Start</Link>
             </div>
         </div>
     )
