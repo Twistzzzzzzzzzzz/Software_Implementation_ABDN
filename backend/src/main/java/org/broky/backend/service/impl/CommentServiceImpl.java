@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono;
 public class CommentServiceImpl implements CommentService {
 
     @Autowired
-    private FBCommentRepository cfbCommentRepository;
+    private FBCommentRepository fbCommentRepository;
 
 
     @Autowired
@@ -21,7 +21,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Flux<Comment> getAllComments() {
-        return cfbCommentRepository.findAll();
+        return fbCommentRepository.findAll();
     }
 
     @Override
@@ -30,17 +30,17 @@ public class CommentServiceImpl implements CommentService {
             return Mono.error(new IllegalArgumentException("Comments containing sensitive words are prohibited from being posted"));
         }
         comment.generateId();
-        return cfbCommentRepository.save(comment);
+        return fbCommentRepository.save(comment);
     }
 
     @Override
     public Mono<Void> deleteComment(String commentId, String userId) {
-        return cfbCommentRepository.findById(commentId)
+        return fbCommentRepository.findById(commentId)
                 .flatMap(comment -> {
                     if (!comment.getUser_id().equals(userId)) {
                         return Mono.error(new RuntimeException("You cannot delete this comment"));
                     }
-                    return cfbCommentRepository.deleteById(commentId);
+                    return fbCommentRepository.deleteById(commentId);
                 })
                 .switchIfEmpty(Mono.error(new RuntimeException("Comment not exists")));
     }

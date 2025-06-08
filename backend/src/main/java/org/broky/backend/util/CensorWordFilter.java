@@ -12,7 +12,7 @@ import java.util.Set;
 @Component
 public class CensorWordFilter {
 
-    private Set<String> censorWords = new HashSet<>();
+    private final Set<String> censorWords = new HashSet<>();
 
     @PostConstruct
     public void init() throws Exception {

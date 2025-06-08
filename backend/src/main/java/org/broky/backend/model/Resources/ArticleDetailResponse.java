@@ -12,5 +12,4 @@ public class ArticleDetailResponse {
     private String title;
     private String content_address;
     private String author;
-
 }

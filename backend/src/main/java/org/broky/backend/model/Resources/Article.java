@@ -14,18 +14,29 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table("article")
 public class Article {
+
     @Id
-    private String articleId;
+    private String id;
+
     private String title;
-    private String summary;
+
+    private String excerpt;
+
     private String content;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime publishedAt;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt;
+    private String category;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updatedAt;
-    private String authorId;
+    private String author;
+
+    private String authorTitle;
+
+    private String date;
+
+    private int views;
+
+    private int likes;
+
+    private int readTime;
+
+    private String image;
 }

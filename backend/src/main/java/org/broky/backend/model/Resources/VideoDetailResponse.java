@@ -26,13 +26,13 @@ public class VideoDetailResponse {
         private String comment_like;
         private Long comment_id;
     }
-    
+
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class UserInfo {
-        private String uid;
+    public static class UserInfo{
+        private String user_id;
+        private String username;
         private String avatar;
-        private String uname;
     }
 }

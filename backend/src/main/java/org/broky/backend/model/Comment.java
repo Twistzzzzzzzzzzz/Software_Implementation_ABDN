@@ -20,6 +20,9 @@ public class Comment {
     @Id
     private String id;
 
+    @Column("user_name")
+    private String user_name;
+
     @Column("user_id")
     private String user_id;
 
@@ -28,12 +31,8 @@ public class Comment {
     @Size(min = 1, max = 500, message = "Length should be between 1 and 500 characters")
     private String content;
 
-    @Column("create_time")
-    private LocalDateTime create_time;
-
     public void generateId() {
         long randomNum = ThreadLocalRandom.current().nextLong(100_000_000_000L, 1_000_000_000_000L);
         this.id = String.format("%010d", randomNum);
-        this.create_time = LocalDateTime.now();
     }
 }

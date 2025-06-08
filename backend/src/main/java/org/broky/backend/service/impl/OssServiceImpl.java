@@ -51,7 +51,7 @@ public class OssServiceImpl implements OssService {
                 return fileUrl;
                 
             } catch (Exception e) {
-                throw new RuntimeException("文件上传失败: " + e.getMessage(), e);
+                throw new RuntimeException("Fail to upload File " + e.getMessage(), e);
             }
         }).subscribeOn(Schedulers.boundedElastic());
     }
@@ -67,7 +67,7 @@ public class OssServiceImpl implements OssService {
                     ossClient.deleteObject(bucketName, fileKey);
                 }
             } catch (Exception e) {
-                throw new RuntimeException("文件删除失败: " + e.getMessage(), e);
+                throw new RuntimeException("Fail to delete File" + e.getMessage(), e);
             }
         }).subscribeOn(Schedulers.boundedElastic()).then();
     }

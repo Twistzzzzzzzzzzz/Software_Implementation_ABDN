@@ -3,6 +3,7 @@ package org.broky.backend.service.impl;
 import org.broky.backend.model.Resources.VideoComment;
 import org.broky.backend.model.Resources.VideoDetailResponse;
 import org.broky.backend.model.Resources.VideoListResponse;
+import org.broky.backend.repository.FileBased.FBUserRepository;
 import org.broky.backend.repository.FileBased.FBVideoCommentRepository;
 import org.broky.backend.repository.FileBased.FBVideoRepository;
 import org.broky.backend.repository.UserRepository;
@@ -27,7 +28,7 @@ public class VideoServiceImpl implements VideoService {
     private FBVideoCommentRepository fbVideoCommentRepository;
     
     @Autowired
-    private UserRepository userRepository;
+    private FBUserRepository fbUserRepository;
     
     @Autowired
     private OssService ossService;
@@ -55,12 +56,12 @@ public class VideoServiceImpl implements VideoService {
                 .switchIfEmpty(Mono.error(new RuntimeException("Video not found")))
                 .flatMap(video ->
                         fbVideoCommentRepository.findByVideoId(videoId)
-                            .flatMap(comment -> userRepository.findById(comment.getUser_id())
+                            .flatMap(comment -> fbUserRepository.findById(comment.getUser_id())
                                     .map(user -> new VideoDetailResponse.CommentDetail(
                                             new VideoDetailResponse.UserInfo(
                                                     user.getId(),
-                                                    user.getAvatar(),
-                                                    user.getUsername()
+                                                    user.getUsername(),
+                                                    user.getAvatar()
                                             ),
                                             comment.getContent(),
                                             comment.getCtime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
@@ -68,7 +69,7 @@ public class VideoServiceImpl implements VideoService {
                                             comment.getComment_id()
                                     ))
                                     .switchIfEmpty(Mono.just(new VideoDetailResponse.CommentDetail(
-                                            new VideoDetailResponse.UserInfo("unknown", "", "Unknown User"),
+                                            new VideoDetailResponse.UserInfo("unknown", "Unknown User", ""),
                                             comment.getContent(),
                                             comment.getCtime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
                                             comment.getComment_like().toString(),

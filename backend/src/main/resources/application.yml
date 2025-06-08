@@ -34,6 +34,7 @@ spring:
               6. 你不需要回答太多字，只需要能温柔的对待用户即可。
               7. Answer in English.
               8. 不要出现you're这样的语法，使用you are即可
+              9. 无需给出你的思考过程，但回答应稍长，也就是你正常回复的约120%长度。
   codec:
     max-in-memory-size: 5MB
 

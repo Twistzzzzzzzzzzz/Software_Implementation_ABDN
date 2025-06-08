@@ -25,6 +25,15 @@ public class FBUserRepository {
 				.next();
 	}
 
+	public String findNameByID(String id) {
+		return Mono.fromCallable(() -> JsonFileUtil.readListFromFile(FILE_PATH, User[].class))
+				.flatMapMany(Flux::fromIterable)
+				.filter(user -> id.equals(user.getId()))
+				.map(User::getUsername)
+				.next()
+				.block();
+	}
+
 	public Mono<User> findByUsername(String username) {
 		return Mono.fromCallable(() -> JsonFileUtil.readListFromFile(FILE_PATH, User[].class))
 				.flatMapMany(Flux::fromIterable)
@@ -40,7 +49,6 @@ public class FBUserRepository {
 					if (user.getId() == null || user.getId().isEmpty()) {
 						user.generateId();
 					}
-					System.out.println("Saving user: " + user);
 
 					list.add(user);
 					JsonFileUtil.writeListToFile(FILE_PATH, list);

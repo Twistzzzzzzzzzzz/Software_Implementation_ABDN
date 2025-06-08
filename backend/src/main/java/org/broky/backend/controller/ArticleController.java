@@ -28,11 +28,15 @@ public class ArticleController {
                 .onErrorResume(e -> Mono.just(ApiResponse.error(65, e.getMessage())));
     }
 
-    @Operation(summary = "获取文章详情")
-    @GetMapping("/articles/{article_id}")
-    public Mono<ApiResponse<ArticleDetailResponse>> getArticleDetail(@PathVariable String article_id) {
-        return articleService.getArticleDetail(article_id)
-                .map(ApiResponse::success)
-                .onErrorResume(e -> Mono.just(ApiResponse.error(87, e.getMessage())));
-    }
+//    @Operation(summary = "获取文章详情")
+//    @GetMapping("/articles/{article_id}")
+//    public Mono<ApiResponse<ArticleDetailResponse>> getArticleDetail(@PathVariable String article_id) {
+//        return articleService.getArticleDetail(article_id)
+//                .map(ApiResponse::success)
+//                .onErrorResume(e -> Mono.just(ApiResponse.error(87, e.getMessage())));
+//    }
+
+    // 点赞功能
+//    @Operation(summary = "点赞文章")
+
 }

@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono;
 
 public interface ArticleService {
     Mono<ArticleListResponse> getArticleList(int size, int page);
-    Mono<ArticleDetailResponse> getArticleDetail(String articleId);
+//    Mono<ArticleDetailResponse> getArticleDetail(String articleId);
 }
