@@ -73,7 +73,7 @@ export default function Community() {
 
     // 预设的弹幕消息
     const defaultMsgs = [
-        { username: 'Mental Health Assistant', content: 'Welcome to Mental Health Barrage Wall!', type: 'system' },
+        { username: 'Mental Health Assistant', content: 'Welcome to Mental Health Bullet Comment Wall!', type: 'system' },
         { username: 'Sunshine Youth', content: 'Feeling great today, sharing the joy with everyone!' },
         { username: 'Meditation Master', content: 'Just finished 20 minutes of mindful meditation, feeling very peaceful' },
         { username: 'Anxiety Fighter', content: 'Deep breathing really works, recommend it to friends with anxiety' },
@@ -106,7 +106,7 @@ export default function Community() {
 
     // 初始化弹幕
     useEffect(() => {
-        console.log('Starting barrage initialization...'); // 调试用的log
+        console.log('Starting bullet comment initialization...'); // 调试用的log
         setLoading(true);
         
         setTimeout(() => {
@@ -127,7 +127,7 @@ export default function Community() {
 
             setMessageList(initDanmu);
             setLoading(false);
-            console.log('Barrage initialization completed!'); // 调试用的log
+            console.log('Bullet comment initialization completed!'); // 调试用的log
         }, 1000);
     }, []);
 
@@ -174,7 +174,7 @@ export default function Community() {
     // 发送弹幕
     const sendMsg = () => {
         if (!inputText.trim()) {
-            alert('Please enter the barrage content!'); // 简单的提示
+            alert('Please enter the bullet comment content!'); // 简单的提示
             return;
         }
 
@@ -189,7 +189,7 @@ export default function Community() {
             time: Date.now()
         };
 
-        console.log('Send barrage:', newDanmu); // 调试用
+        console.log('Send bullet comment:', newDanmu); // 调试用
         setMessageList(prev => [...prev, newDanmu]);
         setInputText('');
         
@@ -214,17 +214,17 @@ export default function Community() {
 
     // 清空所有弹幕
     const clearAll = () => {
-        const confirmClear = window.confirm('Are you sure you want to clear all barrages?');
+        const confirmClear = window.confirm('Are you sure you want to clear all bullet comments?');
         if (confirmClear) {
             setMessageList([]);
-            console.log('All barrages cleared');
+            console.log('All bullet comments cleared');
         }
     };
     
     // 暂停/恢复弹幕
     const togglePause = () => {
         setIsPaused(!isPaused);
-        console.log(isPaused ? 'Resume barrages' : 'Pause barrages');
+        console.log(isPaused ? 'Resume bullet comments' : 'Pause bullet comments');
     };
 
     // 加载状态
@@ -233,7 +233,7 @@ export default function Community() {
             <div className="danmu-container">
                 <div className="danmu-loading">
                     <div className="loading-spinner"></div>
-                    <p>Loading barrage wall...</p>
+                    <p>Loading bullet comment wall...</p>
                 </div>
             </div>
         );
@@ -249,7 +249,7 @@ export default function Community() {
                 
                 {/* 标题区域 */}
                 <div className="danmu-header">
-                    <h1>Mental Health Barrage Wall</h1>
+                    <h1>Mental Health Bullet Comment Wall</h1>
                     <p>Share your mood, spread positive energy</p>
                 </div>
 
@@ -269,7 +269,7 @@ export default function Community() {
                     <div className="danmu-stats">
                         <div className="stat-item">
                             <span className="stat-number">{messageList.length}</span>
-                            <span className="stat-label">Current Barrages</span>
+                            <span className="stat-label">Current Bullet Comments</span>
                         </div>
                         <div className="stat-item">
                             <span className="stat-number">∞</span>
@@ -294,7 +294,7 @@ export default function Community() {
                             value={inputText}
                             onChange={(e) => setInputText(e.target.value)}
                             onKeyPress={handleKeyDown}
-                            placeholder="Enter your mood barrage, press Enter to send..."
+                            placeholder="Enter your mood bullet comment, press Enter to send..."
                             maxLength={50}
                             className="message-input"
                         />
