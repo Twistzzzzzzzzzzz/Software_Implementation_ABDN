@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import request from '../../utils/request';
 import ReactPlayer from 'react-player';
+import { useAuthPrompt } from '../../context/AuthPromptContext';
 
 export default function AI_chat() {
     
@@ -20,7 +21,7 @@ export default function AI_chat() {
     const [currentAIMessage, setCurrentAIMessage] = useState("");
     const abortControllerRef = useRef(null);
     const [video, setVideo] = useState(null);
-    const [notification, setNotification] = useState(null); // 用于显示提示信息
+    const { showPrompt } = useAuthPrompt();
 
     useEffect(() => {
         if (location.state && location.state.scrollToTop && topRef.current) {
@@ -180,8 +181,7 @@ export default function AI_chat() {
     const handleDeleteHistory = async () => {
         const token = localStorage.getItem('access_token') || '';
         if (!token) {
-            setNotification({ message: '请先登录', type: 'error' });
-            setTimeout(() => setNotification(null), 3000);
+            showPrompt('请先登录');
             return;
         }
 
@@ -194,14 +194,12 @@ export default function AI_chat() {
             
             if (res.code === 0) {
                 setMessages([]);
-                setNotification({ message: '历史记录删除成功', type: 'success' });
+                showPrompt('历史记录删除成功');
             } else {
-                setNotification({ message: `删除失败: ${res.message || '未知错误'}`, type: 'error' });
+                showPrompt(`删除失败: ${res.message || '未知错误'}`);
             }
         } catch (e) {
-            setNotification({ message: '删除失败: 网络错误或服务器无响应', type: 'error' });
-        } finally {
-            setTimeout(() => setNotification(null), 3000);
+            showPrompt('删除失败: 网络错误或服务器无响应');
         }
     };
 
@@ -251,11 +249,6 @@ export default function AI_chat() {
                     )}
                 </div>
             </div>
-            {notification && (
-                <div className={`notification ${notification.type}`}>
-                    {notification.message}
-                </div>
-            )}
         </div>
     )
 }
