@@ -45,6 +45,7 @@ export default function Login() {
                 <div className="logo-container">
                     <img src={assets.web_icon} alt="Psychology Logo" className="logo" />
                 </div>
+                <h2 className="page-title">Login</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
@@ -73,9 +74,6 @@ export default function Login() {
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>
                     <div className="links-container">
-                        <div className="forgot-link">
-                            <Link to="/forgot-password">Forgot password?</Link>
-                        </div>
                         <div className="register-link">
                             <span>Register an account?</span>
                             <Link to="/register">Click here!</Link>

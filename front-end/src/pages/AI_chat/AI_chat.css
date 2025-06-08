@@ -19,7 +19,7 @@
     background: transparent;
     border-radius: 20px;
     overflow: hidden;
-    padding-bottom: 80px; /* 留出底部输入框空间 */
+    padding-bottom: 90px; /* 增加底部内边距，为固定输入框留出空间 */
     position: relative;
 }
 
@@ -41,19 +41,19 @@
 }
 
 .sendMessageBox {
-    position: fixed;
+    width: 100%;
+    padding: 10px 20px; /* 调整左右内边距 */
+    background-color: transparent;
+    border-top: none;
+    display: flex; /* 使内部元素横向排列 */
+    align-items: center; /* 垂直居中对齐 */
+    gap: 10px; /* 输入框和按钮之间的间距 */
+    position: fixed; /* 固定在页面底部 */
+    bottom: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    z-index: 100;
-    padding: 10px 0;
-    margin: 0 auto;
-    width: 100vw;
-    max-width: 100vw;
-    background: transparent;
+    z-index: 1000; /* 确保在其他内容之上 */
     box-shadow: none;
-    display: flex;
-    justify-content: center;
 }
 
 .inputContainer {
@@ -64,8 +64,10 @@
     padding: 8px 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 800px;
-    margin-bottom: 15px;
+    max-width: 700px; /* 限制输入框最大宽度 */
+    margin-bottom: 0; /* 移除底部间距，因为现在在flex容器中 */
+    margin-left: auto; /* 水平居中 */
+    margin-right: auto; /* 水平居中 */
 }
 
 .messageInput {
@@ -152,6 +154,7 @@
 }
 
 .sendMessageBox-center {
+    /* 恢复到之前的居中样式，不包含删除按钮 */
     position: absolute;
     top: 50%;
     left: 50%;
@@ -166,20 +169,11 @@
     padding: 0;
     max-height: 100px;
     margin-top: 20px;
+    border-top: none; /* 移除无历史记录时的上方横线 */
 }
 
 .sendMessageBox-center .inputContainer {
-    max-width: 420px;
-    min-width: 320px;
-    width: 100%;
-    border-radius: 32px;
-    padding: 12px 20px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
-}
-
-.sendMessageBox-center .messageInput {
-    font-size: 16px;
-    padding: 10px 12px;
+    /* 恢复默认样式，保留背景和阴影 */
 }
 
 .ai-chat-welcome {
@@ -210,5 +204,52 @@
     max-width: 420px;
     line-height: 1.7;
     text-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+
+/* Delete History Button */
+.delete-history-button {
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 10px 15px; /* 调整内边距以缩短宽度 */
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* 保持z-index */
+    transition: background-color 0.2s ease;
+    white-space: nowrap;
+    position: absolute; /* 绝对定位 */
+    right: 20px; /* 距离右侧 */
+}
+
+.delete-history-button:hover {
+    background-color: #cc0000;
+}
+
+/* Notification Styles */
+.notification {
+    position: fixed;
+    bottom: 80px; /* 位于删除按钮上方 */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.notification.success {
+    background-color: #52c41a; /* 绿色 */
+}
+
+.notification.error {
+    background-color: #ff4d4f; /* 红色 */
 }
 

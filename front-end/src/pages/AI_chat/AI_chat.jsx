@@ -20,6 +20,7 @@ export default function AI_chat() {
     const [currentAIMessage, setCurrentAIMessage] = useState("");
     const abortControllerRef = useRef(null);
     const [video, setVideo] = useState(null);
+    const [notification, setNotification] = useState(null); // 用于显示提示信息
 
     useEffect(() => {
         if (location.state && location.state.scrollToTop && topRef.current) {
@@ -158,7 +159,8 @@ export default function AI_chat() {
         } catch (e) {
             if (abortController.signal.aborted) {
                 setCurrentAIMessage("[AI response paused]");
-            } else {
+            }
+            else {
                 setCurrentAIMessage("[AI response error]");
             }
         } finally {
@@ -171,6 +173,35 @@ export default function AI_chat() {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             handleSend();
+        }
+    };
+
+    // 处理删除历史记录
+    const handleDeleteHistory = async () => {
+        const token = localStorage.getItem('access_token') || '';
+        if (!token) {
+            setNotification({ message: '请先登录', type: 'error' });
+            setTimeout(() => setNotification(null), 3000);
+            return;
+        }
+
+        try {
+            const res = await request.delete('/api/chat/delete', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            if (res.code === 0) {
+                setMessages([]);
+                setNotification({ message: '历史记录删除成功', type: 'success' });
+            } else {
+                setNotification({ message: `删除失败: ${res.message || '未知错误'}`, type: 'error' });
+            }
+        } catch (e) {
+            setNotification({ message: '删除失败: 网络错误或服务器无响应', type: 'error' });
+        } finally {
+            setTimeout(() => setNotification(null), 3000);
         }
     };
 
@@ -213,8 +244,18 @@ export default function AI_chat() {
                             <img src={assets.Send_icon} alt="Send" />
                         </button>
                     </div>
+                    {messages.length > 0 && (
+                        <button className="delete-history-button" onClick={handleDeleteHistory}>
+                            Delete History
+                        </button>
+                    )}
                 </div>
             </div>
+            {notification && (
+                <div className={`notification ${notification.type}`}>
+                    {notification.message}
+                </div>
+            )}
         </div>
     )
 }

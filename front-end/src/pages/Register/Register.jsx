@@ -55,6 +55,7 @@ export default function Register() {
                 <div className="logo-container">
                     <img src={assets.web_icon} alt="Psychology Logo" className="logo" />
                 </div>
+                <h2 className="page-title">Register</h2>
                 
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
