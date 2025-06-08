@@ -51,7 +51,7 @@ li {
     text-align: left;
 }
 
-button {
+.start-button {
     background-color: white;
     color: #4AB6B1;
     border: none;
@@ -63,17 +63,13 @@ button {
     transition: all 0.3s ease;
     width: auto;
     display: inline-block;
+    text-decoration: none;
 }
 
-button:hover {
+.start-button:hover {
     background-color: #f0f0f0;
     transform: scale(1.05);
-}
-
-button a {
-    color: #4AB6B1;
     text-decoration: none;
-    display: block;
 }
 
 /* Loading States */
@@ -127,10 +123,11 @@ button a {
         font-size: 28px;
     }
     
-    button {
+    .start-button {
         display: block;
         margin: 0 auto;
         width: 100%;
+        text-align: center;
     }
 }
 
@@ -161,10 +158,11 @@ button a {
         margin-bottom: 8px;
     }
     
-    button {
+    .start-button {
         width: 100%;
         padding: 12px 20px;
         font-size: 16px;
+        text-align: center;
     }
 }
 
@@ -195,9 +193,10 @@ button a {
         margin-bottom: 6px;
     }
     
-    button {
+    .start-button {
         padding: 10px 15px;
         font-size: 14px;
+        text-align: center;
     }
 }
 
@@ -226,7 +225,7 @@ button a {
         transition: none;
     }
 
-    button {
+    .start-button {
         transition: none;
     }
 }
@@ -239,12 +238,12 @@ button a {
         border: 2px solid #000;
     }
 
-    button {
+    .start-button {
         background-color: #000;
         border: 2px solid #000;
     }
 
-    button:hover {
+    .start-button:hover {
         background-color: #333;
     }
 
@@ -267,7 +266,8 @@ button a {
         border: 1px solid #000;
     }
 
-    button {
+    .start-button {
         display: none;
     }
 }
+
