@@ -178,59 +178,59 @@ function Home() {
                     </div>
                 </div>
             </div>
-            <hr/>
-            <div className='membership-container'>
-                <div className='websiteIcon'>
-                    <div className="home_web_info">
-                        <img src={assets.web_icon} alt=""  className='web_icon'/>
-                        <span className="home_website_name">Lighthouse Minds</span>
-                    </div>
-                </div>
-                <div className="membership-section">
-                    <div className="membership-cards">
-                        <MembershipCard
-                            theme="light"
-                            price={19}
-                            period="/ mo"
-                            description="Basic Plan: Perfect for first-time users to experience psychological services, including basic assessments and limited AI conversations."
-                            features={[
-                                'One mental health test per month',
-                                '5 AI conversations per day',
-                                'Free access to selected psychological videos',
-                                'Basic community privileges',
-                            ]}
-                            buttonText="Subscribe Basic"
-                        />
-                        <MembershipCard
-                            theme="dark"
-                            price={50}
-                            period="/ mo"
-                            description="Premium Plan: Enjoy comprehensive psychological services and more AI conversations, ideal for ongoing needs."
-                            features={[
-                                'One mental health test per week (any type)',
-                                '20 AI conversations per day',
-                                'Free access to all psychological counseling videos',
-                                'Exclusive community badges and practical courses',
-                            ]}
-                            buttonText="Upgrade to Premium"
-                        />
-                        <MembershipCard
-                            theme="light"
-                            price={99}
-                            period="/ year"
-                            description="Annual VIP Plan: Unlimited services for a whole year, with a dedicated psychological consultant and customized content."
-                            features={[
-                                'Unlimited mental health tests throughout the year',
-                                'Unlimited AI conversations',
-                                'One-on-one exclusive psychological consultant',
-                                'Customized psychological growth courses',
-                            ]}
-                            buttonText="Enjoy Annual VIP"
-                        />
-                    </div>
-                </div>
-            </div>
-            <hr/>
+            {/*<hr/>*/}
+            {/*<div className='membership-container'>*/}
+            {/*    <div className='websiteIcon'>*/}
+            {/*        <div className="home_web_info">*/}
+            {/*            <img src={assets.web_icon} alt=""  className='web_icon'/>*/}
+            {/*            <span className="home_website_name">Lighthouse Minds</span>*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*    <div className="membership-section">*/}
+            {/*        <div className="membership-cards">*/}
+            {/*            <MembershipCard*/}
+            {/*                theme="light"*/}
+            {/*                price={19}*/}
+            {/*                period="/ mo"*/}
+            {/*                description="Basic Plan: Perfect for first-time users to experience psychological services, including basic assessments and limited AI conversations."*/}
+            {/*                features={[*/}
+            {/*                    'One mental health test per month',*/}
+            {/*                    '5 AI conversations per day',*/}
+            {/*                    'Free access to selected psychological videos',*/}
+            {/*                    'Basic community privileges',*/}
+            {/*                ]}*/}
+            {/*                buttonText="Subscribe Basic"*/}
+            {/*            />*/}
+            {/*            <MembershipCard*/}
+            {/*                theme="dark"*/}
+            {/*                price={50}*/}
+            {/*                period="/ mo"*/}
+            {/*                description="Premium Plan: Enjoy comprehensive psychological services and more AI conversations, ideal for ongoing needs."*/}
+            {/*                features={[*/}
+            {/*                    'One mental health test per week (any type)',*/}
+            {/*                    '20 AI conversations per day',*/}
+            {/*                    'Free access to all psychological counseling videos',*/}
+            {/*                    'Exclusive community badges and practical courses',*/}
+            {/*                ]}*/}
+            {/*                buttonText="Upgrade to Premium"*/}
+            {/*            />*/}
+            {/*            <MembershipCard*/}
+            {/*                theme="light"*/}
+            {/*                price={99}*/}
+            {/*                period="/ year"*/}
+            {/*                description="Annual VIP Plan: Unlimited services for a whole year, with a dedicated psychological consultant and customized content."*/}
+            {/*                features={[*/}
+            {/*                    'Unlimited mental health tests throughout the year',*/}
+            {/*                    'Unlimited AI conversations',*/}
+            {/*                    'One-on-one exclusive psychological consultant',*/}
+            {/*                    'Customized psychological growth courses',*/}
+            {/*                ]}*/}
+            {/*                buttonText="Enjoy Annual VIP"*/}
+            {/*            />*/}
+            {/*        </div>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
+            {/*<hr/>*/}
         </div>
     )
 }
