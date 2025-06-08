@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import { v4 as uuidV4 } from 'uuid'
 import PropTypes from 'prop-types'
 import request from '../../../../utils/request'
+import { useAuthPrompt } from '../../../../context/AuthPromptContext'
 
 // 当前登录用户信息（头像动态读取）
 function useUserAvatar() {
@@ -76,6 +77,7 @@ const CommentArea = ({ comments = [], videoId }) => {
     // 获取当前用户uid（如有登录信息可用）
     const currentUid = localStorage.getItem('user_uid') || 'current';
     const userAvatar = useUserAvatar();
+    const { showPrompt } = useAuthPrompt();
     // 兼容后端评论结构
     const formatComments = (commentsArr) => {
         if (!Array.isArray(commentsArr)) return [];
@@ -147,6 +149,7 @@ const CommentArea = ({ comments = [], videoId }) => {
                 setCommentList(formatComments(detailData.comment || []));
                 setContent('');
                 inputRef.current?.focus();
+                showPrompt('Comment posted successfully!');
             } else {
                 alert('评论提交失败: ' + (res?.message || '未知错误'));
             }
