@@ -181,7 +181,10 @@ function Home() {
             <hr/>
             <div className='membership-container'>
                 <div className='websiteIcon'>
-                    <img src={assets.web_icon} alt=""  className='web_icon'/>
+                    <div className="home_web_info">
+                        <img src={assets.web_icon} alt=""  className='web_icon'/>
+                        <span className="home_website_name">Lighthouse Minds</span>
+                    </div>
                 </div>
                 <div className="membership-section">
                     <div className="membership-cards">

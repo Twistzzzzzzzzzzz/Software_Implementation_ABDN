@@ -4,6 +4,7 @@ import './Login.css';
 import { assets } from '../../assets/assets';
 import env from '../../config/env';
 import request from '../../utils/request';
+import { useAuthPrompt } from '../../context/AuthPromptContext';
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -11,6 +12,7 @@ export default function Login() {
     const [apiError, setApiError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { showPrompt } = useAuthPrompt();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,6 +27,7 @@ export default function Login() {
                 // 登录成功，保存 token
                 localStorage.setItem('access_token', data.data?.access_token || '');
                 localStorage.setItem('refresh_token', data.data?.refresh_token || '');
+                showPrompt('Login successful!');
                 navigate('/');
             } else {
                 setApiError(data.message || '登录失败。');

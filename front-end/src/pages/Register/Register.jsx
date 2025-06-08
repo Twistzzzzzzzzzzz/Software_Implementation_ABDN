@@ -4,6 +4,7 @@ import './Register.css';
 import { assets } from '../../assets/assets';
 import env from '../../config/env';
 import request from '../../utils/request';
+import { useAuthPrompt } from '../../context/AuthPromptContext';
 
 
 export default function Register() {
@@ -15,6 +16,7 @@ export default function Register() {
     const [apiError, setApiError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const { showPrompt } = useAuthPrompt();
 
     const validateForm = () => {
         // Basic validation
@@ -35,7 +37,7 @@ export default function Register() {
             const data = await request.post('/api/v1/auth/register', { username, password, email });
             if (data.code === 0) {
                 // 注册成功，跳转到登录页
-                alert('Registration successful! Please log in.');
+                showPrompt('Registration successful! Please log in.');
                 navigate('/login');
             } else {
                 setApiError(data.message || 'Registration failed.');

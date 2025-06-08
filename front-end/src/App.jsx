@@ -3,6 +3,9 @@ import { lazy, Suspense, useState } from 'react'
 import './App.css'
 import Navbar from './main_components/Navbar/Navbar'
 import Footer from './main_components/Footer/Footer'
+import ProtectedRoute from './components/ProtectedRoute'
+import { AuthPromptProvider } from './context/AuthPromptContext'
+import AuthPromptModal from './components/AuthPromptModal'
 
 // 删除所有直接导入的组件（如 Home、AI_chat 等）
 
@@ -37,21 +40,22 @@ function AppContent() {
             <Suspense fallback={<LoadingFallback />}>
                 <Routes>
                     <Route path='/' element={<Home />}></Route>
-                    <Route path='/ai-chat' element={<AI_chat />}></Route>
-                    <Route path='/healing-vedio' element={<Healing_video />}></Route>
-                    <Route path='/self-psycho' element={<SelfPsycho />}></Route>
-                    <Route path='/self-psycho/anxiety' element={<Answer_page />}></Route>
-                    <Route path='/self-psycho/depression' element={<Answer_page />}></Route>
-                    <Route path='/self-psycho/career' element={<Answer_page />}></Route>
-                    <Route path='/articles' element={<Articles />}></Route>
+                    <Route path='/ai-chat' element={<ProtectedRoute><AI_chat /></ProtectedRoute>}></Route>
+                    <Route path='/healing-vedio' element={<ProtectedRoute><Healing_video /></ProtectedRoute>}></Route>
+                    <Route path='/self-psycho' element={<ProtectedRoute><SelfPsycho /></ProtectedRoute>}></Route>
+                    <Route path='/self-psycho/anxiety' element={<ProtectedRoute><Answer_page /></ProtectedRoute>}></Route>
+                    <Route path='/self-psycho/depression' element={<ProtectedRoute><Answer_page /></ProtectedRoute>}></Route>
+                    <Route path='/self-psycho/career' element={<ProtectedRoute><Answer_page /></ProtectedRoute>}></Route>
+                    <Route path='/articles' element={<ProtectedRoute><Articles /></ProtectedRoute>}></Route>
 
-                    <Route path='/community' element={<Community />}></Route>
-                    <Route path='/self-psycho/report' element={<Report />}></Route>
+                    <Route path='/community' element={<ProtectedRoute><Community /></ProtectedRoute>}></Route>
+                    <Route path='/self-psycho/report' element={<ProtectedRoute><Report /></ProtectedRoute>}></Route>
                     <Route path='/login' element={<Login />}></Route>
                     <Route path='/register' element={<Register />}></Route>
                 </Routes>
             </Suspense>
             {!(isHealingVideo || isAIChat) && <Footer />}
+            <AuthPromptModal />
         </div>
     )
 }
@@ -59,7 +63,9 @@ function AppContent() {
 function App() {
     return (
         <BrowserRouter>
-            <AppContent />
+            <AuthPromptProvider>
+                <AppContent />
+            </AuthPromptProvider>
         </BrowserRouter>
     )
 }

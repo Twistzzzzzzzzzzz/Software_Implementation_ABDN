@@ -1,24 +1,43 @@
 .footer {
     display: flex;
-    justify-content: space-between;
-    padding: 40px 120px;
+    justify-content: space-around;
+    padding: 40px 60px;
     background-color: #ffffff;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     position: relative;
     padding-bottom: 80px;  /* 为版权信息留出空间 */
     z-index: 10;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    gap: 20px;
 }
 
 .first-containter {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    align-items: flex-start;
 }
 
-.web_icon {
-    width: 140px;
-    margin-bottom: 10px;
+.footer_web_info {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* 图标和文字之间的间距 */
+    margin-bottom: 10px; /* 与下方社交图标的间距 */
+}
+
+.footer_web_icon {
+    height: 30px; /* 缩小图标高度 */
+    width: 30px; /* 缩小图标宽度，使其为正方形 */
+    object-fit: contain;
+    cursor: pointer;
+}
+
+.footer_website_name {
+    font-family: 'Georgia', serif; /* 选择一个合适的字体 */
+    font-size: 20px; /* 调整字体大小 */
+    font-weight: bold;
+    color: #333; /* 字体颜色 */
+    white-space: nowrap; /* 防止文字换行 */
 }
 
 .icon-text {
@@ -30,18 +49,22 @@
 .icon-text img {
     width: 20px;
     height: 20px;
+    vertical-align: middle; /* 帮助图像在文本行中垂直居中对齐 */
 }
 
 .icon-text a {
     color: #666;
     text-decoration: none;
     font-size: 14px;
+    position: relative; /* 启用相对定位 */
+    top: -1px; /* 向上微调文本位置 */
 }
 
 .normal-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    align-items: flex-start;
 }
 
 .normal-container b {
@@ -86,19 +109,21 @@
         flex-wrap: wrap;
         padding: 30px 60px 80px;
         gap: 30px;
-        justify-content: center;
+        justify-content: flex-start;
     }
 
     .first-containter {
         width: 100%;
-        align-items: center;
-        text-align: center;
+        align-items: flex-start;
+        text-align: left;
         margin-bottom: 20px;
     }
 
     .normal-container {
         width: 45%;
         min-width: 200px;
+        align-items: flex-start;
+        text-align: left;
     }
 }
 
@@ -109,8 +134,8 @@
 
     .normal-container {
         width: 100%;
-        align-items: center;
-        text-align: center;
+        align-items: flex-start;
+        text-align: left;
         margin-bottom: 30px;
     }
 

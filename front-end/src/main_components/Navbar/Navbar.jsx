@@ -88,14 +88,12 @@ export default function Navbar() {
 
     return (
         <div className="navbar">
-            <Suspense fallback={<div className="skeleton" style={{ width: '35px', height: '35px' }}></div>}>
-                {imagesLoaded ? (
-                    <LazyImage src={assets.web_icon} alt="Website Icon" className="web_icon" />
-                ) : (
-                    <div className="skeleton" style={{ width: '35px', height: '35px' }}></div>
-                )}
-            </Suspense>
-
+            <div className="navbar_left">
+                <div className="web_icon_container">
+                    <img src={assets.web_icon} alt="" className="web_icon" />
+                </div>
+                <span className="website_name">Lighthouse Minds</span>
+            </div>
             <div className="hamburger" onClick={toggleMenu}>
                 <div></div>
                 <div></div>

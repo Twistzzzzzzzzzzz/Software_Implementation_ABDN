@@ -387,7 +387,29 @@ hr {
 }
 
 .websiteIcon{
-    margin: 10px auto;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.home_web_info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.web_icon {
+    height: 35px;
+    width: 35px;
+    object-fit: contain;
+}
+
+.home_website_name {
+    font-family: 'Georgia', serif;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
 }
 
 /* 响应式设计 */
