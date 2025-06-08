@@ -194,7 +194,7 @@ export default function AI_chat() {
             
             if (res.code === 0) {
                 setMessages([]);
-                showPrompt('历史记录删除成功');
+                showPrompt('History deleted successfully!');
             } else {
                 showPrompt(`删除失败: ${res.message || '未知错误'}`);
             }
