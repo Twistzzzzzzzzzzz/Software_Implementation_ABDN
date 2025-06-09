@@ -340,10 +340,6 @@ export default function Community() {
             {/* 输入区域 */}
             <div className="danmu-input-area">
                 <div className="input-container">
-                    <div className="user-info">
-                        <img src={user.avatar} alt="Avatar" className="user-avatar" />
-                        <span className="username">{user.name}</span>
-                    </div>
                     
                     <div className="input-box">
                         <input
