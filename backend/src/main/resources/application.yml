@@ -2,9 +2,9 @@ spring:
   application:
     name: backend
   r2dbc:
-    url: r2dbc:mysql://rm-cn-fsw46k36h000b7o.rwlb.rds.aliyuncs.com:3306/software_implementation
-    username: broky
-    password: Scnu2022!
+    url: 
+    username: 
+    password: 
   jpa:
     hibernate:
       ddl-auto: update
@@ -14,7 +14,7 @@ spring:
         dialect: org.hibernate.dialect.MySQL5Dialect
   ai:
     deepseek:
-      api-key: "sk-f78c9af488b24f9c9259ceb35942f77c"
+      api-key:
       chat:
         options:
           model: "deepseek-chat"
