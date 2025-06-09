@@ -212,9 +212,9 @@ export default function AI_chat() {
                 <div className='messageContainer' ref={messageContainerRef}>
                     {messages.map((msg, idx) =>
                         msg.role === 'user' ? (
-                            <UserMessage key={idx} message={msg.message} />
+                            <UserMessage key={msg.id || idx} message={msg.message} />
                         ) : (
-                            <AiMessage key={idx} message={msg.message} />
+                            <AiMessage key={msg.id || idx} message={msg.message} />
                         )
                     )}
                     {isStreaming && (

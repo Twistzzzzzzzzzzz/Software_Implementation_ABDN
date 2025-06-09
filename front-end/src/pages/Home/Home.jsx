@@ -166,7 +166,7 @@ function Home() {
                         <div className="popular-list">
                             {articles.map((item, idx) => (
                                 <PopularCard
-                                    key={item.article_id}
+                                    key={item.article_id || idx}
                                     number={idx + 1}
                                     title={item.title}
                                     summary={item.summary}
