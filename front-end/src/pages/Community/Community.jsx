@@ -7,26 +7,29 @@ import request from '../../utils/request';
 const DanmuMessage = ({ msg, onEnd }) => {
     const msgRef = useRef(null);
     const [show, setShow] = useState(true);
-    
-
     const [isHovered, setIsHovered] = useState(false);
 
     useEffect(() => {
         const element = msgRef.current;
         if (!element) return;
 
-        // 设置随机的垂直位置
-        const randomY = Math.random() * 70 + 10; // 10% 到 80% 的位置
-        element.style.top = `${randomY}%`;
+        // 使用分配的轨道位置
+        if (msg.yPosition !== undefined) {
+            element.style.top = `${msg.yPosition}px`;
+        } else {
+            // 备用方案：随机位置
+            const randomY = Math.random() * 70 + 10;
+            element.style.top = `${randomY}%`;
+        }
 
-        // 设置动画持续时间（根据内容长度调整）
-        const time = Math.max(8, msg.content.length * 0.3);
-        element.style.animationDuration = `${time}s`;
+        // 使用分配的速度
+        const animationDuration = msg.speed || Math.max(6, msg.content.length * 0.3);
+        element.style.animationDuration = `${animationDuration}s`;
 
         // 监听动画结束
         const handleEnd = () => {
             setShow(false);
-            onEnd(msg.id);
+            onEnd(msg.id, msg.trackIndex);
         };
 
         element.addEventListener('animationend', handleEnd);
@@ -44,7 +47,9 @@ const DanmuMessage = ({ msg, onEnd }) => {
             className={`danmu-message ${msg.type || 'normal'}`}
             style={{
                 color: msg.color || '#ffffff',
-                fontSize: msg.fontSize || '16px'
+                fontSize: msg.fontSize || '16px',
+                // 鼠标悬停时暂停动画
+                animationPlayState: isHovered ? 'paused' : 'running'
             }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -65,6 +70,13 @@ export default function Community() {
 
     const [isPaused, setIsPaused] = useState(false);
     const [showStats, setShowStats] = useState(true);
+    
+    // 弹幕轨道管理
+    const trackManagerRef = useRef({
+        tracks: [], // 存储每个轨道的状态
+        trackCount: 8, // 总轨道数
+        trackHeight: 50, // 每个轨道的高度
+    });
     
     // 当前用户信息 - 使用useState确保用户名不会变化
     const [user] = useState(() => ({
@@ -87,6 +99,50 @@ export default function Community() {
     const MAX_MESSAGES = 50; // 最大弹幕数量
     const AUTO_SEND_INTERVAL = 3000; // 自动发送间隔
 
+    // 轨道管理函数
+    const allocateTrack = useCallback(() => {
+        const manager = trackManagerRef.current;
+        const currentTime = Date.now();
+        
+        // 初始化轨道如果还没有
+        if (manager.tracks.length === 0) {
+            manager.tracks = Array(manager.trackCount).fill(null).map(() => ({
+                occupied: false,
+                lastUsed: 0
+            }));
+        }
+        
+        // 找到空闲的轨道
+        for (let i = 0; i < manager.trackCount; i++) {
+            const track = manager.tracks[i];
+            // 如果轨道未被占用，或者已经空闲超过2秒
+            if (!track.occupied || (currentTime - track.lastUsed) > 2000) {
+                track.occupied = true;
+                track.lastUsed = currentTime;
+                return {
+                    trackIndex: i,
+                    yPosition: (i * manager.trackHeight) + 10 // 10px偏移
+                };
+            }
+        }
+        
+        // 如果所有轨道都被占用，使用随机轨道
+        const randomTrack = Math.floor(Math.random() * manager.trackCount);
+        manager.tracks[randomTrack].occupied = true;
+        manager.tracks[randomTrack].lastUsed = currentTime;
+        return {
+            trackIndex: randomTrack,
+            yPosition: (randomTrack * manager.trackHeight) + 10
+        };
+    }, []);
+
+    const releaseTrack = useCallback((trackIndex) => {
+        const manager = trackManagerRef.current;
+        if (manager.tracks[trackIndex]) {
+            manager.tracks[trackIndex].occupied = false;
+        }
+    }, []);
+
     // 获取评论列表
     const fetchComments = async (isInitialLoad = false) => {
         if (isInitialLoad) {
@@ -98,15 +154,24 @@ export default function Community() {
             
             if (response && response.code === 0 && response.data) {
                 // 将评论数据转换为弹幕格式
-                const commentsAsDanmu = response.data.map((comment, index) => ({
-                    id: comment.comment_id || Date.now() + index,
-                    username: comment.user_name || 'Anonymous',
-                    content: comment.content || comment.text || '',
-                    type: 'normal',
-                    color: colorArr[Math.floor(Math.random() * colorArr.length)],
-                    fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
-                    time: new Date(comment.created_at || Date.now()).getTime()
-                }));
+                const commentsAsDanmu = response.data.map((comment, index) => {
+                    const track = allocateTrack();
+                    const contentLength = comment.content?.length || 10;
+                    
+                    return {
+                        id: comment.comment_id || Date.now() + index,
+                        username: comment.user_name || 'Anonymous',
+                        content: comment.content || comment.text || '',
+                        type: 'normal',
+                        color: colorArr[Math.floor(Math.random() * colorArr.length)],
+                        fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
+                        time: new Date(comment.created_at || Date.now()).getTime(),
+                        trackIndex: track.trackIndex,
+                        yPosition: track.yPosition,
+                        // 根据内容长度和随机因子计算速度
+                        speed: Math.max(6, Math.min(15, 8 + contentLength * 0.2 + Math.random() * 4))
+                    };
+                });
                 
                 // 对于定期刷新，将新评论添加到现有列表而不是替换
                 if (isInitialLoad) {
@@ -165,9 +230,13 @@ export default function Community() {
     }, [loading, isPaused]);
 
     // 清理已完成动画的弹幕
-    const handleMsgEnd = useCallback((msgId) => {
+    const handleMsgEnd = useCallback((msgId, trackIndex) => {
         setMessageList(prev => prev.filter(item => item.id !== msgId));
-    }, []);
+        // 释放轨道
+        if (trackIndex !== undefined) {
+            releaseTrack(trackIndex);
+        }
+    }, [releaseTrack]);
 
     // 发送弹幕 - 修改为调用API
     const sendMsg = async () => {
@@ -190,14 +259,19 @@ export default function Community() {
 
             if (response && response.code === 0 && response.data) {
                 // API调用成功，创建新弹幕显示
+                const track = allocateTrack();
+                const content = response.data.content || inputText.trim();
                 const newDanmu = {
                     id: response.data.comment_id || Date.now() + Math.random(),
                     username: response.data.user_name || user.name,
-                    content: response.data.content || inputText.trim(),
+                    content: content,
                     type: 'user',
                     color: colorArr[Math.floor(Math.random() * colorArr.length)],
                     fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
-                    time: Date.now()
+                    time: Date.now(),
+                    trackIndex: track.trackIndex,
+                    yPosition: track.yPosition,
+                    speed: Math.max(6, Math.min(15, 8 + content.length * 0.2 + Math.random() * 4))
                 };
 
                 console.log('Comment created successfully:', newDanmu);
@@ -216,14 +290,19 @@ export default function Community() {
             console.error('Error sending comment:', error);
             
             // 如果API调用失败，仍然在本地显示弹幕（可选）
+            const track = allocateTrack();
+            const content = inputText.trim();
             const newDanmu = {
                 id: Date.now() + Math.random(),
                 username: user.name,
-                content: inputText.trim(),
+                content: content,
                 type: 'user',
                 color: colorArr[Math.floor(Math.random() * colorArr.length)],
                 fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
-                time: Date.now()
+                time: Date.now(),
+                trackIndex: track.trackIndex,
+                yPosition: track.yPosition,
+                speed: Math.max(6, Math.min(15, 8 + content.length * 0.2 + Math.random() * 4))
             };
 
             console.log('API failed, showing local comment:', newDanmu);
@@ -256,6 +335,14 @@ export default function Community() {
         const confirmClear = window.confirm('Are you sure you want to clear all bullet comments?');
         if (confirmClear) {
             setMessageList([]);
+            // 释放所有轨道
+            const manager = trackManagerRef.current;
+            if (manager.tracks.length > 0) {
+                manager.tracks.forEach(track => {
+                    track.occupied = false;
+                    track.lastUsed = 0;
+                });
+            }
             console.log('All bullet comments cleared');
         }
     };
@@ -364,4 +451,3 @@ export default function Community() {
         </div>
     );
 }
-
