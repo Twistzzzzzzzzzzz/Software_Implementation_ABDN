@@ -17,9 +17,10 @@ const DanmuMessage = ({ msg, onEnd }) => {
         if (msg.yPosition !== undefined) {
             element.style.top = `${msg.yPosition}px`;
         } else {
-            // 备用方案：随机位置
-            const randomY = Math.random() * 70 + 10;
-            element.style.top = `${randomY}%`;
+            // 备用方案：在标题下方的随机位置
+            const headerHeight = 120; // 使用默认值
+            const randomY = headerHeight + 20 + Math.random() * 300;
+            element.style.top = `${randomY}px`;
         }
 
         // 使用分配的速度
@@ -76,7 +77,11 @@ export default function Community() {
         tracks: [], // 存储每个轨道的状态
         trackCount: 8, // 总轨道数
         trackHeight: 50, // 每个轨道的高度
+        headerHeight: 120, // 标题区域高度（默认值）
     });
+    
+    // 标题区域引用
+    const headerRef = useRef(null);
     
     // 当前用户信息 - 使用useState确保用户名不会变化
     const [user] = useState(() => ({
@@ -99,10 +104,21 @@ export default function Community() {
     const MAX_MESSAGES = 50; // 最大弹幕数量
     const AUTO_SEND_INTERVAL = 3000; // 自动发送间隔
 
+    // 获取标题区域高度
+    const getHeaderHeight = useCallback(() => {
+        if (headerRef.current) {
+            const height = headerRef.current.offsetHeight;
+            trackManagerRef.current.headerHeight = height;
+            return height;
+        }
+        return trackManagerRef.current.headerHeight;
+    }, []);
+
     // 轨道管理函数
     const allocateTrack = useCallback(() => {
         const manager = trackManagerRef.current;
         const currentTime = Date.now();
+        const headerHeight = getHeaderHeight();
         
         // 初始化轨道如果还没有
         if (manager.tracks.length === 0) {
@@ -121,7 +137,8 @@ export default function Community() {
                 track.lastUsed = currentTime;
                 return {
                     trackIndex: i,
-                    yPosition: (i * manager.trackHeight) + 10 // 10px偏移
+                    // 轨道位置从标题下方开始，加上20px的间距
+                    yPosition: headerHeight + 20 + (i * manager.trackHeight)
                 };
             }
         }
@@ -132,9 +149,9 @@ export default function Community() {
         manager.tracks[randomTrack].lastUsed = currentTime;
         return {
             trackIndex: randomTrack,
-            yPosition: (randomTrack * manager.trackHeight) + 10
+            yPosition: headerHeight + 20 + (randomTrack * manager.trackHeight)
         };
-    }, []);
+    }, [getHeaderHeight]);
 
     const releaseTrack = useCallback((trackIndex) => {
         const manager = trackManagerRef.current;
@@ -213,6 +230,16 @@ export default function Community() {
         console.log('Starting comment initialization...'); 
         fetchComments(true); // 初始加载标记为true
     }, []);
+
+    // 组件挂载后更新标题高度
+    useEffect(() => {
+        // 等待DOM渲染完成后更新标题高度
+        const timer = setTimeout(() => {
+            getHeaderHeight();
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, [getHeaderHeight]);
 
     // 定期从后端重新获取评论数据，实现持续弹幕滚动
     useEffect(() => {
@@ -374,13 +401,21 @@ export default function Community() {
                 </div>
                 
                 {/* 标题区域 */}
-                <div className="danmu-header">
+                <div className="danmu-header" ref={headerRef}>
                     <h1>Mental Health Bullet Comment Wall</h1>
                     <p>Share your mood, spread positive energy</p>
                 </div>
 
-                {/* 弹幕消息 */}
-                <div className="danmu-messages">
+                {/* 弹幕消息区域 - 只在标题下方显示 */}
+                <div className="danmu-messages" style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    overflow: 'hidden',
+                    pointerEvents: 'none'
+                }}>
                     {messageList.map(msg => (
                         <DanmuMessage
                             key={msg.id}
