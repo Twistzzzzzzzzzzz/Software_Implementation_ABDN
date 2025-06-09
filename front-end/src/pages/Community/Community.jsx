@@ -88,8 +88,11 @@ export default function Community() {
     const AUTO_SEND_INTERVAL = 3000; // 自动发送间隔
 
     // 获取评论列表
-    const fetchComments = async () => {
-        setLoading(true);
+    const fetchComments = async (isInitialLoad = false) => {
+        if (isInitialLoad) {
+            setLoading(true);
+        }
+        
         try {
             const response = await request.get('/api/v1/resources/community/info');
             
@@ -105,29 +108,61 @@ export default function Community() {
                     time: new Date(comment.created_at || Date.now()).getTime()
                 }));
                 
-                setMessageList(commentsAsDanmu);
+                // 对于定期刷新，将新评论添加到现有列表而不是替换
+                if (isInitialLoad) {
+                    setMessageList(commentsAsDanmu);
+                } else {
+                    // 定期刷新时，添加新的评论到现有弹幕中
+                    setMessageList(prev => {
+                        const newComments = commentsAsDanmu.filter(newComment => 
+                            !prev.some(existingComment => existingComment.id === newComment.id)
+                        );
+                        const combinedList = [...prev, ...newComments];
+                        // 限制总数量，避免内存泄漏
+                        return combinedList.length > MAX_MESSAGES ? 
+                            combinedList.slice(-MAX_MESSAGES) : combinedList;
+                    });
+                }
+                
                 console.log('Comments loaded from API:', commentsAsDanmu.length);
-            } else {
-                // 如果API调用失败，设置空消息列表
-                console.log('API failed, no default messages');
+            } else if (isInitialLoad) {
+                // 只有初始加载时才设置空列表
+                console.log('API failed, no comments available');
                 setMessageList([]);
             }
         } catch (error) {
             console.error('Failed to fetch comments:', error);
-            // 发生错误时设置空消息列表
-            setMessageList([]);
+            if (isInitialLoad) {
+                // 只有初始加载时才设置空列表
+                setMessageList([]);
+            }
         } finally {
-            setLoading(false);
+            if (isInitialLoad) {
+                setLoading(false);
+            }
         }
     };
 
     // 初始化评论
     useEffect(() => {
         console.log('Starting comment initialization...'); 
-        fetchComments();
+        fetchComments(true); // 初始加载标记为true
     }, []);
 
+    // 定期从后端重新获取评论数据，实现持续弹幕滚动
+    useEffect(() => {
+        if (loading || isPaused) return;
 
+        const timer = setInterval(() => {
+            // 定期重新获取评论数据
+            console.log('Refreshing comments from backend...');
+            fetchComments();
+        }, AUTO_SEND_INTERVAL + Math.random() * 2000); // 3-5秒随机间隔重新获取
+
+        return () => {
+            clearInterval(timer);
+        };
+    }, [loading, isPaused]);
 
     // 清理已完成动画的弹幕
     const handleMsgEnd = useCallback((msgId) => {
@@ -142,24 +177,16 @@ export default function Community() {
         }
 
         try {
+            // 获取token 
+            const token = localStorage.getItem('access_token');
+            
             // 构建评论对象
             const commentData = {
                 content: inputText.trim(),
-                // 其他需要的字段根据后端Comment模型添加
             };
-            const token = localStorage.getItem('access_token') || '';
 
-            // 调用后端API创建评论
-            const response = await request.post(
-              '/api/v1/resources/community',
-              commentData,
-              {
-                  headers: {
-                      Authorization: `Bearer ${token}`
-                  }
-              }
-            );
-
+            // 调用后端API创建评论 (request拦截器会自动添加Authorization header)
+            const response = await request.post('/api/v1/resources/community', commentData);
 
             if (response && response.code === 0 && response.data) {
                 // API调用成功，创建新弹幕显示
@@ -337,3 +364,4 @@ export default function Community() {
         </div>
     );
 }
+
