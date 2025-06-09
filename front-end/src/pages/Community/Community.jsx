@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import './Community.css';
 import { assets } from '../../assets/assets';
+import request from '../../utils/request';
 
 // 弹幕组件
 const DanmuMessage = ({ msg, onEnd }) => {
@@ -71,24 +72,6 @@ export default function Community() {
         avatar: assets.Personal_icon,
     }));
 
-    // 预设的弹幕消息
-    const defaultMsgs = [
-        { username: 'Mental Health Assistant', content: 'Welcome to Mental Health Bullet Comment Wall!', type: 'system' },
-        { username: 'Sunshine Youth', content: 'Feeling great today, sharing the joy with everyone!' },
-        { username: 'Meditation Master', content: 'Just finished 20 minutes of mindful meditation, feeling very peaceful' },
-        { username: 'Anxiety Fighter', content: 'Deep breathing really works, recommend it to friends with anxiety' },
-        { username: 'Psychology Lover', content: 'Learning psychology has helped me understand myself better' },
-        { username: 'Healing Spirit', content: 'Recording three things I\'m grateful for daily has improved my mindset' },
-        { username: 'Stress Manager', content: 'When work stress is high, I listen to light music' },
-        { username: 'Emotion Regulator', content: 'When feeling down, exercise is the best medicine' },
-        { username: 'Sleep Expert', content: 'Regular sleep schedule is really important, everyone should sleep and wake early' },
-        { username: 'Self Growth', content: 'Improving a little each day is the greatest success' },
-        { username: 'Soul Guide', content: 'Accepting your imperfections is also a form of growth' },
-        { username: 'Positive Energy Spreader', content: 'A smile is the best makeup, everyone should smile more' },
-        { username: 'Psychologist', content: 'Listen to your inner voice and find your true self' },
-        { username: 'Recovery Journey', content: 'The process of overcoming depression is difficult but worth persisting' },
-        { username: 'Light of Hope', content: 'There\'s always a beam of light waiting for us in the darkness' }
-    ];
 
     // 随机颜色数组
     const colorArr = [
@@ -104,98 +87,119 @@ export default function Community() {
     const MAX_MESSAGES = 50; // 最大弹幕数量
     const AUTO_SEND_INTERVAL = 3000; // 自动发送间隔
 
-    // 初始化弹幕
-    useEffect(() => {
-        console.log('Starting bullet comment initialization...'); // 调试用的log
+    // 获取评论列表
+    const fetchComments = async () => {
         setLoading(true);
-        
-        setTimeout(() => {
-            // 创建初始弹幕，添加随机延迟
-            const initDanmu = defaultMsgs.map((item, index) => {
-                // 生成随机ID
-                const randomId = Math.random() * 10000;
-                return {
-                    id: index + 1,
-                    username: item.username,
-                    content: item.content,
-                    type: item.type || 'normal',
-                    color: item.type === 'system' ? '#FFD700' : colorArr[Math.floor(Math.random() * colorArr.length)],
+        try {
+            const response = await request.get('/api/v1/resources/community/info');
+            
+            if (response && response.code === 0 && response.data) {
+                // 将评论数据转换为弹幕格式
+                const commentsAsDanmu = response.data.map((comment, index) => ({
+                    id: comment.comment_id || Date.now() + index,
+                    username: comment.user_name || 'Anonymous',
+                    content: comment.content || comment.text || '',
+                    type: 'normal',
+                    color: colorArr[Math.floor(Math.random() * colorArr.length)],
                     fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
-                    time: Date.now() + index * 2000 // 每2秒发送一条
-                };
-            });
-
-            setMessageList(initDanmu);
+                    time: new Date(comment.created_at || Date.now()).getTime()
+                }));
+                
+                setMessageList(commentsAsDanmu);
+                console.log('Comments loaded from API:', commentsAsDanmu.length);
+            } else {
+                // 如果API调用失败，设置空消息列表
+                console.log('API failed, no default messages');
+                setMessageList([]);
+            }
+        } catch (error) {
+            console.error('Failed to fetch comments:', error);
+            // 发生错误时设置空消息列表
+            setMessageList([]);
+        } finally {
             setLoading(false);
-            console.log('Bullet comment initialization completed!'); // 调试用的log
-        }, 1000);
+        }
+    };
+
+    // 初始化评论
+    useEffect(() => {
+        console.log('Starting comment initialization...'); 
+        fetchComments();
     }, []);
 
-    // 自动发送预设弹幕
-    useEffect(() => {
-        if (loading) return;
-        if (isPaused) return; // 如果暂停了就不发送
 
-        const timer = setInterval(() => {
-            const randomIndex = Math.floor(Math.random() * defaultMsgs.length);
-            const randomMsg = defaultMsgs[randomIndex];
-            
-            // 生成新的弹幕对象
-            const newDanmu = {
-                id: Date.now() + Math.random(), // 确保ID唯一
-                username: randomMsg.username,
-                content: randomMsg.content,
-                type: randomMsg.type || 'normal',
-                color: randomMsg.type === 'system' ? '#FFD700' : colorArr[Math.floor(Math.random() * colorArr.length)],
-                fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
-                time: Date.now()
-            };
-
-            setMessageList(prev => {
-                // 限制弹幕数量，避免内存泄漏
-                const newList = [...prev, newDanmu];
-                if (newList.length > MAX_MESSAGES) {
-                    return newList.slice(-MAX_MESSAGES);
-                }
-                return newList;
-            });
-        }, AUTO_SEND_INTERVAL + Math.random() * 2000); // 3-5秒随机间隔
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, [loading, isPaused]);
 
     // 清理已完成动画的弹幕
     const handleMsgEnd = useCallback((msgId) => {
         setMessageList(prev => prev.filter(item => item.id !== msgId));
     }, []);
 
-    // 发送弹幕
-    const sendMsg = () => {
+    // 发送弹幕 - 修改为调用API
+    const sendMsg = async () => {
         if (!inputText.trim()) {
-            alert('Please enter the bullet comment content!'); // 简单的提示
+            alert('Please enter the bullet comment content!'); 
             return;
         }
 
-        // 创建新弹幕
-        const newDanmu = {
-            id: Date.now() + Math.random(),
-            username: user.name,
-            content: inputText.trim(),
-            type: 'user',
-            color: colorArr[Math.floor(Math.random() * colorArr.length)],
-            fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
-            time: Date.now()
-        };
+        try {
+            // 获取token 
+            const token = localStorage.getItem('access_token');
+            
+            // 构建评论对象
+            const commentData = {
+                content: inputText.trim(),
+            };
 
-        console.log('Send bullet comment:', newDanmu); // 调试用
-        setMessageList(prev => [...prev, newDanmu]);
-        setInputText('');
-        
-        // 聚焦回输入框
-        if (inputRef.current) {
-            inputRef.current.focus();
+            // 调用后端API创建评论 (request拦截器会自动添加Authorization header)
+            const response = await request.post('/api/v1/resources/community', commentData);
+
+            if (response && response.code === 0 && response.data) {
+                // API调用成功，创建新弹幕显示
+                const newDanmu = {
+                    id: response.data.comment_id || Date.now() + Math.random(),
+                    username: response.data.user_name || user.name,
+                    content: response.data.content || inputText.trim(),
+                    type: 'user',
+                    color: colorArr[Math.floor(Math.random() * colorArr.length)],
+                    fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
+                    time: Date.now()
+                };
+
+                console.log('Comment created successfully:', newDanmu);
+                setMessageList(prev => [...prev, newDanmu]);
+                setInputText('');
+                
+                // 聚焦回输入框
+                if (inputRef.current) {
+                    inputRef.current.focus();
+                }
+            } else {
+                console.error('Failed to create comment:', response);
+                alert('Failed to send comment, please try again');
+            }
+        } catch (error) {
+            console.error('Error sending comment:', error);
+            
+            // 如果API调用失败，仍然在本地显示弹幕（可选）
+            const newDanmu = {
+                id: Date.now() + Math.random(),
+                username: user.name,
+                content: inputText.trim(),
+                type: 'user',
+                color: colorArr[Math.floor(Math.random() * colorArr.length)],
+                fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
+                time: Date.now()
+            };
+
+            console.log('API failed, showing local comment:', newDanmu);
+            setMessageList(prev => [...prev, newDanmu]);
+            setInputText('');
+            
+            if (inputRef.current) {
+                inputRef.current.focus();
+            }
+            
+            alert('Network error, comment displayed locally only');
         }
     };
 
@@ -282,10 +286,6 @@ export default function Community() {
             {/* 输入区域 */}
             <div className="danmu-input-area">
                 <div className="input-container">
-                    <div className="user-info">
-                        <img src={user.avatar} alt="Avatar" className="user-avatar" />
-                        <span className="username">{user.name}</span>
-                    </div>
                     
                     <div className="input-box">
                         <input

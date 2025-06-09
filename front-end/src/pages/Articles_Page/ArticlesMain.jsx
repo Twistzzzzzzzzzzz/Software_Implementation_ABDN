@@ -121,20 +121,6 @@ const ArticleModal = ({ article, articleDetail, isOpen, onClose }) => {
                             <p>No content available</p>
                         )}
                     </div>
-                    <div className="article-actions">
-                        <button className="action-btn like-btn">
-                            <img src={assets.Like_icon} alt="Like" />
-                            <span>{displayArticle.likes || 0}</span>
-                        </button>
-                        <button className="action-btn share-btn">
-                            <img src={assets.Share_icon} alt="Share" />
-                            <span>Share</span>
-                        </button>
-                        <button className="action-btn star-btn">
-                            <img src={assets.Star_icon} alt="Save" />
-                            <span>Save</span>
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
