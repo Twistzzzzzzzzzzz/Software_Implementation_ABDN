@@ -3,19 +3,53 @@ import { assets } from '../../assets/assets'
 import './Healing_vedio.css'
 import CommentArea from "./components/CommentArea/CommentArea.jsx";
 import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import VideoItem from './components/VideoItem/VideoItem.jsx';
 import SidebarTabs from './components/SidebarTabs/SidebarTabs.jsx';
 import request from '../../utils/request';
+import { useAuthPrompt } from '../../context/AuthPromptContext';
 
 export default function Healing_video({ videoTitle, videoDescription }) {
+    const { showPrompt, showConfirmPrompt, confirmPrompt } = useAuthPrompt();
     const topRef = useRef(null);
     const location = useLocation();
+    const navigate = useNavigate();
+    const token = localStorage.getItem('access_token') || '';
+    const confirmKey = token ? `video_confirmed_${token}` : null;
+    const [shouldGoHome, setShouldGoHome] = useState(false);
+    const [hasShownThisTime, setHasShownThisTime] = useState(false);
+
+    useEffect(() => {
+        setHasShownThisTime(false); // 路由变化时重置
+    }, [location.pathname, token]);
+
     useEffect(() => {
         if (location.state && location.state.scrollToTop && topRef.current) {
             topRef.current.scrollIntoView({ behavior: 'auto' });
         }
-    }, [location]);
+        if (!hasShownThisTime) {
+            if (confirmKey && !localStorage.getItem(confirmKey)) {
+                showConfirmPrompt(
+                    'Before watching, please note:\nWe only collect and share video resources for non-profit purposes. All videos are sourced from the internet, and we are not responsible for their content.',
+                    () => {
+                        localStorage.setItem(confirmKey, '1');
+                        // 不再显示顶部消息框
+                    }
+                );
+                setHasShownThisTime(true);
+            } else if (confirmKey && localStorage.getItem(confirmKey)) {
+                showPrompt('Disclaimer: All videos are sourced from the internet, and we are not responsible for their content.');
+                setHasShownThisTime(true);
+            }
+        }
+    }, [location.pathname, showPrompt, showConfirmPrompt, confirmKey, hasShownThisTime]);
+
+    useEffect(() => {
+        if (shouldGoHome && confirmPrompt && confirmPrompt.visible === false) {
+            setShouldGoHome(false);
+            navigate('/');
+        }
+    }, [shouldGoHome, confirmPrompt, navigate]);
 
     // 视频列表请求与图片加载
     const [videoItems, setVideoItems] = useState([]);

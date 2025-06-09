@@ -9,14 +9,12 @@ import { useAuthPrompt } from '../../context/AuthPromptContext';
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [apiError, setApiError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { showPrompt } = useAuthPrompt();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setApiError('');
         setLoading(true);
         try {
             const data = await request.post('/api/v1/auth/login', {
@@ -30,10 +28,10 @@ export default function Login() {
                 showPrompt('Login successful!');
                 navigate('/');
             } else {
-                setApiError(data.message || '登录失败。');
+                showPrompt(data.message || 'Login failed.');
             }
         } catch (err) {
-            setApiError('网络错误，请重试。');
+            showPrompt('Network error, please try again.');
         } finally {
             setLoading(false);
         }
@@ -69,7 +67,6 @@ export default function Login() {
                             required
                         />
                     </div>
-                    {apiError && <p className="error-message">{apiError}</p>}
                     <button type="submit" className="sign-in-button" disabled={loading}>
                         {loading ? 'Signing in...' : 'Sign In'}
                     </button>

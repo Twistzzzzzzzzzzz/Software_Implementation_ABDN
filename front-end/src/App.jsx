@@ -5,7 +5,7 @@ import Navbar from './main_components/Navbar/Navbar'
 import Footer from './main_components/Footer/Footer'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthPromptProvider } from './context/AuthPromptContext'
-import AuthPromptModal from './components/AuthPromptModal'
+import AuthPromptModal, { ConfirmPromptModal } from './components/AuthPromptModal'
 
 // 删除所有直接导入的组件（如 Home、AI_chat 等）
 
@@ -56,6 +56,7 @@ function AppContent() {
             </Suspense>
             {!(isHealingVideo || isAIChat) && <Footer />}
             <AuthPromptModal />
+            <ConfirmPromptModal />
         </div>
     )
 }

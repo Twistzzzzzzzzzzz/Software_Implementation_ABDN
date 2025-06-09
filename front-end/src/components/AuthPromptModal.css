@@ -29,6 +29,9 @@
     font-weight: 500;
     text-align: left;
     white-space: pre-line;
+    max-width: 400px;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
 .auth-prompt-progress-bar-wrapper {
@@ -48,4 +51,49 @@
 /* 移除旧弹窗和遮罩样式及关闭按钮样式 */
 .auth-prompt-overlay, .auth-prompt-modal, .auth-prompt-modal p, .auth-prompt-modal button, .auth-prompt-modal button:hover, .auth-prompt-close-btn {
     all: unset;
+}
+
+.auth-prompt-confirm-btn, .auth-prompt-cancel-btn {
+    background-color: #42a5f5;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 18px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0;
+    transition: background 0.2s;
+}
+.auth-prompt-confirm-btn:hover, .auth-prompt-cancel-btn:hover {
+    background-color: #1565c0;
+}
+
+.auth-prompt-center-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(44, 62, 80, 0.25);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.auth-prompt-center-modal {
+    background: #e3f2fd;
+    color: #1565c0;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.13);
+    min-width: 320px;
+    max-width: 90vw;
+    padding: 32px 32px 24px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeInScale 0.2s;
+}
+@keyframes fadeInScale {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
 } 

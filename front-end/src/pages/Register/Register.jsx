@@ -13,7 +13,6 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
-    const [apiError, setApiError] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { showPrompt } = useAuthPrompt();
@@ -22,6 +21,7 @@ export default function Register() {
         // Basic validation
         if (password !== confirmPassword) {
             setPasswordError('Passwords do not match');
+            showPrompt('Passwords do not match');
             return false;
         }
         setPasswordError('');
@@ -30,20 +30,18 @@ export default function Register() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setApiError('');
         if (!validateForm()) return;
         setLoading(true);
         try {
             const data = await request.post('/api/v1/auth/register', { username, password, email });
             if (data.code === 0) {
-                // 注册成功，跳转到登录页
                 showPrompt('Registration successful! Please log in.');
                 navigate('/login');
             } else {
-                setApiError(data.message || 'Registration failed.');
+                showPrompt(data.message || 'Registration failed.');
             }
         } catch (err) {
-            setApiError(err.message || 'Network error, please try again.');
+            showPrompt(err.message || 'Network error, please try again.');
         } finally {
             setLoading(false);
         }
@@ -104,10 +102,7 @@ export default function Register() {
                             placeholder="Value"
                             required
                         />
-                        {passwordError && <p className="error-message">{passwordError}</p>}
                     </div>
-                    
-                    {apiError && <p className="error-message">{apiError}</p>}
                     
                     <button type="submit" className="sign-in-button" disabled={loading}>
                         {loading ? 'Registering...' : 'Sign Up'}
