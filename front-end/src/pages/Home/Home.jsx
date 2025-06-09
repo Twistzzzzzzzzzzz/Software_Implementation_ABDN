@@ -129,7 +129,7 @@ function Home() {
                         title="Healing Message Wall"
                         desc="Share your thoughts, read uplifting messages, and connect with a supportive community on our interactive message wall."
                         buttonText="Explore"
-                        onClick={() => handleNavigate('/articles')}
+                        onClick={() => handleNavigate('/community')}
                     />
                 </div>
             </div>
