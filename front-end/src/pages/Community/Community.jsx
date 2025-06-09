@@ -108,32 +108,14 @@ export default function Community() {
                 setMessageList(commentsAsDanmu);
                 console.log('Comments loaded from API:', commentsAsDanmu.length);
             } else {
-                // 如果API调用失败，使用默认消息
-                console.log('API failed, using default messages');
-                const initDanmu = defaultMsgs.map((item, index) => ({
-                    id: index + 1,
-                    username: item.username,
-                    content: item.content,
-                    type: item.type || 'normal',
-                    color: item.type === 'system' ? '#FFD700' : colorArr[Math.floor(Math.random() * colorArr.length)],
-                    fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
-                    time: Date.now() + index * 2000
-                }));
-                setMessageList(initDanmu);
+                // 如果API调用失败，设置空消息列表
+                console.log('API failed, no default messages');
+                setMessageList([]);
             }
         } catch (error) {
             console.error('Failed to fetch comments:', error);
-            // 发生错误时使用默认消息
-            const initDanmu = defaultMsgs.map((item, index) => ({
-                id: index + 1,
-                username: item.username,
-                content: item.content,
-                type: item.type || 'normal',
-                color: item.type === 'system' ? '#FFD700' : colorArr[Math.floor(Math.random() * colorArr.length)],
-                fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
-                time: Date.now() + index * 2000
-            }));
-            setMessageList(initDanmu);
+            // 发生错误时设置空消息列表
+            setMessageList([]);
         } finally {
             setLoading(false);
         }
@@ -145,40 +127,7 @@ export default function Community() {
         fetchComments();
     }, []);
 
-    // 自动发送预设弹幕 - 保持原有的自动弹幕功能
-    useEffect(() => {
-        if (loading) return;
-        if (isPaused) return; // 如果暂停了就不发送
 
-        const timer = setInterval(() => {
-            const randomIndex = Math.floor(Math.random() * defaultMsgs.length);
-            const randomMsg = defaultMsgs[randomIndex];
-            
-            // 生成新的弹幕对象
-            const newDanmu = {
-                id: Date.now() + Math.random(), // 确保ID唯一
-                username: randomMsg.username,
-                content: randomMsg.content,
-                type: randomMsg.type || 'normal',
-                color: randomMsg.type === 'system' ? '#FFD700' : colorArr[Math.floor(Math.random() * colorArr.length)],
-                fontSize: sizeArr[Math.floor(Math.random() * sizeArr.length)],
-                time: Date.now()
-            };
-
-            setMessageList(prev => {
-                // 限制弹幕数量，避免内存泄漏
-                const newList = [...prev, newDanmu];
-                if (newList.length > MAX_MESSAGES) {
-                    return newList.slice(-MAX_MESSAGES);
-                }
-                return newList;
-            });
-        }, AUTO_SEND_INTERVAL + Math.random() * 2000); // 3-5秒随机间隔
-
-        return () => {
-            clearInterval(timer);
-        };
-    }, [loading, isPaused]);
 
     // 清理已完成动画的弹幕
     const handleMsgEnd = useCallback((msgId) => {
@@ -193,7 +142,7 @@ export default function Community() {
         }
 
         try {
-            // 获取token（如果需要认证）
+            // 获取token
             const token = localStorage.getItem('token');
             
             // 构建评论对象
@@ -383,3 +332,4 @@ export default function Community() {
         </div>
     );
 }
+
