@@ -16,7 +16,7 @@ export default function SidebarTabs({ videoTitle, videoDescription, videoItems, 
                     onClick={() => setTab('comment')}
                 >Comments</button>
             </div>
-            <div className="sidebar-tabs-content">
+            <div className="sideba r-tabs-content">
                 {tab === 'intro' ? (
                     <>
                         <div className="sidebar-info">

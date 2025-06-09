@@ -262,6 +262,270 @@
     gap: 10px;
     padding-right: 10px;
 }
+/* 弹幕墙容器 */
+.danmu-container {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 弹幕显示屏幕 */
+.danmu-screen {
+    flex: 1;
+    min-height: 75vh; /* 确保弹幕屏幕至少占75%的视口高度 */
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* 背景图案 */
+.danmu-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    z-index: 1;
+}
+
+.background-pattern {
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.2) 2px, transparent 2px),
+        radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: backgroundMove 20s linear infinite;
+}
+
+@keyframes backgroundMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(50px, 50px); }
+}
+
+/* 弹幕标题区域 */
+.danmu-header {
+    position: absolute;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 10;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.danmu-header h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0;
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: titleGlow 3s ease-in-out infinite alternate;
+}
+
+.danmu-header p {
+    font-size: 1.1rem;
+    margin: 10px 0 0 0;
+    opacity: 0.9;
+}
+
+@keyframes titleGlow {
+    0% { filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5)); }
+    100% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+}
+
+/* 弹幕消息区域 */
+.danmu-messages {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 5;
+    pointer-events: none;
+}
+
+/* 弹幕消息样式 */
+.danmu-message {
+    position: absolute;
+    right: -100%;
+    white-space: nowrap;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    animation: danmuMove linear forwards;
+    z-index: 5;
+    padding: 8px 16px;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 80%;
+    overflow: hidden;
+}
+
+.danmu-message.system {
+    background: rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.danmu-message.user {
+    background: rgba(102, 126, 234, 0.3);
+    border: 1px solid rgba(102, 126, 234, 0.5);
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+}
+
+.danmu-username {
+    font-weight: bold;
+    opacity: 0.8;
+    font-size: 0.9em;
+}
+
+.danmu-content {
+    flex: 1;
+}
+
+@keyframes danmuMove {
+    0% {
+        right: -100%;
+        opacity: 0;
+    }
+    5% {
+        opacity: 1;
+    }
+    95% {
+        opacity: 1;
+    }
+    100% {
+        right: 100%;
+        opacity: 0;
+    }
+}
+
+/* 统计信息 */
+.danmu-stats {
+    position: absolute;
+    top: 120px; /* 增加top值，避免遮挡标题 */
+    right: 20px;
+    display: flex;
+    gap: 20px;
+    z-index: 10;
+}
+
+.stat-item {
+    text-align: center;
+    color: white;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px 15px;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #FFD700;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.8rem;
+    opacity: 0.8;
+    margin-top: 2px;
+}
+
+/* 输入区域 */
+.danmu-input-area {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 15px 20px; /* 减少垂直padding */
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    flex-shrink: 0; /* 防止输入区域被压缩 */
+    max-height: 25vh; /* 限制输入区域最大高度 */
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px; /* 减少底部间距 */
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 150px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #667eea;
+    object-fit: cover;
+}
+
+.username {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.9rem;
+}
+
+.input-box {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 25px;
+    padding: 5px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.input-box:focus-within {
+    border-color: #667eea;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+}
+
+.message-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 12px 20px;
+    font-size: 1rem;
+    background: transparent;
+    color: #333;
+}
+
+.message-input::placeholder {
+    color: #999;
+}
+
+.input-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-right: 10px;
+}
 
 .char-count {
     font-size: 0.8rem;
@@ -378,9 +642,13 @@
     }
     
     .danmu-stats {
-        position: static;
+        position: absolute;
+        top: 140px; /* 移动端也调整位置 */
+        left: 50%;
+        transform: translateX(-50%);
         justify-content: center;
-        margin: 20px 0;
+        margin: 0;
+        gap: 15px;
     }
     
     .danmu-message {
