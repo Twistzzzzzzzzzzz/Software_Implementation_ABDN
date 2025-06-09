@@ -5,11 +5,17 @@ plugins {
 }
 
 group = 'org.broky'
-version = '0.0.1-SNAPSHOT'
+version = '1.0 alpha'
 
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+bootJar {
+	from('backend/data') {
+		into 'data'  // 这将把 backend/data/* 打包进 jar 的 data 目录中
 	}
 }
 
@@ -28,8 +34,6 @@ repositories {
 
 dependencies {
 	// starter
-//	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 	implementation 'io.r2dbc:r2dbc-pool'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'

@@ -16,8 +16,10 @@ public class WebFluxCorsConfig{
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowedOrigins(List.of(
 				"http://frp-aim.com:11449",
-					"http://localhost:5173",
-				"http://frp-man.com:13246"
+				"http://localhost:5173",
+				"http://frp-man.com:13246",
+				"http://localhost:4173",
+				"http://localhost:8081"
 				)
 		);
 		config.addAllowedMethod("*");

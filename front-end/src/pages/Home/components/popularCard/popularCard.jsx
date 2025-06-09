@@ -19,7 +19,7 @@ function PopularCard({ number, title, summary, published_at, articleData }) {
                 <div className="text">
                     <div style={{fontWeight:600, marginBottom:4}}>{title}</div>
                     <div>{displaySummary}</div>
-                    {published_at && <div style={{fontSize:12, color:'#aaa', marginTop:6}}>发布时间: {published_at}</div>}
+                    {published_at && <div style={{fontSize:12, color:'#aaa', marginTop:6}}>Publish at: {published_at}</div>}
                 </div>
                 <div className="arrow-icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

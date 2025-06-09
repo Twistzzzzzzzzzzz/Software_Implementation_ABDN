@@ -19,7 +19,7 @@ function Home() {
     useEffect(() => {
         async function fetchVideo() {
             try {
-                const res = await request.get('/api/v1/resources/video/67');
+                const res = await request.get('/api/v1/resources/video/5');
                 const data = res.data;
                 if (data) {
                     setVideo(data);

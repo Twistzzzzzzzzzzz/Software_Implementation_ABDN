@@ -65,7 +65,7 @@ export default function Profile({ onClose }) {
         }
         try {
             const token = localStorage.getItem('access_token') || '';
-            const res = await request.put('http://localhost:8080/api/v1/user/update', {
+            const res = await request.put(`/api/v1/user/update`, {
                 username: username,
                 password: password,
                 avatar: update_avatar || '',

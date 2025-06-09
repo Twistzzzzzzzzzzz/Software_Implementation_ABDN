@@ -14,7 +14,7 @@ const env = {
     imageBaseUrl: import.meta.env.VITE_IMAGE_BASE_URL || 'https://localhost:3000/images',
 
     // 后端路径
-    backendPath: import.meta.env.VITE_BACKEND_PATH || 'http://frp-aim.com:13246',
+    backendPath: import.meta.env.VITE_BACKEND_PATH || 'http://localhost:48888',
     
     // 网站设置
     defaultPageSize: 10,

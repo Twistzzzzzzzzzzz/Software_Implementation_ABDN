@@ -45,3 +45,6 @@ build/
 .DS_Store
 Thumbs.db
 /out
+/backend/src/main/resources/static/assets
+backend/src/main/resources/static/vite.svg
+backend/src/main/resources/static/index.html
