@@ -282,7 +282,15 @@ export default function Community() {
             };
 
             // 调用后端API创建评论 (request拦截器会自动添加Authorization header)
-            const response = await request.post('/api/v1/resources/community', commentData);
+            const response = await request.post(
+              '/api/v1/resources/community',
+              commentData,
+              {
+                  headers: {
+                      Authorization: `Bearer ${token}`
+                  }
+              }
+            );
 
             if (response && response.code === 0 && response.data) {
                 // API调用成功，创建新弹幕显示
