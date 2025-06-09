@@ -222,20 +222,20 @@ function Articles() {
             <div className="articles-header">
                 <div className="header-content">
                     <div className="header-title">
-                        <h1>心理健康文章</h1>
+                        <h1>Mental Health Articles</h1>
                     </div>
-                    <p>专业的心理健康知识，帮助您更好地了解和关爱自己</p>
+                    <p>Specialized mental health knowledge to help you better understand and care for yourself</p>
                 </div>
             </div>
 
             <div className="articles-container">
                 <div className="articles-sidebar">
                     <div className="search-section">
-                        <h3>搜索文章</h3>
+                        <h3>Search Articles</h3>
                         <div className="search-box">
                             <input
                                 type="text"
-                                placeholder="搜索文章标题、内容或作者..."
+                                placeholder="Enter title, content or author..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
@@ -243,7 +243,7 @@ function Articles() {
                     </div>
 
                     <div className="categories-section">
-                        <h3>文章分类</h3>
+                        <h3>Article Filter</h3>
                         <div className="categories-list">
                             {categories.map(category => (
                                 <button
@@ -251,29 +251,29 @@ function Articles() {
                                     className={`category-btn ${selectedCategory === category ? 'active' : ''}`}
                                     onClick={() => setSelectedCategory(category)}
                                 >
-                                    {category === 'All' ? '全部' : 
-                                     category === 'Anxiety' ? '焦虑管理' :
-                                     category === 'Depression' ? '抑郁症' :
-                                     category === 'Stress Management' ? '压力管理' :
-                                     category === 'Relationships' ? '人际关系' :
-                                     category === 'Self Growth' ? '自我成长' :
-                                     category === 'Sleep Issues' ? '睡眠问题' :
-                                     category === 'Emotional Regulation' ? '情绪调节' : category}
+                                    {category === 'All' ? 'All' :
+                                     category === 'Anxiety' ? 'Anxiety' :
+                                     category === 'Depression' ? 'Depression' :
+                                     category === 'Stress Management' ? 'Stress Management' :
+                                     category === 'Relationships' ? 'Relationships' :
+                                     category === 'Self Growth' ? 'Self Growth' :
+                                     category === 'Sleep Issues' ? 'Sleep Issues' :
+                                     category === 'Emotional Regulation' ? 'Emotional Regulation' : category}
                                 </button>
                             ))}
                         </div>
                     </div>
 
                     <div className="stats-section">
-                        <h3>统计信息</h3>
+                        <h3>Statistic Information</h3>
                         <div className="stats-info">
                             <div className="stat-item">
                                 <span className="stat-number">{totalArticles}</span>
-                                <span className="stat-label">总文章数</span>
+                                <span className="stat-label">Total Number of Articles</span>
                             </div>
                             <div className="stat-item">
                                 <span className="stat-number">{filteredArticles.length}</span>
-                                <span className="stat-label">当前显示</span>
+                                <span className="stat-label">Number of Articles displayed</span>
                             </div>
                         </div>
                     </div>
@@ -283,22 +283,22 @@ function Articles() {
                     {isLoading ? (
                         <div className="loading-container">
                             <div className="loading-spinner"></div>
-                            <p>正在加载文章...</p>
+                            <p>Loding...</p>
                         </div>
                     ) : (
                         <>
                             <div className="articles-toolbar">
                                 <div className="results-info">
-                                    找到 {filteredArticles.length} 篇文章
+                                    Find {filteredArticles.length} Articles
                                     {selectedCategory !== 'All' && (
                                         <span className="category-filter">
-                                            - {selectedCategory === 'Anxiety' ? '焦虑管理' :
-                                               selectedCategory === 'Depression' ? '抑郁症' :
-                                               selectedCategory === 'Stress Management' ? '压力管理' :
-                                               selectedCategory === 'Relationships' ? '人际关系' :
-                                               selectedCategory === 'Self Growth' ? '自我成长' :
-                                               selectedCategory === 'Sleep Issues' ? '睡眠问题' :
-                                               selectedCategory === 'Emotional Regulation' ? '情绪调节' : selectedCategory}
+                                            - {selectedCategory === 'Anxiety' ? 'Anxiety' :
+                                               selectedCategory === 'Depression' ? 'Depression' :
+                                               selectedCategory === 'Stress Management' ? 'Stress Management' :
+                                               selectedCategory === 'Relationships' ? 'Relationships' :
+                                               selectedCategory === 'Self Growth' ? 'Self Growth' :
+                                               selectedCategory === 'Sleep Issues' ? 'Sleep Issues' :
+                                               selectedCategory === 'Emotional Regulation' ? 'Emotional Regulation' : selectedCategory}
                                         </span>
                                     )}
                                 </div>
@@ -317,8 +317,8 @@ function Articles() {
                             {filteredArticles.length === 0 && !isLoading && (
                                 <div className="no-results">
                                     <img src={assets.Cloud_icon} alt="No results" />
-                                    <h3>未找到相关文章</h3>
-                                    <p>尝试调整搜索条件或选择其他分类</p>
+                                    <h3>No related Articles Found</h3>
+                                    <p>Try to apply other filters or categories</p>
                                 </div>
                             )}
                         </>

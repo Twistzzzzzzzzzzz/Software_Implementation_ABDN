@@ -57,7 +57,7 @@ jwt:
   secret: "uYy8nA0PZsrIgA52tcqqeYGB3I7WCJfJgMPioYGk1y8"
   algorithm: HS256
   access-token:
-    expiration: 3600000
+    expiration: 360000000
     header: Authorization
     prefix: Bearer
   refresh-token:
